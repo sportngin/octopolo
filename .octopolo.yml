@@ -1,0 +1,10 @@
+deploy_branch: master
+github_repo: sportngin/octopolo
+branches_to_keep:
+- master
+deploy_environments:
+- staging_1
+- staging_2
+deploy_methods:
+- rolling
+- rolling_migrations
