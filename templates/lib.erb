@@ -1,0 +1,23 @@
+require "automation/scripts"
+
+module Automation
+  module Scripts
+    class <%= class_name %> < Clamp::Command
+      include ConfigWrapper
+      include CLIWrapper
+
+      # review https://github.com/mdub/clamp#declaring-options for how to
+      # declare options, flags, and parameters to the script
+
+      # banner %Q(
+      #   The description banner to display with --help
+      # )
+
+      def execute
+        # code for the script goes here
+      end
+    end
+  end
+end
+
+# vim: set ft=ruby: #

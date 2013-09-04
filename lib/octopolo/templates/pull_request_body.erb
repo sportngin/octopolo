@@ -1,0 +1,22 @@
+<%= description %>
+
+Deploy Plan
+-----------
+Does Infrastructure need to know anything special about this deploy? If so, keep this section and fill it in. **Otherwise, delete it.**
+
+Rollback Plan
+-------------
+**If this pull request requires anything more complex (e.g., rolling back a migration), you MUST update this section. Otherwise, delete this note.**
+
+To roll back this change, revert the merge with `git revert -m 1 MERGE_SHA` and perform another deploy.
+
+URLs
+----
+<% pivotal_ids.each do |pivotal_id| -%>
+* [pivotal tracker story <%= pivotal_id %>](https://www.pivotaltracker.com/story/show/<%= pivotal_id %>)
+<% end -%>
+* Add any additional URLs (like Helpspot tickets)
+
+QA Plan
+-------
+Provide a detailed QA plan, or other developers will retain the right to mock you mercilessly.

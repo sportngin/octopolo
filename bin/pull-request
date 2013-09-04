@@ -1,0 +1,7 @@
+#!/usr/bin/env ruby
+require "rubygems"
+require "automation"
+require "automation/scripts/pull_request"
+
+Automation::Scripts::PullRequest.run
+

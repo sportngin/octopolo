@@ -1,0 +1,7 @@
+#!/usr/bin/env ruby
+require "rubygems"
+require "automation"
+require "automation/scripts/compare_release"
+
+Automation::Scripts::CompareRelease.run
+

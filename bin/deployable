@@ -1,0 +1,6 @@
+#!/usr/bin/env ruby
+require "rubygems"
+require "automation"
+require "automation/scripts/deployable"
+
+Automation::Scripts::Deployable.run

@@ -1,0 +1,29 @@
+require "spec_helper"
+require "automation/scripts/<%= class_file_name %>"
+
+module Automation
+  module Scripts
+    describe <%= class_name %> do
+      # stub any attributes in the config that you need
+      let(:config) { stub(:config) }
+      let(:cli) { stub(:cli) }
+
+      subject { <%= class_name %>.new '' }
+
+      before do
+        subject.cli = cli
+        subject.config = config
+      end
+
+      context "#parse" do
+        pending "Test option parsing with `subject.parse(%w(--foo bar))` as necessary"
+      end
+
+      context "#execute" do
+        pending
+      end
+    end
+  end
+end
+
+# vim: set ft=ruby : #
