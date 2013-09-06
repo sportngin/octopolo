@@ -1,6 +1,6 @@
 require "spec_helper"
 
-module Automation
+module Octopolo
   describe Config do
     let(:cache_path) { File.expand_path("../../support/engine_yard.cache", __FILE__) }
     let(:cli) { mock("cli") }
@@ -72,7 +72,7 @@ module Automation
       let(:parsed_attributes) { { :foo => "bar" }}
       subject { Config }
 
-      it "reads from the .automation.yml file and creates a new config instance" do
+      it "reads from the .octopolo.yml file and creates a new config instance" do
         subject.should_receive(:attributes_from_file).and_return(parsed_attributes)
         subject.should_receive(:new).with(parsed_attributes)
 
@@ -81,53 +81,39 @@ module Automation
     end
 
     context ".attributes_from_file" do
-      let(:stub_path) { File.join(Dir.pwd, 'spec', 'support', 'sample_automation.yml') }
+      let(:stub_path) { File.join(Dir.pwd, 'spec', 'support', 'sample_octopolo.yml') }
       subject { Config }
 
-      it "parses the YAML in the automation_config_path" do
-        subject.stub(:automation_config_path).and_return(stub_path)
+      it "parses the YAML in the octopolo_config_path" do
+        subject.stub(:octopolo_config_path).and_return(stub_path)
         subject.attributes_from_file.should == YAML.load_file(stub_path)
       end
     end
 
-    context ".automation_config_path" do
+    context ".octopolo_config_path" do
       subject { Config }
 
-      it "is the .automation.yml file in the project directory" do
-        subject.automation_config_path.should == File.join(Dir.pwd, subject::FILE_NAME)
+      it "is the .octopolo.yml file in the project directory" do
+        subject.octopolo_config_path.should == File.join(Dir.pwd, subject::FILE_NAME)
       end
 
-      it "is the .automation.yml file in the project directory, two directories up" do
+      it "is the .octopolo.yml file in the project directory, two directories up" do
         Dir.chdir "spec/support"
-        subject.automation_config_path.should == File.join(Dir.pwd, subject::FILE_NAME)
+        subject.octopolo_config_path.should == File.join(Dir.pwd, subject::FILE_NAME)
       end
 
-      it "gives up on .automation.yml once it is not able to keep going up" do
+      it "gives up on .octopolo.yml once it is not able to keep going up" do
         back_to_project = Dir.pwd
         File.stub(:exists?) { false }
-        Automation::CLI.should_receive(:say).with("Could not find #{subject::FILE_NAME}")
-        lambda { subject.automation_config_path }.should raise_error(SystemExit)
+        Octopolo::CLI.should_receive(:say).with("Could not find #{subject::FILE_NAME}")
+        lambda { subject.octopolo_config_path }.should raise_error(SystemExit)
         Dir.chdir back_to_project
       end
     end
 
-    context "#current_app?" do
-      before do
-        subject.stub(:engine_yard_app_name).and_return("ngin")
-      end
-      it "returns true if the argument matches the app name" do
-        subject.current_app?(:ngin).should be_true
-      end
-
-      it "returns false if the argument doesn't match the app name" do
-        subject.current_app?("stat-ngin").should be_false
-      end
-
-    end
-
     context "#remote_branch_exists?" do
       before do
-        Automation::CLI.stub(:perform => <<-BR
+        Octopolo::CLI.stub(:perform => <<-BR
                           * origin/production
                             origin/test
                             origin/asdf
@@ -219,38 +205,10 @@ module Automation
       end
     end
 
-    context "#engine_yard_app_name=(name)" do
-      let(:new_value) { "new_value" }
-      subject { Config.parse }
-
-      it "overwrites the value inferred from .automation.yml" do
-        old_value = subject.engine_yard_app_name
-        subject.engine_yard_app_name = new_value
-        subject.engine_yard_app_name.should == new_value
-      end
-    end
-
-    context "#app_name" do
-      it "returns the cloud_ngin_app_name if it has one" do
-        config = Config.new(cloud_ngin_app_name: "foo")
-        config.app_name.should == "foo"
-      end
-
-      it "returns the engine_yard_app_name if it has one" do
-        config = Config.new(engine_yard_app_name: "bar")
-        config.app_name.should == "bar"
-      end
-
-      it "returns the directory name otherwise" do
-        config = Config.new
-        config.app_name.should == config.basedir
-      end
-    end
-
     context "#basedir" do
-      it "returns the name of the directory containing the .automation.yml file" do
+      it "returns the name of the directory containing the .octopolo.yml file" do
         config = Config.new
-        expected_value = File.basename(File.dirname(Config.automation_config_path))
+        expected_value = File.basename(File.dirname(Config.octopolo_config_path))
         config.basedir.should == expected_value
       end
     end

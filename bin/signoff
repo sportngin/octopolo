@@ -1,7 +1,7 @@
 #!/usr/bin/env ruby
 require "rubygems"
-require "automation"
-require "automation/scripts/signoff"
+require "octopolo"
+require "octopolo/scripts/signoff"
 
-Automation::Scripts::Signoff.run
+Octopolo::Scripts::Signoff.run
 

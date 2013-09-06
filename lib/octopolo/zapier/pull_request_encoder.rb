@@ -1,8 +1,8 @@
-require "automation/zapier"
+require "octopolo/zapier"
 require "json"
 require "date" # for Date.today
 
-module Automation
+module Octopolo
   module Zapier
     class PullRequestEncoder
       attr_accessor :pull_request
@@ -10,7 +10,7 @@ module Automation
 
       # Public: Instantiate a new PullRequestEncoder object
       #
-      # pull_request - The Automation::GitHub::PullRequest object
+      # pull_request - The Octopolo::GitHub::PullRequest object
       # prefix - A String with the prefix to assign to the encoded JSON
       #
       # Returns an instance of PullRequestEncoder

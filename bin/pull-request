@@ -1,7 +1,7 @@
 #!/usr/bin/env ruby
 require "rubygems"
-require "automation"
-require "automation/scripts/pull_request"
+require "octopolo"
+require "octopolo/scripts/pull_request"
 
-Automation::Scripts::PullRequest.run
+Octopolo::Scripts::PullRequest.run
 

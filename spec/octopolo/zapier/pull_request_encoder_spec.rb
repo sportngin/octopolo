@@ -1,7 +1,7 @@
 require "spec_helper"
-require "automation/zapier/pull_request_encoder"
+require "octopolo/zapier/pull_request_encoder"
 
-module Automation
+module Octopolo
   module Zapier
     describe PullRequestEncoder do
       let(:pull_request) { stub(:pull_request) }

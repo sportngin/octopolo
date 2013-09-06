@@ -1,4 +1,4 @@
-module Automation
+module Octopolo
   module GitHub
     class User
       @cache ||= {}

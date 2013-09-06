@@ -1,9 +1,9 @@
-require "automation/zapier/pull_request_encoder"
-require "automation/zapier/pull_request_poster"
-require "automation/zapier/branch_poster"
-require "automation/zapier/deploy_poster"
+require "octopolo/zapier/pull_request_encoder"
+require "octopolo/zapier/pull_request_poster"
+require "octopolo/zapier/branch_poster"
+require "octopolo/zapier/deploy_poster"
 
-module Automation
+module Octopolo
   module Zapier
     # Zap IDs
     MESSAGE_TO_DEVO = 42757

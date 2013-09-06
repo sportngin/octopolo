@@ -1,6 +1,6 @@
 require "spec_helper"
 
-module Automation
+module Octopolo
   describe CLI do
     subject { CLI }
 
@@ -55,37 +55,6 @@ module Automation
         subject.should_receive(:say).with(command)
         subject.should_receive(:exec).with(command)
         subject.perform_and_exit(command)
-      end
-    end
-
-    context ".ssh(server)" do
-      let(:server) { "example.com" }
-      let(:user) { "user" }
-      let(:key) { "some_other_key" }
-
-      it "performs an SSH to the server through Kernel#system" do
-        subject.should_receive(:perform_and_exit).with("ssh -i ~/.ssh/ey_development -o StrictHostKeyChecking=no deploy@#{server}")
-        subject.ssh(server)
-      end
-
-      it "performs the SSH with the given user" do
-        subject.should_receive(:perform_and_exit).with("ssh -i ~/.ssh/ey_development -o StrictHostKeyChecking=no #{user}@#{server}")
-        subject.ssh(server, :user => user)
-      end
-
-      it "performs the SSH with the given SSH key" do
-        subject.should_receive(:perform_and_exit).with("ssh -i ~/.ssh/#{key} -o StrictHostKeyChecking=no deploy@#{server}")
-        subject.ssh(server, :key => key)
-      end
-    end
-
-    context ".cloud_ngin_ssh hostname, private_key" do
-      let(:hostname) { "example.com" }
-      let(:private_key) { "foo.pem" }
-
-      it "performs an SSH to the server with the given key" do
-        subject.should_receive(:perform_and_exit).with("ssh -i #{private_key} ec2-user@#{hostname}")
-        subject.cloud_ngin_ssh hostname, private_key
       end
     end
 

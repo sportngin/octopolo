@@ -1,7 +1,7 @@
 require "spec_helper"
-require "automation/pivotal"
+require "octopolo/pivotal"
 
-module Automation
+module Octopolo
   module Pivotal
     describe Client do
 

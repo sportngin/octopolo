@@ -1,7 +1,7 @@
 #!/usr/bin/env ruby
 require "rubygems"
-require "automation"
-require "automation/scripts/github_auth"
+require "octopolo"
+require "octopolo/scripts/github_auth"
 
-Automation::Scripts::GithubAuth.run
+Octopolo::Scripts::GithubAuth.run
 

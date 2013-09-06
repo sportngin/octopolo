@@ -1,7 +1,7 @@
 require "spec_helper"
-require "automation/scripts/new_branch"
+require "octopolo/scripts/new_branch"
 
-module Automation
+module Octopolo
   module Scripts
     describe NewBranch do
       let(:config) { stub(:config, :deploy_branch => "production") }

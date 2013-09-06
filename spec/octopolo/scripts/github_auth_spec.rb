@@ -1,7 +1,7 @@
 require "spec_helper"
-require "automation/scripts/github_auth"
+require "octopolo/scripts/github_auth"
 
-module Automation
+module Octopolo
   module Scripts
     describe GithubAuth do
       let(:user_config) { stub(:user_config) }
@@ -58,7 +58,7 @@ module Automation
         end
 
         it "requests an auth token from GitHub's API and captures the HTTP response" do
-          cli.should_receive(:perform_quietly).with(%Q(curl -u '#{username}:#{password}' -d '{"scopes": ["repo"], "notes": "TST Automation"}' https://api.github.com/authorizations)) { json_response }
+          cli.should_receive(:perform_quietly).with(%Q(curl -u '#{username}:#{password}' -d '{"scopes": ["repo"], "notes": "TST Octopolo"}' https://api.github.com/authorizations)) { json_response }
           subject.send(:request_token)
           expect(subject.auth_response).to eq(parsed_response)
         end

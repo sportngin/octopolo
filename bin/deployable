@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 require "rubygems"
-require "automation"
-require "automation/scripts/deployable"
+require "octopolo"
+require "octopolo/scripts/deployable"
 
-Automation::Scripts::Deployable.run
+Octopolo::Scripts::Deployable.run

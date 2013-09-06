@@ -1,9 +1,9 @@
-require "automation/scripts"
-require "automation/git"
-require "automation/github/pull_request"
-require "automation/dated_branch_creator"
+require "octopolo/scripts"
+require "octopolo/git"
+require "octopolo/github/pull_request"
+require "octopolo/dated_branch_creator"
 
-module Automation
+module Octopolo
   module Scripts
     class Deployable < Clamp::Command
       include ConfigWrapper
@@ -55,7 +55,7 @@ module Automation
       #
       # Returns a String
       def comment_body
-        "Merged into #{git.deployable_branch}. /cc @tst-automation"
+        "Merged into #{git.deployable_branch}. /cc @tst-octopolo"
       end
 
       # Public: Find the pull request to be marked deployable

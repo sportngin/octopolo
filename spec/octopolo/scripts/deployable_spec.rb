@@ -1,7 +1,7 @@
 require "spec_helper"
-require "automation/scripts/deployable"
+require "octopolo/scripts/deployable"
 
-module Automation
+module Octopolo
   module Scripts
     describe Deployable do
       let(:cli) { stub(:CLI) }
@@ -140,7 +140,7 @@ module Automation
 
       context "#comment_body" do
         it "contains the default comment body" do
-          subject.comment_body.should == "Merged into #{git.deployable_branch}. /cc @tst-automation"
+          subject.comment_body.should == "Merged into #{git.deployable_branch}. /cc @tst-octopolo"
         end
       end
     end

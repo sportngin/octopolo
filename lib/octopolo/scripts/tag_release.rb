@@ -1,7 +1,7 @@
 require "date" # necessary to get the Date.today convenience method
-require "automation/scripts"
+require "octopolo/scripts"
 
-module Automation
+module Octopolo
   module Scripts
     class TagRelease < Clamp::Command
       include CLIWrapper

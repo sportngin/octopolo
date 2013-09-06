@@ -1,7 +1,7 @@
-require "automation/git"
-require "automation/scripts"
+require "octopolo/git"
+require "octopolo/scripts"
 
-module Automation
+module Octopolo
   module Scripts
     class StaleBranches < Clamp::Command
       include CLIWrapper

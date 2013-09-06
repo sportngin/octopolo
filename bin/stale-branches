@@ -1,7 +1,7 @@
 #!/usr/bin/env ruby
 require "rubygems"
-require "automation"
-require "automation/scripts/stale_branches"
+require "octopolo"
+require "octopolo/scripts/stale_branches"
 
-Automation::Scripts::StaleBranches.run
+Octopolo::Scripts::StaleBranches.run
 

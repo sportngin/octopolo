@@ -1,7 +1,7 @@
-require "automation/scripts"
-require "automation/pivotal"
+require "octopolo/scripts"
+require "octopolo/pivotal"
 
-module Automation
+module Octopolo
   module Scripts
     class PivotalAuth < Clamp::Command
       include UserConfigWrapper
@@ -15,7 +15,7 @@ module Automation
       # declare options, flags, and parameters to the script
 
       banner %Q(
-        Generate a Pivotal Tracker auth token for Automation commands to use.
+        Generate a Pivotal Tracker auth token for Octopolo commands to use.
       )
 
       def execute

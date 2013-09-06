@@ -1,14 +1,14 @@
 # Octopolo
 
-### GitHub Automation
+### GitHub Octopolo
 
 #### GitHub Setup
 
-Interactively set up your local machine for GitHub automation, including
+Interactively set up your local machine for GitHub octopolo, including
 configuring your user-level setting and setting up a GitHub API token for our
 scripts to use.
 
-    automation-setup
+    octopolo-setup
 
 
 #### Create New Branch

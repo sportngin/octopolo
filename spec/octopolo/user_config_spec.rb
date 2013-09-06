@@ -1,7 +1,7 @@
 require "spec_helper"
-require "automation/user_config"
+require "octopolo/user_config"
 
-module Automation
+module Octopolo
   describe UserConfig do
     context ".parse" do
       let(:parsed_attributes) { {foo: "bar"} }
@@ -48,19 +48,19 @@ module Automation
     end
 
     context ".config_path" do
-      it "is ~/.automation/config.yml" do
+      it "is ~/.octopolo/config.yml" do
         UserConfig.config_path.should == File.join(UserConfig.config_parent, "config.yml")
       end
     end
 
     context ".config_parent" do
-      it "is ~/.automation" do
-        UserConfig.config_parent.should == File.expand_path("~/.automation")
+      it "is ~/.octopolo" do
+        UserConfig.config_parent.should == File.expand_path("~/.octopolo")
       end
     end
 
     context ".touch_config_file" do
-      it "should properly handle if ~/.automation doesn't exist" do
+      it "should properly handle if ~/.octopolo doesn't exist" do
         Dir.should_receive(:exist?).with(UserConfig.config_parent) { false }
         Dir.should_receive(:mkdir).with(UserConfig.config_parent)
         File.should_receive(:exist?).with(UserConfig.config_path) { false }
@@ -68,7 +68,7 @@ module Automation
         UserConfig.touch_config_file
       end
 
-      it "writes an empty hash if ~/.automation exists but the config doesn't" do
+      it "writes an empty hash if ~/.octopolo exists but the config doesn't" do
         Dir.should_receive(:exist?).with(UserConfig.config_parent) { true }
         Dir.should_not_receive(:mkdir)
         File.should_receive(:exist?).with(UserConfig.config_path) { false }

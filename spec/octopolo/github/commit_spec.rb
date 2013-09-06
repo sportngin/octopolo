@@ -1,7 +1,7 @@
 require "spec_helper"
-require "automation/github/commit"
+require "octopolo/github/commit"
 
-module Automation
+module Octopolo
   module GitHub
     describe Commit do
       context ".new" do

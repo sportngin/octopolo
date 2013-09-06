@@ -1,8 +1,8 @@
 require "octokit"
 # TODO this needs to get moved out of scripts and into its own new module
-require "automation/scripts/github_auth"
+require "octopolo/scripts/github_auth"
 
-module Automation
+module Octopolo
   module GitHub
     extend UserConfigWrapper
 
@@ -83,7 +83,7 @@ module Automation
     end
 
     def self.excluded_users
-      ["tst-automation"]
+      ["tst-octopolo"]
     end
 
     # now that you've set up your credentials, try again

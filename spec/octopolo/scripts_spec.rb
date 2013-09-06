@@ -1,7 +1,7 @@
 require "spec_helper"
-require "automation/scripts"
+require "octopolo/scripts"
 
-module Automation
+module Octopolo
   module Scripts
     describe Base do
       context ".default_option_parser(config)" do

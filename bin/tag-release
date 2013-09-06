@@ -1,7 +1,7 @@
 #!/usr/bin/env ruby
 require "rubygems"
-require "automation"
-require "automation/scripts/tag_release"
+require "octopolo"
+require "octopolo/scripts/tag_release"
 
-Automation::Scripts::TagRelease.run
+Octopolo::Scripts::TagRelease.run
 

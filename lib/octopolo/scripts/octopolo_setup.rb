@@ -1,9 +1,9 @@
-require "automation/github"
-require "automation/scripts"
+require "octopolo/github"
+require "octopolo/scripts"
 
-module Automation
+module Octopolo
   module Scripts
-    class AutomationSetup
+    class OctopoloSetup
       include Base
       extend UserConfigWrapper
 

@@ -1,7 +1,7 @@
 require "spec_helper"
-require "automation/github/user"
+require "octopolo/github/user"
 
-module Automation
+module Octopolo
   module GitHub
     describe User do
       context ".new login" do

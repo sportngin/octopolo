@@ -1,7 +1,7 @@
 require "spec_helper"
-require "automation/reports/pull_request"
+require "octopolo/reports/pull_request"
 
-module Automation
+module Octopolo
   module Reports
     describe PullRequest do
       context ".perform number_of_weeks" do

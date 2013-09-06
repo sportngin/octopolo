@@ -1,7 +1,7 @@
 #!/usr/bin/env ruby
 require "rubygems"
-require "automation"
-require "automation/scripts/push_branch"
+require "octopolo"
+require "octopolo/scripts/push_branch"
 
-Automation::Scripts::PushBranch.run
+Octopolo::Scripts::PushBranch.run
 

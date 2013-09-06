@@ -1,4 +1,4 @@
-module Automation
+module Octopolo
   class Week
     attr_accessor :year
     attr_accessor :number

@@ -1,6 +1,6 @@
-require 'automation/pivotal'
+require 'octopolo/pivotal'
 
-module Automation
+module Octopolo
   module Pivotal
     class StoryCommenter
       attr_accessor :story

@@ -1,7 +1,7 @@
 require "spec_helper"
-require "automation/zapier"
+require "octopolo/zapier"
 
-module Automation
+module Octopolo
   describe Zapier do
     context ".endpoint ID" do
       it "returns the endpoint URL for the given Zap ID" do

@@ -1,7 +1,7 @@
 require "spec_helper"
-require "automation/scripts/qaready"
+require "octopolo/scripts/qaready"
 
-module Automation
+module Octopolo
   module Scripts
     describe Qaready do
       # stub any attributes in the config that you need

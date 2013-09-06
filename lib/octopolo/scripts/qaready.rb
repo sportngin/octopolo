@@ -1,7 +1,7 @@
-require "automation/scripts"
-require "automation/github/pull_request"
+require "octopolo/scripts"
+require "octopolo/github/pull_request"
 
-module Automation
+module Octopolo
   module Scripts
     class Qaready < Clamp::Command
       include ConfigWrapper

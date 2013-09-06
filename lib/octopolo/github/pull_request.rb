@@ -1,11 +1,11 @@
-require "automation/github"
-require "automation/github/commit"
-require "automation/github/pull_request_creator"
-require "automation/github/user"
-require "automation/week"
+require "octopolo/github"
+require "octopolo/github/commit"
+require "octopolo/github/pull_request_creator"
+require "octopolo/github/user"
+require "octopolo/week"
 require "octokit"
 
-module Automation
+module Octopolo
   module GitHub
     class PullRequest
       attr_accessor :pull_request_data
@@ -82,14 +82,14 @@ module Automation
       end
 
       def commenter_names
-        exlude_automation_user (comments.map{ |comment| GitHub::User.new(comment.user.login).author_name }.uniq - author_names)
+        exlude_octopolo_user (comments.map{ |comment| GitHub::User.new(comment.user.login).author_name }.uniq - author_names)
       end
 
       def author_names
-        exlude_automation_user commits.map(&:author_name).uniq
+        exlude_octopolo_user commits.map(&:author_name).uniq
       end
 
-      def exlude_automation_user(user_list)
+      def exlude_octopolo_user(user_list)
         user_list.reject{|u| GitHub.excluded_users.include?(u) }
       end
 

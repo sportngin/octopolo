@@ -1,8 +1,8 @@
-require "automation/scripts"
-require "automation/github/pull_request"
-require "automation/pivotal/story_commenter"
+require "octopolo/scripts"
+require "octopolo/github/pull_request"
+require "octopolo/pivotal/story_commenter"
 
-module Automation
+module Octopolo
   module Scripts
     class PullRequest < Clamp::Command
       include CLIWrapper

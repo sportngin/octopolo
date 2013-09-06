@@ -1,7 +1,7 @@
 require "spec_helper"
-require "automation/scripts/compare_release"
+require "octopolo/scripts/compare_release"
 
-module Automation
+module Octopolo
   module Scripts
     describe CompareRelease do
       let(:config) { stub(:config, github_repo: "tstmedia/ngin") }

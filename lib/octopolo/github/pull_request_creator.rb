@@ -1,6 +1,6 @@
-require "automation/renderer"
+require "octopolo/renderer"
 
-module Automation
+module Octopolo
   module GitHub
     class PullRequestCreator
       # for instantiating the pull request creator

@@ -1,7 +1,7 @@
 require "spec_helper"
-require "automation/zapier/branch_poster"
+require "octopolo/zapier/branch_poster"
 
-module Automation
+module Octopolo
   module Zapier
     describe BranchPoster do
       let(:poster) { BranchPoster.new application_name, branch_name, branch_type }
@@ -37,7 +37,7 @@ module Automation
         end
 
         it "posts to campfire that the the branche's message" do
-          Automation::CLI.should_receive(:perform_quietly).with(curl)
+          Octopolo::CLI.should_receive(:perform_quietly).with(curl)
           poster.perform
         end
       end

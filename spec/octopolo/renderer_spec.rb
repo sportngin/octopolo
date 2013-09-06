@@ -1,7 +1,7 @@
 require "spec_helper"
-require "automation/renderer"
+require "octopolo/renderer"
 
-module Automation
+module Octopolo
   describe Renderer do
     context ".render template, locals" do
       let(:locals) { {foo: "bar"} }
@@ -16,8 +16,8 @@ module Automation
     end
 
     context ".template_base_path" do
-      it "should be in the automation directory" do
-        Renderer.template_base_path.should == File.expand_path(File.join(__FILE__, "../../../lib/automation/templates"))
+      it "should be in the octopolo directory" do
+        Renderer.template_base_path.should == File.expand_path(File.join(__FILE__, "../../../lib/octopolo/templates"))
       end
     end
 

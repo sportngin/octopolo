@@ -29,7 +29,7 @@ end
 task :default => :spec
 
 # TODO dogfood this rake task and wrap it into a script that is tested and whatnot
-desc "Create new automation script"
+desc "Create new octopolo script"
 task :new, [:scriptname] do |t, args|
   require "erb"
   scriptname = args[:scriptname]
@@ -45,8 +45,8 @@ task :new, [:scriptname] do |t, args|
 
     files = {
       "templates/script.erb" => "bin/#{scriptname}",
-      "templates/lib.erb" => "lib/automation/scripts/#{class_file_name}.rb",
-      "templates/spec.erb" => "spec/automation/scripts/#{class_file_name}_spec.rb",
+      "templates/lib.erb" => "lib/octopolo/scripts/#{class_file_name}.rb",
+      "templates/spec.erb" => "spec/octopolo/scripts/#{class_file_name}_spec.rb",
     }
 
     files.each do |template_path, output_path|

@@ -1,9 +1,9 @@
-require "automation/git"
-require "automation/scripts/new_branch"
-require "automation/zapier/branch_poster"
+require "octopolo/git"
+require "octopolo/scripts/new_branch"
+require "octopolo/zapier/branch_poster"
 require "date"
 
-module Automation
+module Octopolo
   class DatedBranchCreator
     include ConfigWrapper
     include CLIWrapper

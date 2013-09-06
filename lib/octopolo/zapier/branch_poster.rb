@@ -1,7 +1,7 @@
-require "automation/git"
-require "automation/zapier"
+require "octopolo/git"
+require "octopolo/zapier"
 
-module Automation
+module Octopolo
   module Zapier
     class BranchPoster
       attr_accessor :application_name
@@ -35,7 +35,7 @@ module Automation
       # Public: Announce that the poster's branch is created
       def perform
         command = %Q(curl -H 'Content-Type: application/json' -X POST -d '{"message": "#{message}"}' '#{Zapier.endpoint Zapier::MESSAGE_TO_DEVO}')
-        Automation::CLI.perform_quietly command
+        Octopolo::CLI.perform_quietly command
       end
 
       # Public: The message to send about the new branch

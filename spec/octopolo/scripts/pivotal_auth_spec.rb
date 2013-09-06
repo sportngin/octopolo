@@ -1,7 +1,7 @@
 require "spec_helper"
-require "automation/scripts/pivotal_auth"
+require "octopolo/scripts/pivotal_auth"
 
-module Automation
+module Octopolo
   module Scripts
     describe PivotalAuth do
       # stub any attributes in the config that you need

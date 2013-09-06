@@ -1,7 +1,7 @@
 require "spec_helper"
-require "automation/scripts/new_qaready"
+require "octopolo/scripts/new_qaready"
 
-module Automation
+module Octopolo
   module Scripts
     describe NewQaready do
 

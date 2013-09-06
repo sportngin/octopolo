@@ -1,7 +1,7 @@
 require "open3"
 require "highline"
 
-module Automation
+module Octopolo
   # Public: Class to perform cli-related tasks, like performing commands.
   class CLI
     # Public: Perform the given shell command.
@@ -56,10 +56,6 @@ module Automation
     #
     # command - A String containing the command to perform.
     #
-    # Examples
-    #
-    #   CLI.perform_and_exit "ssh example.com"
-    #
     # Returns nothing and exits the current Ruby process.
     def self.perform_and_exit(command)
       say command
@@ -68,49 +64,6 @@ module Automation
       # calling `ssh` which will be interactive or `hub` which will open a text
       # editor. Those commands don't play well with Kernel#` or Open3.capture3.
       exec command
-    end
-
-    # Public: Create an SSH connection to the given server.
-    #
-    # server - A String containing the address of the server.
-    # options - The Hash of options to refine the connection. (default: {})
-    #   :key - The String of the SSH key (relative to ~/.ssh/) to use. (default: "ey_development")
-    #   :user - The String of the user to connect as. (default: deploy)
-    #
-    # Examples
-    #
-    #   CLI.ssh "example.com"
-    #
-    #   CLI.ssh "example.com", :user => "root"
-    #
-    #   CLI.ssh "example.com", :key => "id_rsa"
-    #
-    # Returns nothing and exits the current Ruby process.
-    def self.ssh(server, options={})
-      defaults = {
-        :key => "ey_development",
-        :user => "deploy",
-      }
-      options = defaults.merge(options)
-
-      ssh_command = "ssh -i ~/.ssh/#{options[:key]} -o StrictHostKeyChecking=no #{options[:user]}@#{server}"
-
-      perform_and_exit ssh_command
-    end
-
-    # Public: SSH to the given Cloud Ngin server with the given Private Key
-    #
-    # hostname - A String of the hostname to connect to
-    # private_key - A String of the path to the private key to use
-    #
-    # Returns nothing and exits the current Ruby process
-    def self.cloud_ngin_ssh hostname, private_key
-      # FIXME remove this chmod once we remove the private key path from the
-      # bundled gem (which causes it to check out with incorrect permissions)
-      # to using ~/.ssh/whatever (which lets them have consistent permissions)
-      perform "chmod 600 #{private_key}", false
-      ssh_command = "ssh -i #{private_key} ec2-user@#{hostname}"
-      perform_and_exit ssh_command
     end
 
     # Public: Display the given message.

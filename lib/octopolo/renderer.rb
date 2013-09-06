@@ -1,7 +1,7 @@
 require "erb"
 require "ostruct"
 
-module Automation
+module Octopolo
   class Renderer
     # Constants for the template file names
     PULL_REQUEST_BODY = "pull_request_body"

@@ -1,13 +1,12 @@
 require "spec_helper"
-require "automation/convenience_wrappers"
-require "automation/git"
+require "octopolo/convenience_wrappers"
+require "octopolo/git"
 
-module Automation
+module Octopolo
   class Foo
     include CLIWrapper
     include ConfigWrapper
     include UserConfigWrapper
-    include EngineYardAPIWrapper
     include GitWrapper
   end
 
@@ -59,24 +58,6 @@ module Automation
         foo.user_config = user_config
         UserConfig.should_not_receive(:parse)
         foo.user_config.should == user_config
-      end
-    end
-  end
-
-  describe EngineYardAPIWrapper do
-    let(:foo) { Foo.new }
-    let(:engine_yard) { stub(:engine_yard_api) }
-
-    context "#engine_yard" do
-      it "instantiates the Engine Yard API wrapper" do
-        EngineYardAPI.should_receive(:new) { engine_yard }
-        foo.engine_yard.should == engine_yard
-      end
-
-      it "uses the given wrapper" do
-        EngineYardAPI.should_not_receive(:new)
-        foo.engine_yard = engine_yard
-        foo.engine_yard.should == engine_yard
       end
     end
   end

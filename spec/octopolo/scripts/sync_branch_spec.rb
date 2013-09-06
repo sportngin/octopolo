@@ -1,7 +1,7 @@
 require "spec_helper"
-require "automation/scripts/sync_branch"
+require "octopolo/scripts/sync_branch"
 
-module Automation
+module Octopolo
   module Scripts
     describe SyncBranch do
       let(:config) { stub(:config, :deploy_branch => "production") }

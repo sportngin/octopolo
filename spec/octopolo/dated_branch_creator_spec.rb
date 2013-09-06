@@ -1,7 +1,7 @@
 require "spec_helper"
-require "automation/dated_branch_creator"
+require "octopolo/dated_branch_creator"
 
-module Automation
+module Octopolo
   describe DatedBranchCreator do
     let(:type) { stub(:string) }
     let(:branch_name) { stub(:string) }

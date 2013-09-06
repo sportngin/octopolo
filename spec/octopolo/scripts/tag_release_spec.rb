@@ -1,7 +1,7 @@
 require "spec_helper"
-require "automation/scripts/tag_release"
+require "octopolo/scripts/tag_release"
 
-module Automation
+module Octopolo
   module Scripts
     describe TagRelease do
       let(:config) { stub(:config, deploy_branch: "something") }

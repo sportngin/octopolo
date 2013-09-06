@@ -1,7 +1,7 @@
 require "spec_helper"
-require "automation/scripts/stale_branches"
+require "octopolo/scripts/stale_branches"
 
-module Automation
+module Octopolo
   module Scripts
     describe StaleBranches do
       # stub any attributes in the config that you need

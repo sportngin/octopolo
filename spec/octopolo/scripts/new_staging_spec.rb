@@ -1,7 +1,7 @@
 require "spec_helper"
-require "automation/scripts/new_staging"
+require "octopolo/scripts/new_staging"
 
-module Automation
+module Octopolo
   module Scripts
     describe NewStaging do
       subject { NewStaging.new '' }

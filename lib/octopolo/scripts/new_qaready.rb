@@ -1,7 +1,7 @@
-require "automation/scripts"
-require "automation/dated_branch_creator"
+require "octopolo/scripts"
+require "octopolo/dated_branch_creator"
 
-module Automation
+module Octopolo
   module Scripts
     class NewQaready < Clamp::Command
       include ConfigWrapper

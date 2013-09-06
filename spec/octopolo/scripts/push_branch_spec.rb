@@ -1,7 +1,7 @@
 require "spec_helper"
-require "automation/scripts/push_branch"
+require "octopolo/scripts/push_branch"
 
-module Automation
+module Octopolo
   module Scripts
     describe PushBranch do
       let(:git) { stub(:Git, current_branch: "foo") }

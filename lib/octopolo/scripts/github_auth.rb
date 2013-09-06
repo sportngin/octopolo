@@ -1,8 +1,8 @@
 require "json"
-require "automation/github"
-require "automation/scripts"
+require "octopolo/github"
+require "octopolo/scripts"
 
-module Automation
+module Octopolo
   module Scripts
     class GithubAuth < Clamp::Command
       include CLIWrapper
@@ -13,7 +13,7 @@ module Automation
       attr_accessor :auth_response
 
       banner %Q(
-        Generate a GitHub auth token for Automation commands to use.
+        Generate a GitHub auth token for Octopolo commands to use.
       )
 
       def execute
@@ -33,7 +33,7 @@ module Automation
 
       # Private: Request an auth token from GitHub
       def request_token
-        json = cli.perform_quietly %Q(curl -u '#{username}:#{password}' -d '{"scopes": ["repo"], "notes": "TST Automation"}' https://api.github.com/authorizations)
+        json = cli.perform_quietly %Q(curl -u '#{username}:#{password}' -d '{"scopes": ["repo"], "notes": "TST Octopolo"}' https://api.github.com/authorizations)
         self.auth_response = JSON.parse json
       end
       private :request_token

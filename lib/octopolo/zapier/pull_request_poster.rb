@@ -1,6 +1,6 @@
-require "automation/zapier"
+require "octopolo/zapier"
 
-module Automation
+module Octopolo
   module Zapier
     class PullRequestPoster
       attr_accessor :prefix

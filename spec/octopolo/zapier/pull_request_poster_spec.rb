@@ -1,7 +1,7 @@
 require "spec_helper"
-require "automation/zapier/pull_request_poster"
+require "octopolo/zapier/pull_request_poster"
 
-module Automation
+module Octopolo
   module Zapier
     describe PullRequestPoster do
       let(:prefix) { "pull" }
@@ -47,8 +47,8 @@ module Automation
         end
 
         it "posts the given file to each endpoint" do
-          Automation::CLI.should_receive(:perform_quietly).with(curl123)
-          Automation::CLI.should_receive(:perform_quietly).with(curl456)
+          Octopolo::CLI.should_receive(:perform_quietly).with(curl123)
+          Octopolo::CLI.should_receive(:perform_quietly).with(curl456)
 
           subject.post file1
         end
@@ -60,12 +60,12 @@ module Automation
         end
 
         it "deletes the given file" do
-          Automation::CLI.should_receive(:perform).with("rm #{file1}")
+          Octopolo::CLI.should_receive(:perform).with("rm #{file1}")
           subject.delete file1
         end
 
         it "does not delete the file if not one of the matching json files" do
-          Automation::CLI.should_receive(:perform).never
+          Octopolo::CLI.should_receive(:perform).never
           subject.delete file2
         end
       end

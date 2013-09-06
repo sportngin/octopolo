@@ -1,4 +1,4 @@
-module Automation
+module Octopolo
   # Abstraction around local Git commands
   class Git
     NO_BRANCH = "(no branch)"

@@ -1,10 +1,10 @@
-require "automation/git"
-require "automation/github"
-require "automation/github/pull_request"
-require "automation/scripts"
-require "automation/zapier"
+require "octopolo/git"
+require "octopolo/github"
+require "octopolo/github/pull_request"
+require "octopolo/scripts"
+require "octopolo/zapier"
 
-module Automation
+module Octopolo
   module Scripts
     class AcceptPull < Clamp::Command
       include GitWrapper

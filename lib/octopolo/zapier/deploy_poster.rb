@@ -1,7 +1,7 @@
 #<Encoding:UTF-8>
-require "automation/zapier"
+require "octopolo/zapier"
 
-module Automation
+module Octopolo
   module Zapier
     class DeployPoster
       include UserConfigWrapper

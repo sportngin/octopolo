@@ -1,7 +1,7 @@
 require "spec_helper"
-require "automation/github"
+require "octopolo/github"
 
-module Automation
+module Octopolo
   describe GitHub do
     context ".client" do
       let(:octokit_client) { stub(:github_client) }

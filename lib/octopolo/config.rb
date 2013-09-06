@@ -1,11 +1,10 @@
 require "date" # necessary to get the Date.today convenience method
 require "yaml"
-require "automation/engine_yard_api"
-require "automation/user_config"
+require "octopolo/user_config"
 
-module Automation
+module Octopolo
   class Config
-    FILE_NAME = ".automation.yml"
+    FILE_NAME = ".octopolo.yml"
     INFRASTRUCTURE_KEY = File.expand_path(File.join("~", ".ssh", "ey_infrastructure"))
     DEVELOPMENT_KEY = File.expand_path(File.join("~", ".ssh", "ey_development"))
 
@@ -16,15 +15,13 @@ module Automation
     attr_accessor :cli
     # customizable bits
     attr_accessor :branches_to_keep
-    attr_accessor :cloud_ngin_app_name
     attr_accessor :deploy_branch
     attr_accessor :deploy_environments
     attr_accessor :deploy_methods
-    attr_accessor :engine_yard_app_name
     attr_accessor :github_repo
 
     def initialize(attributes={})
-      self.cli = Automation::CLI
+      self.cli = Octopolo::CLI
 
       attributes.each do |key, value|
         self.send("#{key}=", value)
@@ -58,34 +55,30 @@ module Automation
     end
 
     def self.attributes_from_file
-      YAML.load_file(automation_config_path)
+      YAML.load_file(octopolo_config_path)
     end
 
-    def self.automation_config_path
+    def self.octopolo_config_path
       if File.exists?(FILE_NAME)
         File.join(Dir.pwd, FILE_NAME)
       else
         old_dir = Dir.pwd
         Dir.chdir('..')
         if old_dir != Dir.pwd
-          automation_config_path
+          octopolo_config_path
         else
-          Automation::CLI.say "Could not find #{FILE_NAME}"
+          Octopolo::CLI.say "Could not find #{FILE_NAME}"
           exit
         end
       end
     end
 
     def basedir
-      File.basename File.dirname Config.automation_config_path
-    end
-
-    def current_app?(app_name)
-      engine_yard_app_name == app_name.to_s
+      File.basename File.dirname Config.octopolo_config_path
     end
 
     def remote_branch_exists?(branch)
-      branches = Automation::CLI.perform "git branch -r", false
+      branches = Octopolo::CLI.perform "git branch -r", false
       branch_list = branches.split(/\r?\n/)
       branch_list.each { |x| x.gsub!(/\*|\s/,'') }
       branch_list.include? "origin/#{branch}"
@@ -131,8 +124,7 @@ module Automation
     end
 
     def app_name
-      # if not a Cloud Ngin app, won't have that instantiated
-      cloud_ngin_app_name || engine_yard_app_name || basedir
+      basedir
     end
 
     # To be used when attempting to call a Config attribute for which there is

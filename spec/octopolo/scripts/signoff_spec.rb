@@ -1,7 +1,7 @@
 require "spec_helper"
-require "automation/scripts/signoff"
+require "octopolo/scripts/signoff"
 
-module Automation
+module Octopolo
   module Scripts
     describe Signoff do
       # stub any attributes in the config that you need

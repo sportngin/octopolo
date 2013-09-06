@@ -1,7 +1,7 @@
 #!/usr/bin/env ruby
 require "rubygems"
-require "automation"
-require "automation/scripts/compare_release"
+require "octopolo"
+require "octopolo/scripts/compare_release"
 
-Automation::Scripts::CompareRelease.run
+Octopolo::Scripts::CompareRelease.run
 

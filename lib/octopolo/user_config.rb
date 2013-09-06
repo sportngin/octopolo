@@ -1,4 +1,4 @@
-module Automation
+module Octopolo
   class UserConfig
     # config values
     attr_accessor :github_user
@@ -55,7 +55,7 @@ module Automation
     #
     # Returns a String containing the path
     def self.config_parent
-      File.expand_path("~/.automation")
+      File.expand_path("~/.octopolo")
     end
 
     # Public: Create the user's configuration file

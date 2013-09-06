@@ -1,8 +1,8 @@
 #<Encoding:UTF-8>
 require "spec_helper"
-require "automation/zapier/deploy_poster"
+require "octopolo/zapier/deploy_poster"
 
-module Automation
+module Octopolo
   module Zapier
     describe DeployPoster do
       let(:poster) { DeployPoster.new app_name, env_name, deploy_type }

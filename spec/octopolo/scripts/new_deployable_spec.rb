@@ -1,7 +1,7 @@
 require "spec_helper"
-require "automation/scripts/new_deployable"
+require "octopolo/scripts/new_deployable"
 
-module Automation
+module Octopolo
   module Scripts
     describe NewDeployable do
       subject { NewDeployable.new '' }

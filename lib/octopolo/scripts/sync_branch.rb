@@ -1,6 +1,6 @@
-require "automation/scripts"
+require "octopolo/scripts"
 
-module Automation
+module Octopolo
   module Scripts
     class SyncBranch < Clamp::Command
       include ConfigWrapper

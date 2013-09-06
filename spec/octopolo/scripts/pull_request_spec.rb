@@ -1,7 +1,7 @@
 require "spec_helper"
-require "automation/scripts/pull_request"
+require "octopolo/scripts/pull_request"
 
-module Automation
+module Octopolo
   module Scripts
     describe PullRequest do
       let(:config) do
@@ -12,7 +12,7 @@ module Automation
       end
       let(:cli) { stub(:cli) }
       let(:git) { stub(:Git, current_branch: "bug-123-something", reserved_branch?: false) }
-      let(:pull_request_url) { "http://github.com/tstmedia/automation/pull/0" }
+      let(:pull_request_url) { "http://github.com/tstmedia/octopolo/pull/0" }
       let(:pull_request) { stub(:pull_request) }
 
       subject { PullRequest.new '' }

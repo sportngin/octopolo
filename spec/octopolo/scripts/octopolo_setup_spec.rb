@@ -1,14 +1,14 @@
 require "spec_helper"
-require "automation/scripts/automation_setup"
+require "octopolo/scripts/octopolo_setup"
 
-module Automation
+module Octopolo
   module Scripts
-    describe AutomationSetup do
+    describe OctopoloSetup do
       let(:config) { stub(:config) }
       let(:cli) { stub(:cli) }
       let(:user_config) { stub(:user_config) }
 
-      subject { AutomationSetup }
+      subject { OctopoloSetup }
 
       before do
         subject.config = config

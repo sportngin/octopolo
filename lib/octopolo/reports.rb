@@ -1,6 +1,6 @@
 require "csv"
 
-module Automation
+module Octopolo
   module Reports
     # Public: Write the report data to the given file name
     #

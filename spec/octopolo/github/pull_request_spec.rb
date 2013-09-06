@@ -1,7 +1,7 @@
 require "spec_helper"
-require "automation/github/pull_request"
+require "octopolo/github/pull_request"
 
-module Automation
+module Octopolo
   module GitHub
     describe PullRequest do
       let(:repo_name) { "account/repo" }
@@ -156,12 +156,12 @@ module Automation
           end
         end
 
-        context "#without_automation_users" do
-          let(:users) { ["anfleene", "tst-automation"] }
+        context "#without_octopolo_users" do
+          let(:users) { ["anfleene", "tst-octopolo"] }
 
-          it "excludes the github automation users" do
-            pull.exlude_automation_user(users).should_not include("tst-automation")
-            pull.exlude_automation_user(users).should include("anfleene")
+          it "excludes the github octopolo users" do
+            pull.exlude_octopolo_user(users).should_not include("tst-octopolo")
+            pull.exlude_octopolo_user(users).should include("anfleene")
           end
         end
 

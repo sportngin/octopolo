@@ -1,7 +1,7 @@
 require "spec_helper"
-require "automation/github/pull_request_creator"
+require "octopolo/github/pull_request_creator"
 
-module Automation
+module Octopolo
   module GitHub
     describe PullRequestCreator do
       let(:creator) { PullRequestCreator.new repo_name, options }

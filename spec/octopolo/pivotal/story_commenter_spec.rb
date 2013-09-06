@@ -1,7 +1,7 @@
 require "spec_helper"
-require "automation/pivotal/story_commenter"
+require "octopolo/pivotal/story_commenter"
 
-module Automation
+module Octopolo
   module Pivotal
     describe StoryCommenter do
       let(:client) { stub }

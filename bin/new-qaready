@@ -1,7 +1,7 @@
 #!/usr/bin/env ruby
 require "rubygems"
-require "automation"
-require "automation/scripts/new_qaready"
+require "octopolo"
+require "octopolo/scripts/new_qaready"
 
-Automation::Scripts::NewQaready.run
+Octopolo::Scripts::NewQaready.run
 

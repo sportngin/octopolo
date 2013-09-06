@@ -1,7 +1,7 @@
-require "automation/github"
-require "automation/github/user"
+require "octopolo/github"
+require "octopolo/github/user"
 
-module Automation
+module Octopolo
   module GitHub
     class Commit
       attr_accessor :commit_data

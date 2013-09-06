@@ -1,7 +1,7 @@
 require "pivotal-tracker" # this is the gem we're currently using
-require "automation/scripts/pivotal_auth"
+require "octopolo/scripts/pivotal_auth"
 
-module Automation
+module Octopolo
   module Pivotal
     # NOTE Should probably extract out to
     class Client

@@ -1,7 +1,7 @@
 require "spec_helper"
-require "automation/scripts/accept_pull"
+require "octopolo/scripts/accept_pull"
 
-module Automation
+module Octopolo
   module Scripts
     describe AcceptPull do
       let(:config) { stub(:config, :github_repo => "tstmedia/foo") }

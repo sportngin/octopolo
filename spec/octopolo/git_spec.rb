@@ -1,7 +1,7 @@
 require "spec_helper"
-require "automation/git"
+require "octopolo/git"
 
-module Automation
+module Octopolo
   describe Git do
     let(:cli) { stub(:CLI) }
 

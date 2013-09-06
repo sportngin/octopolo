@@ -1,4 +1,4 @@
-module Automation
+module Octopolo
   # Provide access to the CLI class into other classes in the application
   module CLIWrapper
     attr_accessor :cli
@@ -30,18 +30,6 @@ module Automation
     # Returns an instance of UserConfig or equivalent
     def user_config
       @user_config ||= UserConfig.parse
-    end
-  end
-
-  # Provide access to the EngineYardAPI wrapper class
-  module EngineYardAPIWrapper
-    attr_accessor :engine_yard
-
-    # Public: Wrapper method around the Engine Yard API
-    #
-    # Retruns an instance of EngineYardAPI or equivalent
-    def engine_yard
-      @engine_yard ||= EngineYardAPI.new
     end
   end
 

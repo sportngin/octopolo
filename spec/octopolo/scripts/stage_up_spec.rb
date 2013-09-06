@@ -1,7 +1,7 @@
 require "spec_helper"
-require "automation/scripts/stage_up"
+require "octopolo/scripts/stage_up"
 
-module Automation
+module Octopolo
   module Scripts
     describe StageUp do
       let(:git) { stub(:git, current_branch: "current_branch") }
