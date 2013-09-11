@@ -1,6 +1,6 @@
 require "date" # necessary to get the Date.today convenience method
 require "yaml"
-require "octopolo/user_config"
+require_relative "user_config"
 
 module Octopolo
   class Config

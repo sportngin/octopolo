@@ -1,7 +1,7 @@
-require "octopolo/zapier/pull_request_encoder"
-require "octopolo/zapier/pull_request_poster"
-require "octopolo/zapier/branch_poster"
-require "octopolo/zapier/deploy_poster"
+require_relative "zapier/pull_request_encoder"
+require_relative "zapier/pull_request_poster"
+require_relative "zapier/branch_poster"
+require_relative "zapier/deploy_poster"
 
 module Octopolo
   module Zapier

@@ -1,8 +1,8 @@
-require "octopolo/github"
-require "octopolo/github/commit"
-require "octopolo/github/pull_request_creator"
-require "octopolo/github/user"
-require "octopolo/week"
+require_relative "../github"
+require_relative "commit"
+require_relative "pull_request_creator"
+require_relative "user"
+require_relative "../week"
 require "octokit"
 
 module Octopolo

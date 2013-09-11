@@ -1,5 +1,5 @@
 require "clamp"
-require "octopolo/git"
+require_relative "git"
 
 module Octopolo
   module Scripts

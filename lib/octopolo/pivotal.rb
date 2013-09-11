@@ -1,5 +1,5 @@
 require "pivotal-tracker" # this is the gem we're currently using
-require "octopolo/scripts/pivotal_auth"
+require_relative "scripts/pivotal_auth"
 
 module Octopolo
   module Pivotal

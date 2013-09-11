@@ -1,6 +1,6 @@
 require "octokit"
 # TODO this needs to get moved out of scripts and into its own new module
-require "octopolo/scripts/github_auth"
+require_relative "scripts/github_auth"
 
 module Octopolo
   module GitHub

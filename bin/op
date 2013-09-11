@@ -1,0 +1,5 @@
+#!/bin/bash --login
+rvm use 1.9.3-p448
+rvm gemset use octopolo
+# TODO : change below to execute the given command with its args
+/Users/lukeludwig/sportngin/octopolo/bin/new-branch test1234

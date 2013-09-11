@@ -1,4 +1,4 @@
-require "octopolo/renderer"
+require_relative "../renderer"
 
 module Octopolo
   module GitHub

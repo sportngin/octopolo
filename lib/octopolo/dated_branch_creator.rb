@@ -1,6 +1,6 @@
-require "octopolo/git"
-require "octopolo/scripts/new_branch"
-require "octopolo/zapier/branch_poster"
+require_relative "git"
+require_relative "scripts/new_branch"
+require_relative "zapier/branch_poster"
 require "date"
 
 module Octopolo
