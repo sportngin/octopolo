@@ -1,8 +1,8 @@
-require "octopolo/git"
-require "octopolo/github"
-require "octopolo/github/pull_request"
-require "octopolo/scripts"
-require "octopolo/zapier"
+require_relative "../git"
+require_relative "../github"
+require_relative "../github/pull_request"
+require_relative "../scripts"
+require_relative "../zapier"
 
 module Octopolo
   module Scripts

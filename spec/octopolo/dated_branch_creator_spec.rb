@@ -1,5 +1,5 @@
 require "spec_helper"
-require "octopolo/dated_branch_creator"
+require_relative "../../lib/octopolo/dated_branch_creator"
 
 module Octopolo
   describe DatedBranchCreator do

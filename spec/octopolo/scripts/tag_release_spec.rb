@@ -1,5 +1,5 @@
 require "spec_helper"
-require "octopolo/scripts/tag_release"
+require_relative "../../../lib/octopolo/scripts/tag_release"
 
 module Octopolo
   module Scripts

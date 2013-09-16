@@ -1,5 +1,5 @@
 require "spec_helper"
-require "octopolo/pivotal"
+require_relative "../../lib/octopolo/pivotal"
 
 module Octopolo
   module Pivotal

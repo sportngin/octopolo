@@ -1,5 +1,5 @@
 require "spec_helper"
-require "octopolo/pivotal/story_commenter"
+require_relative "../../../lib/octopolo/pivotal/story_commenter"
 
 module Octopolo
   module Pivotal

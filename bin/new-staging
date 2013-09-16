@@ -1,7 +1,7 @@
 #!/usr/bin/env ruby
 require "rubygems"
-require "octopolo"
-require "octopolo/scripts/new_staging"
+require_relative "../lib/octopolo"
+require_relative "../lib/octopolo/scripts/new_staging"
 
 Octopolo::Scripts::NewStaging.run
 

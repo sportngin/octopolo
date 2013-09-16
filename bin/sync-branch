@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 require "rubygems"
-require "octopolo"
-require "octopolo/scripts/sync_branch"
+require_relative "../lib/octopolo"
+require_relative "../lib/octopolo/scripts/sync_branch"
 
 Octopolo::Scripts::SyncBranch.run

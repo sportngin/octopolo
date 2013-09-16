@@ -1,6 +1,6 @@
-require "octopolo/scripts"
-require "octopolo/github/pull_request"
-require "octopolo/pivotal/story_commenter"
+require_relative "../scripts"
+require_relative "../github/pull_request"
+require_relative "../pivotal/story_commenter"
 
 module Octopolo
   module Scripts

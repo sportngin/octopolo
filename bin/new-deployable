@@ -1,7 +1,7 @@
 #!/usr/bin/env ruby
 require "rubygems"
-require "octopolo"
-require "octopolo/scripts/new_deployable"
+require_relative "../lib/octopolo"
+require_relative "../lib/octopolo/scripts/new_deployable"
 
 Octopolo::Scripts::NewDeployable.run
 

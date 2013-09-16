@@ -1,7 +1,7 @@
 #!/usr/bin/env ruby
 require "rubygems"
-require "octopolo"
-require "octopolo/scripts/pivotal_auth"
+require_relative "../lib/octopolo"
+require_relative "../lib/octopolo/scripts/pivotal_auth"
 
 Octopolo::Scripts::PivotalAuth.run
 

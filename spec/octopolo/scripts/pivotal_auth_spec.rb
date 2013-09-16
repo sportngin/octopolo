@@ -1,5 +1,5 @@
 require "spec_helper"
-require "octopolo/scripts/pivotal_auth"
+require_relative "../../../lib/octopolo/scripts/pivotal_auth"
 
 module Octopolo
   module Scripts

@@ -1,6 +1,6 @@
 require "json"
-require "octopolo/github"
-require "octopolo/scripts"
+require_relative "../github"
+require_relative "../scripts"
 
 module Octopolo
   module Scripts

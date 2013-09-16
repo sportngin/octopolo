@@ -1,4 +1,4 @@
-require "octopolo/zapier"
+require_relative "../zapier"
 require "json"
 require "date" # for Date.today
 

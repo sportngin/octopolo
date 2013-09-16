@@ -1,5 +1,5 @@
 require "spec_helper"
-require "octopolo/github"
+require_relative "../../lib/octopolo/github"
 
 module Octopolo
   describe GitHub do

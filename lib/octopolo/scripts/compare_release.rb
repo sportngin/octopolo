@@ -1,4 +1,4 @@
-require "octopolo/scripts"
+require_relative "../scripts"
 
 module Octopolo
   module Scripts

@@ -1,5 +1,5 @@
 require "spec_helper"
-require "octopolo/zapier/pull_request_poster"
+require_relative "../../../lib/octopolo/zapier/pull_request_poster"
 
 module Octopolo
   module Zapier

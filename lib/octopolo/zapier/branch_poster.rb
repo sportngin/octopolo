@@ -1,5 +1,5 @@
-require "octopolo/git"
-require "octopolo/zapier"
+require_relative "../git"
+require_relative "../zapier"
 
 module Octopolo
   module Zapier

@@ -1,5 +1,5 @@
 require "spec_helper"
-require "octopolo/scripts/pull_request"
+require_relative "../../../lib/octopolo/scripts/pull_request"
 
 module Octopolo
   module Scripts

@@ -1,4 +1,4 @@
-require 'octopolo/pivotal'
+require_relative '../pivotal'
 
 module Octopolo
   module Pivotal

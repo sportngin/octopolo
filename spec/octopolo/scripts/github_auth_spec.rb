@@ -1,5 +1,5 @@
 require "spec_helper"
-require "octopolo/scripts/github_auth"
+require_relative "../../../lib/octopolo/scripts/github_auth"
 
 module Octopolo
   module Scripts

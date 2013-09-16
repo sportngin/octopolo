@@ -1,5 +1,5 @@
 require "spec_helper"
-require "octopolo/github/pull_request_creator"
+require_relative "../../../lib/octopolo/github/pull_request_creator"
 
 module Octopolo
   module GitHub

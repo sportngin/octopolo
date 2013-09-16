@@ -1,5 +1,5 @@
 require "date" # necessary to get the Date.today convenience method
-require "octopolo/scripts"
+require_relative "../scripts"
 
 module Octopolo
   module Scripts

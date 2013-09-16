@@ -1,5 +1,5 @@
 #<Encoding:UTF-8>
-require "octopolo/zapier"
+require_relative "../zapier"
 
 module Octopolo
   module Zapier

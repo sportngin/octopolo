@@ -1,5 +1,5 @@
 require "spec_helper"
-require "octopolo/scripts"
+require_relative "../../lib/octopolo/scripts"
 
 module Octopolo
   module Scripts

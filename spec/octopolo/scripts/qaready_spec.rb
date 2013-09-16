@@ -1,5 +1,5 @@
 require "spec_helper"
-require "octopolo/scripts/qaready"
+require_relative "../../../lib/octopolo/scripts/qaready"
 
 module Octopolo
   module Scripts

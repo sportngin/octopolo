@@ -1,7 +1,7 @@
 #!/usr/bin/env ruby
 require "rubygems"
-require "octopolo"
-require "octopolo/scripts/tag_release"
+require_relative "../lib/octopolo"
+require_relative "../lib/octopolo/scripts/tag_release"
 
 Octopolo::Scripts::TagRelease.run
 

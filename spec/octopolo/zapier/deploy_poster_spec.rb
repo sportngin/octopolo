@@ -1,6 +1,6 @@
 #<Encoding:UTF-8>
 require "spec_helper"
-require "octopolo/zapier/deploy_poster"
+require_relative "../../../lib/octopolo/zapier/deploy_poster"
 
 module Octopolo
   module Zapier

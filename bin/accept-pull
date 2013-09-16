@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 require "rubygems"
-require "octopolo"
-require "octopolo/scripts/accept_pull"
+require_relative "../lib/octopolo"
+require_relative "../lib/octopolo/scripts/accept_pull"
 
 Octopolo::Scripts::AcceptPull.run

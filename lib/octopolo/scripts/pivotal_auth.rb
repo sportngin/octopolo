@@ -1,5 +1,5 @@
-require "octopolo/scripts"
-require "octopolo/pivotal"
+require_relative "../scripts"
+require_relative "../pivotal"
 
 module Octopolo
   module Scripts

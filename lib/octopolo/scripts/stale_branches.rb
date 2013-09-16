@@ -1,5 +1,5 @@
-require "octopolo/git"
-require "octopolo/scripts"
+require_relative "../git"
+require_relative "../scripts"
 
 module Octopolo
   module Scripts

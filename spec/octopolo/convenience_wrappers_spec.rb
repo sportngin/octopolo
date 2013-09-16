@@ -1,6 +1,6 @@
 require "spec_helper"
-require "octopolo/convenience_wrappers"
-require "octopolo/git"
+require_relative "../../lib/octopolo/convenience_wrappers"
+require_relative "../../lib/octopolo/git"
 
 module Octopolo
   class Foo

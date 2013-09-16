@@ -1,5 +1,5 @@
 require "spec_helper"
-require "octopolo/zapier/pull_request_encoder"
+require_relative "../../../lib/octopolo/zapier/pull_request_encoder"
 
 module Octopolo
   module Zapier

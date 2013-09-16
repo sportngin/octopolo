@@ -1,5 +1,5 @@
 require "spec_helper"
-require "octopolo/zapier"
+require_relative "../../lib/octopolo/zapier"
 
 module Octopolo
   describe Zapier do
