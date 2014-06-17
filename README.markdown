@@ -1,4 +1,10 @@
-# Octopolo
+Octopolo
+========
+
+[![Build Status][build_status_image]][build_status]
+
+A set of Github workflow scripts.
+
 
 ### GitHub Octopolo
 
@@ -44,3 +50,6 @@ Select from recent release tags and generate a link to the GitHub compare view.
 
     compare-releases
 
+
+[build_status]: https://travis-ci.org/sportngin/octopolo
+[build_status_image]: https://travis-ci.org/sportngin/octopolo.svg?branch=master
