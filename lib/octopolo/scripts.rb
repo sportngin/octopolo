@@ -13,9 +13,6 @@ module Octopolo
         klass.config = Octopolo::Config.parse
         klass.cli = Octopolo::CLI
       end
-
-      def self.default_option_parser(config)
-      end
     end
   end
 end

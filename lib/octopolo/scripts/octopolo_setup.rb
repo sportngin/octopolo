@@ -11,19 +11,8 @@ module Octopolo
       HUB_VERSION_COMMAND = "hub --version"
 
       def self.invoke(*args)
-        options = parse_options(*args)
-
         verify_git_extras_setup
         verify_user_setup
-      end
-
-      def self.parse_options(*args)
-        options = {}
-
-        parser = Base.default_option_parser(config)
-        parser.parse!(args)
-
-        options
       end
 
       def self.verify_git_extras_setup
