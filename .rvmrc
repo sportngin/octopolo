@@ -1,5 +1,0 @@
-rvm --create 1.9.3-p448@octopolo
-# Ensure that Bundler is installed, install it if it is not.
-if ! command -v bundle > /dev/null; then
-  gem install bundler
-fi
