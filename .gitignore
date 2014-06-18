@@ -5,6 +5,7 @@
 coverage
 InstalledFiles
 lib/bundler/man
+Gemfile.lock
 pkg
 rdoc
 spec/reports
