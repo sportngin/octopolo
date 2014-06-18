@@ -23,5 +23,5 @@ Gem::Specification.new do |gem|
   gem.add_dependency 'clamp', '>= 0.6', "< 1.0"
   gem.add_dependency 'pivotal-tracker', '~> 0.5'
 
-  gem.add_development_dependency 'rspec'
+  gem.add_development_dependency 'rspec', '~> 2.11.0'
 end
