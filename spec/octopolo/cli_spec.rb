@@ -295,7 +295,9 @@ module Octopolo
       let(:input) { "something#{rand(1000)}" }
 
       # FIXME figure out a better way to test this on non-Mac systems, which don't have pbcopy or pbpaste
-      if RUBY_PLATFORM.include? "darwin" # only run the test on a mac
+      #
+      # only run on the test on a mac and when not in tmux
+      if RUBY_PLATFORM.include?("darwin") and !ENV['TMUX']
         it "puts the text on the system clipboard (for pasting)" do
           subject.should_receive(:say).with("Putting '#{input}' on the clipboard.")
           subject.copy_to_clipboard input

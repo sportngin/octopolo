@@ -2,7 +2,6 @@ require "spec_helper"
 
 module Octopolo
   describe Config do
-    let(:cache_path) { File.expand_path("../../support/engine_yard.cache", __FILE__) }
     let(:cli) { mock("cli") }
 
     context "#initialize" do
@@ -127,81 +126,6 @@ module Octopolo
 
       it "shouldn't production" do
         subject.remote_branch_exists?("not-there").should == false
-      end
-    end
-
-    context "#servers" do
-      before do
-        # load the cached file stored in spec/support
-        subject.stub(:api_object => api)
-      end
-
-      let(:api) { Marshal.load File.read cache_path }
-      let(:sample_app) { api.apps.named("stat_ngin") }
-      let(:sample_environment) { sample_app.environments.first }
-      let(:sample_instance) { sample_environment.instances.first }
-      let(:instance_attributes) {
-        {
-          "amazon_id" => sample_instance.amazon_id,
-          "hostname" => sample_instance.hostname,
-          "name" => sample_instance.name,
-          "role" => sample_instance.role,
-        }
-      }
-
-      it "returns a hash with the app names as keys" do
-        subject.servers.keys.sort.should == api.apps.map(&:name).sort
-      end
-
-      it "returns a hash of environments within the value for each app" do
-        subject.servers[sample_app.name].keys.sort.should == sample_app.environments.map(&:name).sort
-      end
-
-      it "returns a hash of instances within the value for each environment" do
-        expected = sample_environment.instances.map{|instance| subject.instance_key(instance) }.sort
-        subject.servers[sample_app.name][sample_environment.name].keys.sort.should == expected
-      end
-
-      it "returns a hash of attributes for each instance" do
-        instance_attributes.each do |key, value|
-          subject.servers[sample_app.name][sample_environment.name][subject.instance_key(sample_instance)][key].should == value
-        end
-      end
-    end
-
-    describe "#instance_key(instance)" do
-      let(:instance) { stub(role: "role", name: "name", hostname: "hostname", amazon_id: "amazon_id")}
-
-      it "returns a string with uniq information for the instance" do
-        subject.instance_key(instance).should == "#{instance.role} #{instance.name} #{instance.hostname} #{instance.amazon_id}"
-      end
-    end
-
-    context "#api_object" do
-      let(:data) { stub }
-
-      it "defers to the EngineYardAPI class" do
-        EngineYardAPI.should_receive(:fetch) { data }
-        subject.api_object
-      end
-    end
-
-    context "#reload_cached_api_object" do
-      it "devers to the EngineYardAPI class" do
-        EngineYardAPI.should_receive(:reload_cached_api_object)
-        subject.reload_cached_api_object
-      end
-    end
-
-    context "#infrastructure?" do
-      it "returns true if the infrastructure key is present" do
-        File.should_receive(:exist?).with(Config::INFRASTRUCTURE_KEY).and_return(true)
-        subject.infrastructure?.should be_true
-      end
-
-      it "returns false if the infrastructure key is not present" do
-        File.should_receive(:exist?).with(Config::INFRASTRUCTURE_KEY).and_return(false)
-        subject.infrastructure?.should be_false
       end
     end
 
