@@ -1,10 +1,10 @@
 require "spec_helper"
-require_relative "../../../lib/octopolo/scripts/accept_pull"
+require "octopolo/scripts/accept_pull"
 
 module Octopolo
   module Scripts
     describe AcceptPull do
-      let(:config) { stub(:config, :github_repo => "tstmedia/foo") }
+      let(:config) { stub(:config, :github_repo => "tstmedia/foo", :deploy_branch => "master") }
       let(:cli) { stub }
       let(:git) { stub(:Git) }
       let(:pull_request_id) { 42 }
@@ -28,7 +28,6 @@ module Octopolo
           GitHub::PullRequest.should_receive(:new).with(config.github_repo, pull_request_id) { pull_request }
           subject.should_receive(:merge).with(pull_request)
           subject.should_receive(:update_changelog).with(pull_request)
-          subject.should_receive(:write_json).with(pull_request)
 
           subject.execute
         end
@@ -63,27 +62,14 @@ module Octopolo
 
           it "performs the merge and alerts about potential failures" do
             Git.should_receive(:fetch)
-            cli.should_receive(:perform).with "git merge --no-ff origin/#{pull_request.branch}"
+            cli.stub(:say)
+            cli.should_not_receive(:perform).with "git merge --no-ff origin/#{pull_request.branch} -m \"Merge pull request ##{pull_request_id} from origin/#{pull_request.branch}\""
 
-            cli.should_receive(:say).with "\n=====ATTENTION====="
-            cli.should_receive(:say).with "There was a conflict with the merge. Either fix the conflicts and commit, or abort the merge with"
-            cli.should_receive(:say).with "    'git merge --abort'"
-            cli.should_receive(:say).with "and remove this entry from CHANGELOG.markdown\n"
-
+            cli.should_receive(:say).with /merge conflict/
             subject.merge pull_request
           end
         end
       end
-
-      context "#write_json" do
-        let(:pull_request) { stub }
-
-        it "writes the pull request for Zapier" do
-          Zapier.should_receive(:encode).with(pull_request)
-          subject.write_json pull_request
-        end
-      end
-
     end
   end
 end
