@@ -45,13 +45,14 @@ module Octopolo
 
       context "#merge" do
         let(:pull_request) { stub(branch: "foobranch") }
+        before { subject.stub(:pull_request_id => pull_request_id) }
 
         context "when mergeable" do
           before { pull_request.stub(mergeable?: true) }
 
           it "fetches and merges the request's branch" do
             Git.should_receive(:fetch)
-            cli.should_receive(:perform).with "git merge --no-ff origin/#{pull_request.branch}"
+            cli.should_receive(:perform).with "git merge --no-ff origin/#{pull_request.branch} -m \"Merge pull request ##{pull_request_id} from origin/#{pull_request.branch}\""
 
             subject.merge pull_request
           end
