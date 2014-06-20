@@ -1,5 +1,5 @@
 require "spec_helper"
-require_relative "../../../lib/octopolo/scripts/signoff"
+require "octopolo/scripts/signoff"
 
 module Octopolo
   module Scripts

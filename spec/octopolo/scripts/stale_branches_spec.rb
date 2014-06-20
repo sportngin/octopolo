@@ -1,5 +1,5 @@
 require "spec_helper"
-require_relative "../../../lib/octopolo/scripts/stale_branches"
+require "octopolo/scripts/stale_branches"
 
 module Octopolo
   module Scripts
