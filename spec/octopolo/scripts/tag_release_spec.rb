@@ -1,5 +1,5 @@
 require "spec_helper"
-require_relative "../../../lib/octopolo/scripts/tag_release"
+require "octopolo/scripts/tag_release"
 
 module Octopolo
   module Scripts
@@ -8,13 +8,13 @@ module Octopolo
       let(:cli) { stub(:cli) }
       let(:git) { stub(:git) }
       let(:suffix) { "foo" }
-
       subject { TagRelease.new '' }
 
       before do
         subject.cli = cli
         subject.config = config
         subject.git = git
+        subject.stub(:update_changelog)
       end
 
       context "#parse" do
