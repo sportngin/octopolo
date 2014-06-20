@@ -1,5 +1,5 @@
-require_relative "../scripts"
-require_relative "../dated_branch_creator"
+require "octopolo/scripts"
+require "octopolo/dated_branch_creator"
 
 module Octopolo
   module Scripts
