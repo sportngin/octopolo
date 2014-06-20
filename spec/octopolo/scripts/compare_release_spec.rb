@@ -1,5 +1,5 @@
 require "spec_helper"
-require_relative "../../../lib/octopolo/scripts/compare_release"
+require "octopolo/scripts/compare_release"
 
 module Octopolo
   module Scripts
