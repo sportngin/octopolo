@@ -56,9 +56,7 @@ module Octopolo
         it "asks appropriate questions to create a pull request" do
           subject.should_receive(:announce)
           subject.should_receive(:ask_title)
-          subject.should_receive(:ask_description)
           subject.should_receive(:ask_pivotal_ids)
-          subject.should_receive(:ask_release)
 
           subject.send(:ask_questionaire)
         end
@@ -67,9 +65,7 @@ module Octopolo
           before do
             subject.stub(:announce)
             subject.stub(:ask_title)
-            subject.stub(:ask_description)
             subject.stub(:ask_pivotal_ids)
-            subject.stub(:ask_release)
           end
           it "exits when branch name is reserved" do
             subject.git.stub(:reserved_branch?).and_return true
@@ -110,16 +106,6 @@ module Octopolo
         end
       end
 
-      context "#ask_description" do
-        let(:description) { "description" }
-
-        it "asks for and captures a description for the pull request" do
-          cli.should_receive(:prompt).with("Description (1 or 2 sentences):") { description }
-          subject.send(:ask_description)
-          expect(subject.description).to eq(description)
-        end
-      end
-
       context "#ask_pivotal_ids" do
         let(:ids_with_whitespace) { "123 456" }
         let(:ids_with_commas) { "234, 567" }
@@ -140,16 +126,6 @@ module Octopolo
           cli.should_receive(:prompt).with("Pivotal Tracker story ID(s):") { "" }
           subject.send(:ask_pivotal_ids)
           expect(subject.pivotal_ids).to eq([])
-        end
-      end
-
-      context "#ask_release" do
-        let(:release) { stub(:boolean) }
-
-        it "asks for and captures whether this is a release pull request" do
-          cli.should_receive(:ask_boolean).with("Is this a Release pull request?") { release }
-          subject.send(:ask_release)
-          expect(subject.release).to eq(release)
         end
       end
 
@@ -174,17 +150,13 @@ module Octopolo
       context "#pull_request_attributes" do
         before do
           subject.title = "title"
-          subject.description = "description"
           subject.destination_branch = "some-branch",
-          subject.release = true
           subject.pivotal_ids = %w(123)
         end
 
         it "combines the anssers with a handful of deault values" do
           subject.send(:pull_request_attributes).should == {
             title: subject.title,
-            description: subject.description,
-            release: subject.release,
             destination_branch: subject.destination_branch,
             source_branch: git.current_branch,
             pivotal_ids: subject.pivotal_ids,

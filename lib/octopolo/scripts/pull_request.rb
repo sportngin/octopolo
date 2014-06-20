@@ -1,6 +1,6 @@
-require_relative "../scripts"
-require_relative "../github/pull_request"
-require_relative "../pivotal/story_commenter"
+require "octopolo/scripts"
+require "octopolo/github/pull_request"
+require "octopolo/pivotal/story_commenter"
 
 module Octopolo
   module Scripts
@@ -18,8 +18,6 @@ module Octopolo
       )
 
       attr_accessor :title
-      attr_accessor :description
-      attr_accessor :release
       attr_accessor :pull_request
       attr_accessor :pivotal_ids
 
@@ -41,9 +39,7 @@ module Octopolo
         alert_reserved_and_exit if git.reserved_branch?
         announce
         ask_title
-        ask_description
         ask_pivotal_ids
-        ask_release
       end
       private :ask_questionaire
 
@@ -66,30 +62,11 @@ module Octopolo
       end
       private :ask_title
 
-      # Private: Ask for a description of the pull request
-      #
-      # Returns a String containing the response
-      def ask_description
-        self.description = cli.prompt "Description (1 or 2 sentences):"
-      end
-      private :ask_description
-
       # Private: Ask for a Pivotal Tracker story IDs
       def ask_pivotal_ids
         self.pivotal_ids = cli.prompt("Pivotal Tracker story ID(s):").split(/[\s,]+/)
       end
       private :ask_pivotal_ids
-
-      # Private: Ask whether the pull request is for a release
-      #
-      # Meaning, does this release new functionality (even in Beta) which needs
-      # approval from the Product team?
-      #
-      # Returns a Boolean
-      def ask_release
-        self.release = cli.ask_boolean "Is this a Release pull request?"
-      end
-      private :ask_release
 
       # Private: Create the pull request
       #
@@ -105,8 +82,6 @@ module Octopolo
       def pull_request_attributes
         {
           title: title,
-          description: description,
-          release: release,
           destination_branch: destination_branch,
           source_branch: git.current_branch,
           pivotal_ids: pivotal_ids,
