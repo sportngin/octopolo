@@ -6,7 +6,7 @@ module Octopolo
     class Qaready < Clamp::Command
       include CLIWrapper
 
-      parameter "PULL_REQUEST_ID", "The ID of the pull request to mark deployable" do |s|
+      parameter "PULL_REQUEST_ID", "The ID of the pull request to mark QA-ready" do |s|
         Integer(s)
       end
 
