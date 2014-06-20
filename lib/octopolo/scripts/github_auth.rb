@@ -50,7 +50,7 @@ module Octopolo
 
       # Private: Request an auth token from GitHub
       def request_token
-        json = cli.perform_quietly %Q(curl -u '#{username}:#{password}' -d '{"scopes": ["repo"], "notes": "TST Automation"}' https://api.github.com/authorizations)
+        json = cli.perform_quietly %Q(curl -u '#{username}:#{password}' -d '{"scopes": ["repo"], "notes": "Octopolo"}' https://api.github.com/authorizations)
         self.auth_response = JSON.parse json
       end
       private :request_token
