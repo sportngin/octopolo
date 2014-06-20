@@ -95,7 +95,7 @@ module Octopolo
         end
 
         it "requests an auth token from GitHub's API and captures the HTTP response" do
-          cli.should_receive(:perform_quietly).with(%Q(curl -u '#{username}:#{password}' -d '{"scopes": ["repo"], "notes": "TST Automation"}' https://api.github.com/authorizations)) { json_response }
+          cli.should_receive(:perform_quietly).with(%Q(curl -u '#{username}:#{password}' -d '{"scopes": ["repo"], "notes": "Octopolo"}' https://api.github.com/authorizations)) { json_response }
           subject.send(:request_token)
           expect(subject.auth_response).to eq(parsed_response)
         end
