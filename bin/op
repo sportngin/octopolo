@@ -1,7 +1,20 @@
-#!/bin/bash --login
-rvm use 1.9.3-p448
-rvm gemset use octopolo
-# TODO : usage needed
-command=$1
-shift
-$OCTOPOLO_PATH/bin/$command $@
+#!/usr/bin/env ruby
+require 'rubygems'
+require 'gli'
+require_relative '../lib/octopolo'
+
+include GLI::App
+
+program_desc 'GitHub workflow scripts.  From the Ngineers as SportNgin.'
+version Octopolo::VERSION
+
+wrap_help_text :verbatim
+
+program_long_desc """
+DOCUMENTATION
+    For documentation and help in setting up your configuration files,
+    see Octopolo's GitHub repo: https://github.com/sportngin/octopolo
+"""
+
+
+exit run(ARGV)
