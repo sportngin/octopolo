@@ -16,5 +16,6 @@ DOCUMENTATION
     see Octopolo's GitHub repo: https://github.com/sportngin/octopolo
 """
 
+commands_from File.expand_path(File.dirname(__FILE__) + '/../lib/octopolo/scripts')
 
 exit run(ARGV)
