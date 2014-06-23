@@ -1,14 +1,34 @@
-require "octopolo/scripts"
+require_relative "../scripts"
+
+arg :start, :name => 'starting_tag', :optional => true
+arg :stop,  :name => 'ending_tag',   :optional => true
+desc 'Opens up a link to compare releases'
+command 'compare-release' do |c|
+  c.action do |global_options, options, args|
+    Octopolo::Scripts::CompareRelease.execute args[0], args[1]
+  end
+end
+
 
 module Octopolo
   module Scripts
-    class CompareRelease < Clamp::Command
+    class CompareRelease
+      include Base
+      include GitWrapper
       include ConfigWrapper
       include CLIWrapper
-      include GitWrapper
 
-      parameter "[START]", "starting tag"
-      parameter "[STOP]", "ending tag"
+      attr_accessor :start
+      attr_accessor :stop
+
+      def self.execute(start, stop)
+        new(start, stop).execute
+      end
+
+      def initialize(start=nil, stop=nil)
+        @start = start
+        @stop  = stop
+      end
 
       def execute
         ask_starting_tag
