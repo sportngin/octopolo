@@ -6,7 +6,7 @@ module Octopolo
     describe PushBranch do
       let(:git) { stub(:Git, current_branch: "foo") }
 
-      subject { PushBranch.new '' }
+      subject { PushBranch.new }
 
       before do
         subject.git = git
