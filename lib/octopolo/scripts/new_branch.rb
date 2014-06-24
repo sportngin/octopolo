@@ -1,19 +1,37 @@
-require "octopolo/scripts"
-require "octopolo/git"
+require_relative "../scripts"
+require_relative "../git"
+
+arg :new_branch_name,    :name => 'new_branch_name'
+arg :source_branch_name, :name => 'source_branch_name', :optional => true
+desc 'Create a new branch for features, bug fixes, or experimentation.'
+command 'deployable' do |c|
+  c.action do |global_options, options, args|
+    Octopolo::Scripts::NewBranch.execute args[0], args[1]
+  end
+end
+
 
 module Octopolo
   module Scripts
-    class NewBranch < Clamp::Command
+    class NewBranch
       include ConfigWrapper
       include GitWrapper
 
-      banner "Create a new branch for features, bug fixes, or experimentation."
+      attr_accessor :new_branch_name
+      attr_accessor :source_branch_name
 
-      parameter "NEW_BRANCH_NAME", "name to use for the new branch"
-      parameter "[SOURCE_BRANCH_NAME]", "name of branch to branch from (default: deploy branch)"
+      def self.execute(new_branch_name=nil, source_branch_name=nil)
+        new(new_branch_name, source_branch_name).execute
+      end
+
+      def initialize(new_branch_name=nil, source_branch_name=nil)
+        @new_branch_name    = new_branch_name
+        @source_branch_name = source_branch_name || config.deploy_branch
+      end
 
       # Public: Perform the script
       def execute
+        raise ArgumentError unless new_branch_name
         git.new_branch(new_branch_name, source_branch_name)
       end
 

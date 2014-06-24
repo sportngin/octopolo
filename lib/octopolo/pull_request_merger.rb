@@ -1,7 +1,7 @@
-require "octopolo/scripts"
-require "octopolo/git"
-require "octopolo/github/pull_request"
-require "octopolo/dated_branch_creator"
+require_relative "scripts"
+require_relative "git"
+require_relative "github/pull_request"
+require_relative "dated_branch_creator"
 
 module Octopolo
   class PullRequestMerger

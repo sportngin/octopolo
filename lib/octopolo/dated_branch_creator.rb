@@ -1,5 +1,5 @@
-require "octopolo/git"
-require "octopolo/scripts/new_branch"
+require_relative "git"
+require_relative "scripts/new_branch"
 require "date"
 
 module Octopolo
