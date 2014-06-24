@@ -4,8 +4,7 @@ require "octopolo/scripts/new_qaready"
 module Octopolo
   module Scripts
     describe NewQaready do
-
-      subject { NewQaready.new '' }
+      subject { NewQaready.new }
 
       context "#execute" do
         it "creates a new QA-ready branch" do
