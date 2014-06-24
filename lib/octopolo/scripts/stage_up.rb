@@ -1,18 +1,33 @@
-require "octopolo/scripts"
-require "octopolo/pull_request_merger"
+require_relative "../scripts"
+require_relative "../pull_request_merger"
+
+arg :pull_request_id
+desc 'Merges PR into the staging branch'
+command 'stage-up' do |c|
+  c.action do |global_options, options, args|
+    Octopolo::Scripts::StageUp.execute args.first
+  end
+end
 
 module Octopolo
   module Scripts
-    class StageUp < Clamp::Command
+    class StageUp
       include CLIWrapper
 
-      parameter "PULL_REQUEST_ID", "The ID of the pull request to merge into staging" do |s|
-        Integer(s)
+      attr_accessor :pull_request_id
+
+      def self.execute(pull_request_id=nil)
+        new(pull_request_id).execute
+      end
+
+      def initialize(pull_request_id=nil)
+        @pull_request_id = pull_request_id
       end
 
       # Public: Perform the script
       def execute
-        PullRequestMerger.perform Git::STAGING_PREFIX, pull_request_id
+        self.pull_request_id ||= cli.prompt("Pull Request ID: ")
+        PullRequestMerger.perform Git::STAGING_PREFIX, Integer(pull_request_id)
       end
     end
   end
