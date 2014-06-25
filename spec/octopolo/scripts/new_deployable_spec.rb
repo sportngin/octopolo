@@ -4,7 +4,7 @@ require "octopolo/scripts/new_deployable"
 module Octopolo
   module Scripts
     describe NewDeployable do
-      subject { NewDeployable.new '' }
+      subject { NewDeployable.new }
 
       context "#execute" do
         it "delegates the work to DatedBranchCreator" do

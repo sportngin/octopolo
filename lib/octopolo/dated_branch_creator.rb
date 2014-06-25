@@ -1,5 +1,5 @@
-require "octopolo/git"
-require "octopolo/scripts/new_branch"
+require_relative "git"
+require_relative "scripts/new_branch"
 require "date"
 
 module Octopolo
@@ -58,7 +58,7 @@ module Octopolo
     def delete_old_branches
       if extra_branches.any? && cli.ask_boolean("Do you want to delete the old #{branch_type} branch(es)? (#{extra_branches.join(", ")})")
         extra_branches.each do |extra|
-          cli.perform "git delete-branch #{extra}"
+          Git.delete_branch(extra)
         end
       end
     end

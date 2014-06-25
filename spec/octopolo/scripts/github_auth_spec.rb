@@ -11,7 +11,7 @@ module Octopolo
       let(:user_defined_token) { "123456789" }
 
 
-      subject { GithubAuth.new '' }
+      subject { GithubAuth.new }
 
       before do
         subject.cli = cli

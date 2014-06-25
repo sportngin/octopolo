@@ -9,7 +9,7 @@ module Octopolo
       let(:git) { stub(:git, recent_release_tags: tags) }
       let(:tags) { %w(tag1 tag2) }
 
-      subject { CompareRelease.new '' }
+      subject { CompareRelease.new }
 
       before do
         subject.config = config
@@ -17,23 +17,28 @@ module Octopolo
         subject.git = git
       end
 
-      context "#parse" do
+      context "#intialize" do
         it "properly handles no arguments" do
-          subject.parse([])
           subject.start.should be_nil
           subject.stop.should be_nil
         end
 
-        it "accepts the first argument as the start tag" do
-          subject.parse(["foo"])
-          subject.start.should == "foo"
-          subject.stop.should be_nil
+        context "with a starting tag only" do
+          subject { CompareRelease.new "foo" }
+
+          it "sets the start tag only" do
+            subject.start.should == "foo"
+            subject.stop.should be_nil
+          end
         end
 
-        it "accepts the second argument as the end tag" do
-          subject.parse(["foo", "bar"])
-          subject.start.should == "foo"
-          subject.stop.should == "bar"
+        context "with a start and end tag" do
+          subject { CompareRelease.new "foo", "bar" }
+
+          it "sets the start and end tags" do
+            subject.start.should == "foo"
+            subject.stop.should == "bar"
+          end
         end
       end
 

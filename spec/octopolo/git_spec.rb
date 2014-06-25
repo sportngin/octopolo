@@ -410,7 +410,8 @@ module Octopolo
       let(:branch_name) { "foo" }
 
       it "leverages git-extra's delete-branch command" do
-        Git.should_receive(:perform).with("delete-branch #{branch_name}")
+        Git.should_receive(:perform).with("push origin :#{branch_name}")
+        Git.should_receive(:perform).with("branch -D #{branch_name}")
         Git.delete_branch branch_name
       end
     end

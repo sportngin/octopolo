@@ -1,10 +1,15 @@
 require "json"
-require "octopolo/github"
-require "octopolo/scripts"
+require_relative "../github"
+require_relative "../scripts"
+
+desc 'Generate a GitHub auth token for octopolo commands to use.'
+command 'github-auth' do |c|
+  c.action { Octopolo::Scripts::GithubAuth.execute }
+end
 
 module Octopolo
   module Scripts
-    class GithubAuth < Clamp::Command
+    class GithubAuth
       include CLIWrapper
       include UserConfigWrapper
 
@@ -12,10 +17,6 @@ module Octopolo
       attr_accessor :password
       attr_accessor :auth_response
       attr_accessor :user_defined_token
-
-      banner %Q(
-        Generate a GitHub auth token for Automation commands to use.
-      )
 
       def execute
         case ask_auth_method

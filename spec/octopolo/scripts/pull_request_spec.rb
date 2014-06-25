@@ -17,23 +17,23 @@ module Octopolo
       let(:pull_request_url) { "http://github.com/tstmedia/octopolo/pull/0" }
       let(:pull_request) { stub(:pull_request) }
 
-      subject { PullRequest.new '' }
+      subject { PullRequest.new }
 
       before do
-        subject.cli = cli
-        subject.config = config
-        subject.git = git
+        PullRequest.any_instance.stub({
+          :cli => cli,
+          :config => config,
+          :git => git
+        })
       end
 
-      context "#parse" do
+      context "#new" do
         it "defaults the destination branch to the deploy branch" do
-          subject.parse([])
           expect(subject.destination_branch).to eq(config.deploy_branch)
         end
 
         it "accepts an alternate destination branch" do
-          subject.parse(%w(--destination foo))
-          expect(subject.destination_branch).to eq("foo")
+          expect(PullRequest.new('foo').destination_branch).to eq("foo")
         end
       end
 

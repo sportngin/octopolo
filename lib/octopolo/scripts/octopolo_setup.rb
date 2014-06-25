@@ -1,14 +1,16 @@
-require "octopolo/github"
-require "octopolo/scripts"
+require_relative "../github"
+require_relative "../scripts"
+
+desc 'Basic setup for octoplo'
+command 'setup' do |c|
+  c.action { Octopolo::Scripts::OctopoloSetup.invoke }
+end
 
 module Octopolo
   module Scripts
     class OctopoloSetup
       include Base
       extend UserConfigWrapper
-
-      REQUIRED_HUB_VERSION = "1.10.1"
-      HUB_VERSION_COMMAND = "hub --version"
 
       def self.invoke(*args)
         verify_git_extras_setup

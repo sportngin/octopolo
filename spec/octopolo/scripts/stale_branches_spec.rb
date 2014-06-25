@@ -9,22 +9,22 @@ module Octopolo
       let(:cli) { stub(:cli) }
       let(:git) { stub(:Git)}
 
-      subject { StaleBranches.new '' }
+      subject { StaleBranches.new }
 
       before do
-        subject.cli = cli
-        subject.config = config
-        subject.git = git
+        StaleBranches.any_instance.stub({
+          :cli => cli,
+          :config => config,
+          :git => git
+        })
       end
 
-      context "#parse" do
-        it "accepts a --delete flag to trigger deletes" do
-          subject.parse(["--delete"])
-          expect(subject.delete?).to be_true
+      context "#new" do
+        it "accepts a delete attribute to trigger deletes" do
+          expect(StaleBranches.new(true).delete?).to be_true
         end
 
         it "defaults to not delete" do
-          subject.parse([])
           expect(subject.delete?).to be_false
         end
       end

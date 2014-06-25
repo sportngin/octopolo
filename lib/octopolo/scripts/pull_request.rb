@@ -1,27 +1,41 @@
-require "octopolo/scripts"
-require "octopolo/github/pull_request"
-require "octopolo/pivotal/story_commenter"
-require "octopolo/jira/story_commenter"
+require_relative "../scripts"
+require_relative "../github/pull_request"
+require_relative "../pivotal/story_commenter"
+require_relative "../jira/story_commenter"
+
+desc "Create a pull request from the current branch to the application's designated deploy branch."
+command 'pull-request' do |c|
+  config = Octopolo::Config.parse
+
+  c.desc "Branch to create the pull request against"
+  c.flag [:d, :dest, :destination], :arg_name => "destination_branch", :default_value => config.deploy_branch
+
+  c.action do |global_options, options, args|
+    options = global_options.merge(options)
+    Octopolo::Scripts::PullRequest.execute options[:destination_branch]
+  end
+end
 
 module Octopolo
   module Scripts
-    class PullRequest < Clamp::Command
+    class PullRequest
       include CLIWrapper
       include ConfigWrapper
       include GitWrapper
-
-      option ["--destination", "--dest", "-d"], "[DESTINATION_BRANCH]",
-        "Branch to create the pull request against (default: deploy branch)",
-        attribute_name: "destination_branch"
-
-      banner %Q(
-        Create a pull request from the current branch to the application's designated deploy branch.
-      )
 
       attr_accessor :title
       attr_accessor :pull_request
       attr_accessor :pivotal_ids
       attr_accessor :jira_ids
+      attr_accessor :destination_branch
+
+      def self.execute(destination_branch=nil)
+        new(destination_branch).execute
+      end
+
+      def initialize(destination_branch=nil)
+        @destination_branch = destination_branch || default_destination_branch
+      end
 
       def default_destination_branch
         config.deploy_branch
