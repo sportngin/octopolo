@@ -110,14 +110,14 @@ module Octopolo
       def update_pivotal
         pivotal_ids.each do |story_id|
           Pivotal::StoryCommenter.new(story_id, pull_request.url).perform
-        end
+        end if pivotal_ids
       end
       private :update_pivotal
 
       def update_jira
         jira_ids.each do |story_id|
           Jira::StoryCommenter.new(story_id, pull_request.url).perform
-        end
+        end if jira_ids
       end
       private :update_jira
 
