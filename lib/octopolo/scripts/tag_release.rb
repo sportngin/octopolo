@@ -1,30 +1,52 @@
 require "date" # necessary to get the Date.today convenience method
-require "octopolo/scripts"
-require "octopolo/changelog"
+require_relative "../scripts"
+require_relative "../changelog"
+
+arg :suffix, :desc => "Suffix to apply to to the dated tag"
+
+desc "Create and push a timestamped tag with an optional suffix"
+command 'tag-release' do |c|
+  c.desc "Create tag even if not on deploy branch"
+  c.switch :force, :negatable => false
+
+  c.action do |global_options, options, args|
+    options = global_options.merge(options)
+    Octopolo::Scripts::TagRelease.execute args.first, options[:force]
+  end
+end
 
 module Octopolo
   module Scripts
-    class TagRelease < Clamp::Command
+    class TagRelease
       include CLIWrapper
       include ConfigWrapper
       include GitWrapper
 
+      attr_accessor :suffix
+      attr_accessor :force
+
       TIMESTAMP_FORMAT = "%Y.%m.%d.%H.%M"
 
-      banner %Q(
-        Create and push a timestamped tag with an optional suffix
-      )
+      def self.execute(suffix=nil, force=false)
+        new(suffix, force).execute
+      end
 
-      parameter "[SUFFIX]", "Suffix to apply to to the dated tag"
-      option "--force", :flag, "Create tag even if not on deploy branch"
+      def initialize(suffix=nil, force=false)
+        @suffix = suffix
+        @force = force
+      end
 
       def execute
         if should_create_branch?
           update_changelog
           tag_release
         else
-          raise Clamp::UsageError.new("Must perform this script from the deploy branch (#{config.deploy_branch})", self)
+          raise Octopolo::WrongBranch.new("Must perform this script from the deploy branch (#{config.deploy_branch})")
         end
+      end
+
+      def force?
+        force
       end
 
       # Public: Whether to create a new branch
