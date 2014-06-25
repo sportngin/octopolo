@@ -12,6 +12,8 @@ module Octopolo
       let(:title) { "title" }
       let(:body) { "body" }
       let(:pivotal_ids) { %w(123 456) }
+      let(:jira_ids) { %w(123 456) }
+      let(:jira_url) { "https://example-jira.com" }
 
       context ".perform repo_name, options" do
         let(:creator) { stub }
@@ -141,10 +143,14 @@ module Octopolo
         before do
           creator.stub({
             pivotal_ids: pivotal_ids,
+            jira_ids: jira_ids,
+            jira_url: jira_url,
           })
         end
         it "includes the necessary keys to render the template" do
           creator.body_locals[:pivotal_ids].should == creator.pivotal_ids
+          creator.body_locals[:jira_ids].should == creator.jira_ids
+          creator.body_locals[:jira_url].should == creator.jira_url
         end
       end
 

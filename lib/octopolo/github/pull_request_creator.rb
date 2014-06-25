@@ -115,6 +115,7 @@ module Octopolo
         {
           pivotal_ids: pivotal_ids,
           jira_ids: jira_ids,
+          jira_url: jira_url,
         }
       end
 
