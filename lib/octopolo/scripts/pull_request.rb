@@ -1,6 +1,7 @@
 require "octopolo/scripts"
 require "octopolo/github/pull_request"
 require "octopolo/pivotal/story_commenter"
+require "octopolo/jira/story_commenter"
 
 module Octopolo
   module Scripts
@@ -20,6 +21,7 @@ module Octopolo
       attr_accessor :title
       attr_accessor :pull_request
       attr_accessor :pivotal_ids
+      attr_accessor :jira_ids
 
       def default_destination_branch
         config.deploy_branch
@@ -30,6 +32,7 @@ module Octopolo
           ask_questionaire
           create_pull_request
           update_pivotal
+          update_jira
           open_pull_request
         end
       end
@@ -39,7 +42,8 @@ module Octopolo
         alert_reserved_and_exit if git.reserved_branch?
         announce
         ask_title
-        ask_pivotal_ids
+        ask_pivotal_ids if config.use_pivotal_tracker
+        ask_jira_ids if config.use_jira
       end
       private :ask_questionaire
 
@@ -68,6 +72,12 @@ module Octopolo
       end
       private :ask_pivotal_ids
 
+      # Private: Ask for a Pivotal Tracker story IDs
+      def ask_jira_ids
+        self.jira_ids = cli.prompt("Jira story ID(s):").split(/[\s,]+/)
+      end
+      private :ask_pivotal_ids
+
       # Private: Create the pull request
       #
       # Returns a GitHub::PullRequest object
@@ -85,6 +95,7 @@ module Octopolo
           destination_branch: destination_branch,
           source_branch: git.current_branch,
           pivotal_ids: pivotal_ids,
+          jira_ids: jira_ids,
         }
       end
       private :pull_request_attributes
@@ -102,6 +113,13 @@ module Octopolo
         end
       end
       private :update_pivotal
+
+      def update_jira
+        jira_ids.each do |story_id|
+          Jira::StoryCommenter.new(story_id, pull_request.url).perform
+        end
+      end
+      private :update_jira
 
     end
   end
