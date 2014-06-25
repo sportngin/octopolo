@@ -200,27 +200,6 @@ module Octopolo
           end
         end
 
-        context "#issue_urls" do
-          let(:helpspot) { "http://thedesk.tstmedia.com/admin.php?pg=request&reqid=44690" }
-          let(:staging) { "http://www.ngin.com.stage.ngin-staging.com/api/volleyball/stats/summaries?id=68382&gender=girls&tst_test=1&date=8/24/2012" }
-          let(:other) { "http://example.com/" }
-          let(:urls) { [helpspot, staging, other] }
-
-          before do
-            pull.stub(external_urls: urls)
-          end
-
-          it "includes only certain URLs from the pull request" do
-            urls = pull.issue_urls
-
-            urls.should_not be_empty
-            urls.size.should == 1
-            urls.should include helpspot
-            urls.should_not include staging
-            urls.should_not include other
-          end
-        end
-
         context "#body" do
           let(:octo) { stub(body: "asdf") }
 
@@ -248,40 +227,6 @@ module Octopolo
             octo.stub(closed_at: "2012-09-18T14:00:01Z")
             pull.week.should == Week.parse(octo.closed_at)
           end
-        end
-      end
-
-      context "#bug?" do
-        let(:pull) { PullRequest.new repo_name, pr_number }
-
-        before do
-          pull.stub({
-            issue_urls: [],
-            title: "something boring",
-          })
-        end
-
-        it "is true if it has issue URLs" do
-          pull.stub(issue_urls: ["http://example.com/123"])
-          pull.should be_bug
-        end
-
-        it "is true if the title has 'bug' in it" do
-          pull.stub(title: "Bug: something")
-          pull.should be_bug
-          pull.stub(title: "Fixes a bug in thing")
-          pull.should be_bug
-        end
-
-        it "is true if the title has 'fix' in it" do
-          pull.stub(title: "This PR fixes this thing")
-          pull.should be_bug
-          pull.stub(title: "Fix something that went wrong")
-          pull.should be_bug
-        end
-
-        it "is false otherwise" do
-          pull.should_not be_bug
         end
       end
 
@@ -339,20 +284,6 @@ module Octopolo
           PullRequestCreator.should_receive(:perform).with(repo_name, options) { creator }
           PullRequest.should_receive(:new).with(repo_name, number, pull_request_data) { pull_request }
           PullRequest.create(repo_name, options).should == pull_request
-        end
-      end
-
-      context "#release?" do
-        let(:pull) { PullRequest.new repo_name, pr_number }
-
-        it "is true if the title begins with 'Release'" do
-          pull.stub(:title) { "Release: Something something" }
-          pull.should be_release
-        end
-
-        it "is false otherwise" do
-          pull.stub(:title) { "Fixing some thing" }
-          pull.should_not be_release
         end
       end
     end
