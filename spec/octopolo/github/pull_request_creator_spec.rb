@@ -109,34 +109,11 @@ module Octopolo
         end
       end
 
-      context "#release?" do
-        it "is true if the option is set to true" do
-          creator.options[:release] = true
-          creator.should be_release
-        end
-
-        it "is false if the option is set to false" do
-          creator.options[:release] = false
-          creator.should_not be_release
-        end
-
-        it "is nil if the option isn't set" do
-          creator.options[:release] = nil
-          creator.should_not be_release
-        end
-      end
-
       context "#title" do
         context "having the option set" do
           before { creator.options[:title] = title }
 
-          it "prefixes 'Release: ' for a release pull request" do
-            creator.stub(:release?) { true }
-            creator.title.should == "Release: #{title}"
-          end
-
-          it "uses the raw value otherwise" do
-            creator.stub(:release?) { false }
+          it "fetches from the options" do
             creator.title.should == title
           end
         end

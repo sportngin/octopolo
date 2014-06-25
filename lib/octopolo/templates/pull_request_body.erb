@@ -15,7 +15,9 @@ URLs
 <% pivotal_ids.each do |pivotal_id| -%>
 * [pivotal tracker story <%= pivotal_id %>](https://www.pivotaltracker.com/story/show/<%= pivotal_id %>)
 <% end -%>
-* Add any additional URLs (like Helpspot tickets)
+<% jira_ids.each do |jira_id| -%>
+* [Jira issue <%= jira_id %>](https://<%= jira_url %>/browse/<%= jira_id %>)
+<% end -%>
 
 QA Plan
 -------

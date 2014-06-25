@@ -3,6 +3,7 @@ require_relative "../renderer"
 module Octopolo
   module GitHub
     class PullRequestCreator
+      include ConfigWrapper
       # for instantiating the pull request creator
       attr_accessor :repo_name
       attr_accessor :options
@@ -16,7 +17,6 @@ module Octopolo
       # options - Hash of pull request information
       #   title: Title of the pull request
       #   description: Brief description of the pull request
-      #   release: Boolean indicating if the pull request is for Release
       #   destination_branch: Which branch to merge into
       #   source_branch: Which branch to be merged
       def initialize repo_name, options
@@ -30,7 +30,6 @@ module Octopolo
       # options - Hash of pull request information
       #   title: Title of the pull request
       #   description: Brief description of the pull request
-      #   release: Boolean indicating if the pull request is for Release
       #   destination_branch: Which branch to merge into
       #   source_branch: Which branch to be merged
       #
@@ -82,14 +81,7 @@ module Octopolo
       #
       # Returns a String with the title
       def title
-        raw_title = options[:title]
-        raise MissingAttribute if raw_title.nil?
-
-        if release?
-          "Release: #{raw_title}"
-        else
-          raw_title
-        end
+        options[:title] || raise(MissingAttribute)
       end
 
       # Public: A brief description of the pull request
@@ -106,11 +98,18 @@ module Octopolo
         options[:pivotal_ids] || []
       end
 
-      # Public: Whether the pull request is for a Release
+      # Public: Jira Issue IDs associated with the pull request
       #
-      # Returns a Boolean
-      def release?
-        options[:release]
+      # Returns an Array of Strings
+      def jira_ids
+        options[:jira_ids] || []
+      end
+
+      # Public: Jira Url associated with the pull request
+      #
+      # Returns Jira Url
+      def jira_url
+        config.jira_url
       end
 
       # Public: The body (primary copy) of the pull request
@@ -125,6 +124,7 @@ module Octopolo
         {
           description: description,
           pivotal_ids: pivotal_ids,
+          jira_ids: jira_ids,
         }
       end
 
