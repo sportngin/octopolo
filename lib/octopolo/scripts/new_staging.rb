@@ -6,7 +6,7 @@ long_desc "Create a new staging branch with today's date and remove the others.
 
 Useful when we have changes in the current staging branch that we wish to remove."
 command 'new-staging' do |c|
-  c.action { Octopolo::Scripts::NewQaready.new.execute }
+  c.action { Octopolo::Scripts::NewStaging.new.execute }
 end
 
 module Octopolo
