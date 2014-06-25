@@ -18,7 +18,7 @@ Gem::Specification.new do |gem|
 
   gem.add_dependency 'rake'
   gem.add_dependency 'hashie', '~> 1.2'
-  gem.add_dependency 'octokit', '~> 1.23'
+  gem.add_dependency 'octokit', '~> 2.1.0'
   gem.add_dependency 'highline', '~> 1.6'
   gem.add_dependency 'clamp', '>= 0.6', "< 1.0"
   gem.add_dependency 'pivotal-tracker', '~> 0.5'
