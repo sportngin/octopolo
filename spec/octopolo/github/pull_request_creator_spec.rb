@@ -11,7 +11,6 @@ module Octopolo
       let(:source_branch) { "cool-feature" }
       let(:title) { "title" }
       let(:body) { "body" }
-      let(:description) { "description" }
       let(:pivotal_ids) { %w(123 456) }
 
       context ".perform repo_name, options" do
@@ -109,33 +108,11 @@ module Octopolo
         end
       end
 
-      context "#release?" do
-        it "is true if the option is set to true" do
-          creator.options[:release] = true
-          creator.should be_release
-        end
-
-        it "is false if the option is set to false" do
-          creator.options[:release] = false
-          creator.should_not be_release
-        end
-
-        it "is nil if the option isn't set" do
-          creator.options[:release] = nil
-          creator.should_not be_release
-        end
-      end
-
       context "#title" do
         context "having the option set" do
           before { creator.options[:title] = title }
 
-          it "prefixes 'Release: ' for a release pull request" do
-            creator.stub(:release?) { true }
-            creator.title.should == "Release: #{title}"
-          end
-
-          it "uses the raw value otherwise" do
+          it "uses the raw value" do
             creator.stub(:release?) { false }
             creator.title.should == title
           end
@@ -144,18 +121,6 @@ module Octopolo
         it "raises an exception if it's missing" do
           creator.options[:title] = nil
           expect { creator.title }.to raise_error(PullRequestCreator::MissingAttribute)
-        end
-      end
-
-      context "#description" do
-        it "fetches from the options" do
-          creator.options[:description] = description
-          creator.description.should == description
-        end
-
-        it "raises an exception if it's missing" do
-          creator.options[:description] = nil
-          expect { creator.description }.to raise_error(PullRequestCreator::MissingAttribute)
         end
       end
 
@@ -172,17 +137,14 @@ module Octopolo
       end
 
       context "#body_locals" do
-        let(:description) { "description" }
         let(:urls) { %w(link1 link2) }
 
         before do
           creator.stub({
-            description: description,
             pivotal_ids: pivotal_ids,
           })
         end
         it "includes the necessary keys to render the template" do
-          creator.body_locals[:description].should == creator.description
           creator.body_locals[:pivotal_ids].should == creator.pivotal_ids
         end
       end

@@ -10,21 +10,22 @@ module Octopolo
       let(:pull_request_id) { 123 }
       let(:pull_request) { stub(:pull_request, url: "http://example.com") }
 
-      subject { Signoff.new '' }
-
+      subject { Signoff.new }
       before do
-        subject.cli = cli
-        subject.config = config
+        cli.stub(:prompt)
+        Signoff.any_instance.stub(:cli => cli, :config => config)
       end
 
-      context "#parse" do
-        it "remembers the pull request ID given to it" do
-          subject.parse([pull_request_id.to_s])
-          expect(subject.pull_request_id).to eq pull_request_id
+      context "#new" do
+        it "sets the pull_request_id if passed in from args" do
+          expect(Signoff.new(pull_request_id.to_s).pull_request_id).to eq pull_request_id.to_s
         end
 
-        it "fails if given no pull request ID" do
-          expect { subject.parse([]) }.to raise_error(Clamp::UsageError)
+        it "prompts if no pull_request_id is given" do
+          cli.should_receive(:prompt)
+             .with("Pull Request ID: ")
+             .and_return("42")
+          expect(Signoff.new.pull_request_id).to eq "42"
         end
       end
 
@@ -124,6 +125,11 @@ module Octopolo
           GitHub::PullRequest.should_not_receive(:new)
           subject.send(:pull_request=, pull_request)
           expect(subject.send(:pull_request)).to eq pull_request
+        end
+
+        it "fails if the pull_request_id is not an int" do
+          subject.pull_request_id = 'foo'
+          expect { subject.send(:pull_request) }.to raise_error ArgumentError
         end
       end
     end

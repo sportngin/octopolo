@@ -1,22 +1,20 @@
 require_relative "../scripts"
 require_relative "../pivotal"
 
+desc 'Generate a Pivotal Tracker auth token for Octopolo commands to use.'
+command 'pivotal-auth' do |c|
+  c.action { Octopolo::Scripts::PivotalAuth.execute }
+end
+
 module Octopolo
   module Scripts
-    class PivotalAuth < Clamp::Command
+    class PivotalAuth
       include UserConfigWrapper
       include CLIWrapper
 
       attr_accessor :email
       attr_accessor :password
       attr_accessor :token
-
-      # review https://github.com/mdub/clamp#declaring-options for how to
-      # declare options, flags, and parameters to the script
-
-      banner %Q(
-        Generate a Pivotal Tracker auth token for Octopolo commands to use.
-      )
 
       def execute
         ask_credentials
