@@ -1,16 +1,34 @@
-require "octopolo/git"
-require "octopolo/scripts"
+require_relative "../git"
+require_relative "../scripts"
+
+desc "View and delete stale branches"
+command 'stale-branches' do |c|
+  c.desc "Delete the stale branches (default: false)"
+  c.switch [:D, :delete], :negatable => false
+
+  c.action do |global_options, options, args|
+    options = global_options.merge(options)
+    Octopolo::Scripts::AcceptPull.execute options[:delete]
+  end
+end
+
 
 module Octopolo
   module Scripts
-    class StaleBranches < Clamp::Command
+    class StaleBranches
       include CLIWrapper
       include ConfigWrapper
       include GitWrapper
 
+      attr_accessor :delete
+
       DEFAULT_BRANCHES = %W(HEAD master staging production)
 
-      option "--delete", :flag, "Delete the stale branches (default: false)"
+      #option "--delete", :flag, "Delete the stale branches (default: false)"
+
+      def initialize(delete=false)
+        @delete = delete
+      end
 
       def execute
         if delete?
@@ -18,6 +36,10 @@ module Octopolo
         else
           display_stale_branches
         end
+      end
+
+      def delete?
+        delete
       end
 
       # Private: Display the stale branches in the project
