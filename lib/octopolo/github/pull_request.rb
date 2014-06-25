@@ -12,12 +12,6 @@ module Octopolo
       attr_accessor :repo_name
       attr_accessor :number
 
-      # used to filter URLs for issues
-      ISSUE_URLS = [
-        /thedesk\.sportngin\.com/,
-        /thedesk\.tstmedia\.com/,
-      ]
-
       def initialize repo_name, number, pull_request_data = nil
         raise MissingParameter if repo_name.nil? or number.nil?
 
@@ -102,12 +96,6 @@ module Octopolo
         URI.extract body, %w(http https)
       end
 
-      def issue_urls
-        external_urls.select do |url|
-          ISSUE_URLS.any? { |regex| url =~ regex }
-        end
-      end
-
       def human_app_name
         repo = repo_name.split("/").last
         repo.split("_").map(&:capitalize).join(" ")
@@ -119,15 +107,6 @@ module Octopolo
 
       def comments
         @comments ||= GitHub.issue_comments(repo_name, number)
-      end
-
-      def bug?
-        issue_urls.any? || title =~ /bug/i || title =~ /fix/i
-      end
-
-      # NOTE I don't know that I like duplicating some of the logic in PullRequestCreator. Maybe extract to a constant.
-      def release?
-        title.start_with? "Release: "
       end
 
       # Public: Add a comment to the pull request
