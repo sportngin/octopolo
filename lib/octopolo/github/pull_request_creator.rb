@@ -16,7 +16,6 @@ module Octopolo
       # repo_name - Full name ("account/repo") of the repo in question
       # options - Hash of pull request information
       #   title: Title of the pull request
-      #   description: Brief description of the pull request
       #   destination_branch: Which branch to merge into
       #   source_branch: Which branch to be merged
       def initialize repo_name, options
@@ -29,7 +28,6 @@ module Octopolo
       # repo_name - Full name ("account/repo") of the repo in question
       # options - Hash of pull request information
       #   title: Title of the pull request
-      #   description: Brief description of the pull request
       #   destination_branch: Which branch to merge into
       #   source_branch: Which branch to be merged
       #
@@ -84,13 +82,6 @@ module Octopolo
         options[:title] || raise(MissingAttribute)
       end
 
-      # Public: A brief description of the pull request
-      #
-      # Returns a String with the description
-      def description
-        options[:description] || raise(MissingAttribute)
-      end
-
       # Public: The Pivotal Tracker story IDs associated with the pull request
       #
       # Returns an Array of Strings
@@ -122,7 +113,6 @@ module Octopolo
       # Public: The local variables to pass into the template
       def body_locals
         {
-          description: description,
           pivotal_ids: pivotal_ids,
           jira_ids: jira_ids,
         }

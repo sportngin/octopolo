@@ -11,7 +11,6 @@ module Octopolo
       let(:source_branch) { "cool-feature" }
       let(:title) { "title" }
       let(:body) { "body" }
-      let(:description) { "description" }
       let(:pivotal_ids) { %w(123 456) }
 
       context ".perform repo_name, options" do
@@ -124,18 +123,6 @@ module Octopolo
         end
       end
 
-      context "#description" do
-        it "fetches from the options" do
-          creator.options[:description] = description
-          creator.description.should == description
-        end
-
-        it "raises an exception if it's missing" do
-          creator.options[:description] = nil
-          expect { creator.description }.to raise_error(PullRequestCreator::MissingAttribute)
-        end
-      end
-
       context "#pivotal_ids" do
         it "fetches from the options" do
           creator.options[:pivotal_ids] = pivotal_ids
@@ -149,17 +136,14 @@ module Octopolo
       end
 
       context "#body_locals" do
-        let(:description) { "description" }
         let(:urls) { %w(link1 link2) }
 
         before do
           creator.stub({
-            description: description,
             pivotal_ids: pivotal_ids,
           })
         end
         it "includes the necessary keys to render the template" do
-          creator.body_locals[:description].should == creator.description
           creator.body_locals[:pivotal_ids].should == creator.pivotal_ids
         end
       end
