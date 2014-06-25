@@ -213,7 +213,8 @@ module Octopolo
     #
     # branch_name - The name of the branch to delete
     def self.delete_branch(branch_name)
-      perform "delete-branch #{branch_name}"
+      perform "push origin :#{branch_name}"
+      perform "branch -D #{branch_name}"
     end
 
     # Public: Branches which have been merged into the given branch
