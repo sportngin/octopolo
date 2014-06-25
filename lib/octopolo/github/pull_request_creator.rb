@@ -15,8 +15,6 @@ module Octopolo
       # repo_name - Full name ("account/repo") of the repo in question
       # options - Hash of pull request information
       #   title: Title of the pull request
-      #   description: Brief description of the pull request
-      #   release: Boolean indicating if the pull request is for Release
       #   destination_branch: Which branch to merge into
       #   source_branch: Which branch to be merged
       def initialize repo_name, options
@@ -29,8 +27,6 @@ module Octopolo
       # repo_name - Full name ("account/repo") of the repo in question
       # options - Hash of pull request information
       #   title: Title of the pull request
-      #   description: Brief description of the pull request
-      #   release: Boolean indicating if the pull request is for Release
       #   destination_branch: Which branch to merge into
       #   source_branch: Which branch to be merged
       #
@@ -85,18 +81,7 @@ module Octopolo
         raw_title = options[:title]
         raise MissingAttribute if raw_title.nil?
 
-        if release?
-          "Release: #{raw_title}"
-        else
-          raw_title
-        end
-      end
-
-      # Public: A brief description of the pull request
-      #
-      # Returns a String with the description
-      def description
-        options[:description] || raise(MissingAttribute)
+        raw_title
       end
 
       # Public: The Pivotal Tracker story IDs associated with the pull request
@@ -104,13 +89,6 @@ module Octopolo
       # Returns an Array of Strings
       def pivotal_ids
         options[:pivotal_ids] || []
-      end
-
-      # Public: Whether the pull request is for a Release
-      #
-      # Returns a Boolean
-      def release?
-        options[:release]
       end
 
       # Public: The body (primary copy) of the pull request
@@ -123,7 +101,6 @@ module Octopolo
       # Public: The local variables to pass into the template
       def body_locals
         {
-          description: description,
           pivotal_ids: pivotal_ids,
         }
       end
