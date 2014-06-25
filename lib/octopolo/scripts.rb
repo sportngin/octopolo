@@ -1,4 +1,3 @@
-require "clamp"
 require_relative "git"
 
 module Octopolo
@@ -17,3 +16,8 @@ module Octopolo
   end
 end
 
+# Mostly used for tests
+unless defined?(GLI)
+  require 'gli'
+  include GLI::App
+end

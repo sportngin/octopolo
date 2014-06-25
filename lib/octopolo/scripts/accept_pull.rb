@@ -1,19 +1,34 @@
-require "octopolo/git"
-require "octopolo/github"
-require "octopolo/github/pull_request"
-require "octopolo/scripts"
+require_relative "../git"
+require_relative "../github"
+require_relative "../github/pull_request"
+require_relative "../scripts"
+
+arg :pull_request_id
+desc 'Accept pull requests. Merges the given pull request into master and updates the changelog.'
+command 'accept-pull' do |c|
+  c.action do |global_options, options, args|
+    Octopolo::Scripts::AcceptPull.execute args.first
+  end
+end
+
 
 module Octopolo
   module Scripts
-    class AcceptPull < Clamp::Command
+    class AcceptPull
+      include Base
       include GitWrapper
       include ConfigWrapper
       include CLIWrapper
 
-      banner "Accept pull requests. Merges the given pull request into master and updates the changelog."
+      attr_accessor :pull_request_id
 
-      parameter "PULL_REQUEST_ID", "The ID of the pull request to accept" do |pr_id|
-        Integer(pr_id)
+      def self.execute(pull_request_id)
+        pull_request_id ||= Integer(cli.prompt "Pull Request ID: ")
+        new(pull_request_id).execute
+      end
+
+      def initialize(pull_request_id)
+        @pull_request_id = pull_request_id
       end
 
       # Public: Perform the script

@@ -12,7 +12,7 @@ module Octopolo
       let(:client) { stub(:pivotal_client) }
       let(:token) { "deadbeef" }
 
-      subject { PivotalAuth.new '' }
+      subject { PivotalAuth.new }
 
       before do
         subject.cli = cli

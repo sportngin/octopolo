@@ -169,19 +169,23 @@ module Octopolo
       end
     end
 
+    def self.latest_branch_for(branch_prefix)
+      branches_for(branch_prefix).last || raise(NoBranchOfType, "No #{branch_prefix} branch")
+    end
+
     # Public: The name of the current deployable branch
     def self.deployable_branch
-      branches_for(DEPLOYABLE_PREFIX).last || raise(NoBranchOfType, "No #{DEPLOYABLE_PREFIX} branch")
+      latest_branch_for(DEPLOYABLE_PREFIX)
     end
 
     # Public: The name of the current staging branch
     def self.staging_branch
-      branches_for(STAGING_PREFIX).last || raise(NoBranchOfType, "No #{STAGING_PREFIX} branch")
+      latest_branch_for(STAGING_PREFIX)
     end
 
     # Public: The name of the current QA-ready branch
     def self.qaready_branch
-      branches_for(QAREADY_PREFIX).last || raise(NoBranchOfType, "No #{QAREADY_PREFIX} branch")
+      latest_branch_for(QAREADY_PREFIX)
     end
 
     # Public: The list of releases which have been tagged
@@ -213,7 +217,8 @@ module Octopolo
     #
     # branch_name - The name of the branch to delete
     def self.delete_branch(branch_name)
-      perform "delete-branch #{branch_name}"
+      perform "push origin :#{branch_name}"
+      perform "branch -D #{branch_name}"
     end
 
     # Public: Branches which have been merged into the given branch

@@ -12,12 +12,12 @@ module Octopolo
       end
 
       it "logs in with the configured authentication values" do
-        Octokit::Client.should_receive(:new).with(login: user_config.github_user, oauth_token: user_config.github_token) { octokit_client }
+        Octokit::Client.should_receive(:new).with(login: user_config.github_user, access_token: user_config.github_token) { octokit_client }
         GitHub.client.should == octokit_client
       end
 
       it "uses additional given parameters" do
-        Octokit::Client.should_receive(:new).with(login: user_config.github_user, oauth_token: user_config.github_token, auto_traversal: true) { octokit_client }
+        Octokit::Client.should_receive(:new).with(login: user_config.github_user, access_token: user_config.github_token, auto_traversal: true) { octokit_client }
         GitHub.client(auto_traversal: true).should == octokit_client
       end
 

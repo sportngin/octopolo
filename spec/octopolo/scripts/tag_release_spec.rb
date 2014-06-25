@@ -8,28 +8,28 @@ module Octopolo
       let(:cli) { stub(:cli) }
       let(:git) { stub(:git) }
       let(:suffix) { "foo" }
-      subject { TagRelease.new '' }
+      subject { TagRelease.new }
 
       before do
-        subject.cli = cli
-        subject.config = config
-        subject.git = git
-        subject.stub(:update_changelog)
+        TagRelease.any_instance.stub({
+          :cli => cli,
+          :config => config,
+          :git => git
+        })
+        TagRelease.any_instance.stub(:update_changelog)
       end
 
-      context "#parse" do
+      context "#new" do
         it "accepts the given parameter as the tag suffix" do
-          subject.parse([suffix])
-          expect(subject.suffix).to eq(suffix)
+          expect(TagRelease.new(suffix).suffix).to eq(suffix)
         end
 
         it "accepts a flag to force creating the new tag even if not on deploy branch" do
-          subject.parse(["--force"])
-          expect(subject.force?).to be_true
+
+          expect(TagRelease.new(nil, true).force?).to be_true
         end
 
         it "defaults to no suffix and not to force" do
-          subject.parse([])
           expect(subject.suffix).to be_nil
           expect(subject.force?).to be_false
         end
@@ -45,7 +45,7 @@ module Octopolo
         it "does nothing if not on the release branch" do
           subject.stub(:should_create_branch?) { false }
           subject.should_not_receive(:tag_release)
-          expect { subject.execute }.to raise_error(Clamp::UsageError)
+          expect { subject.execute }.to raise_error(Octopolo::WrongBranch)
         end
       end
 

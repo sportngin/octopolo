@@ -9,22 +9,22 @@ module Octopolo
       let(:cli) { stub(:CLI) }
       let(:otherbranch) { "otherbranch" }
 
-      subject { SyncBranch.new '' }
+      subject { SyncBranch.new }
 
       before do
-        subject.config = config
-        subject.git = git
-        subject.cli = cli
+        SyncBranch.any_instance.stub({
+          :config => config,
+          :git => git,
+          :cli => cli
+        })
       end
 
       context "#parse" do
         it "accepts the given branch name as the branch to merge" do
-          subject.parse([otherbranch])
-          expect(subject.branch).to eq(otherbranch)
+          expect(SyncBranch.new(otherbranch).branch).to eq(otherbranch)
         end
 
         it "defaults to the deploy branch" do
-          subject.parse([])
           expect(subject.branch).to eq(config.deploy_branch)
         end
       end

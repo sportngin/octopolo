@@ -102,7 +102,7 @@ module Octopolo
         it "deletes these branches if user opts to" do
           cli.should_receive(:ask_boolean).with(message) { true }
           extras.each do |extra|
-            cli.should_receive(:perform).with("git delete-branch #{extra}")
+            Git.should_receive(:delete_branch).with(extra)
           end
           subject.delete_old_branches
         end

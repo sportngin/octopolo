@@ -1,12 +1,23 @@
-require "octopolo/scripts"
-require "octopolo/github/pull_request"
+require_relative "../scripts"
+require_relative "../github/pull_request"
+
+arg :pull_request_id
+
+desc 'Provide standardized signoff message to a pull request.'
+long_desc "pull_request_id - The ID of the pull request to sign off on"
+command 'signoff' do |c|
+  c.action do |global_options, options, args|
+    Octopolo::Scripts::Signoff.execute args.first
+  end
+end
 
 module Octopolo
   module Scripts
-    class Signoff < Clamp::Command
+    class Signoff
       include ConfigWrapper
       include CLIWrapper
 
+      attr_accessor :pull_request_id
       attr_accessor :pull_request
       attr_accessor :signoff_type
 
@@ -16,13 +27,14 @@ module Octopolo
         "both code review and QA",
       ]
 
-      parameter "PULL_REQUEST_ID", "The ID of the pull request to sign off on" do |s|
-        Integer(s)
+      def self.execute(pull_request_id=nil)
+        new(pull_request_id).execute
       end
 
-      banner %Q(
-        Provide standardized signoff message to a pull request.
-      )
+      def initialize(pull_request_id=nil)
+        @pull_request_id = pull_request_id
+        @pull_request_id ||= cli.prompt("Pull Request ID: ")
+      end
 
       def execute
         preamble
@@ -51,7 +63,7 @@ module Octopolo
       #
       # Returns a GitHub::PullRequest
       def pull_request
-        @pull_request ||= GitHub::PullRequest.new config.github_repo, pull_request_id
+        @pull_request ||= GitHub::PullRequest.new config.github_repo, Integer(pull_request_id)
       end
       private :pull_request
       private :pull_request=
