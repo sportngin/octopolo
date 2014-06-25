@@ -11,7 +11,7 @@ command 'pull-request' do |c|
 
   c.action do |global_options, options, args|
     options = global_options.merge(options)
-    Octopolo::Scripts::AcceptPull.execute options[:destination_branch]
+    Octopolo::Scripts::PullRequest.execute options[:destination_branch]
   end
 end
 
