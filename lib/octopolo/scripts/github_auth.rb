@@ -57,7 +57,7 @@ module Octopolo
 
       # Private: Verify a user_defined_token with GitHub
       def verify_token
-        json = cli.perform_quietly %Q(curl https://api.github.com/\?access_token\=#{user_defined_token})
+        json = cli.perform_quietly %Q(curl -u #{user_defined_token}:x-oauth-basic https://api.github.com/user)
         self.auth_response = JSON.parse json
       end
       private :verify_token
@@ -74,7 +74,7 @@ module Octopolo
       # If a token is present in the response, store it in the user config.
       # Otherwise indicate that the authorization did not succeed.
       def store_token
-        token = auth_response["current_user_url"] ? user_defined_token : auth_response["token"]
+        token = auth_response["login"] ? user_defined_token : auth_response["token"]
         if token
           user_config.set :github_user, username
           user_config.set :github_token, token

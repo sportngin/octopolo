@@ -111,7 +111,7 @@ module Octopolo
         end
 
         it "verifies that a user_defined_token properly authenticates with the GitHub API" do
-          cli.should_receive(:perform_quietly).with(%Q(curl https://api.github.com/\?access_token\=#{user_defined_token})) { json_response }
+          cli.should_receive(:perform_quietly).with(%Q(curl -u #{user_defined_token}:x-oauth-basic https://api.github.com/user)) { json_response }
           subject.send(:verify_token)
           expect(subject.auth_response).to eq(parsed_response)
         end
@@ -121,7 +121,7 @@ module Octopolo
         let(:token) { "asdf" }
         let(:url) { "www.example.com" }
         let(:good_response_request) { {"token" => token} }
-        let(:good_response_verify) { {"current_user_url" => url} }
+        let(:good_response_verify) { {"login" => username} }
         let(:bad_response) { {"error" => "we hate you!", "message" => "Bad Credentials"} }
 
         before do
