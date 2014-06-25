@@ -4,7 +4,7 @@ require_relative "../scripts"
 desc "View and delete stale branches"
 command 'stale-branches' do |c|
   c.desc "Delete the stale branches (default: false)"
-  c.switch [:D, :delete], :negatable => false
+  c.switch :delete, :negatable => false
 
   c.action do |global_options, options, args|
     options = global_options.merge(options)
