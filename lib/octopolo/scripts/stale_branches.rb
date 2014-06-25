@@ -8,7 +8,7 @@ command 'stale-branches' do |c|
 
   c.action do |global_options, options, args|
     options = global_options.merge(options)
-    Octopolo::Scripts::AcceptPull.execute options[:delete]
+    Octopolo::Scripts::StaleBranches.new(options[:delete]).execute
   end
 end
 
@@ -23,8 +23,6 @@ module Octopolo
       attr_accessor :delete
 
       DEFAULT_BRANCHES = %W(HEAD master staging production)
-
-      #option "--delete", :flag, "Delete the stale branches (default: false)"
 
       def initialize(delete=false)
         @delete = delete
