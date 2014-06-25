@@ -54,8 +54,14 @@ module Octopolo
     end
 
     context ".config_parent" do
-      it "is ~/.octopolo" do
+      it "defaults to ~/.octopolo" do
         UserConfig.config_parent.should == File.expand_path("~/.octopolo")
+      end
+
+      it "returns ~/.automation if ~/.octopolo does not exist" do
+        result = File.expand_path("~/.automation")
+        Dir.should_receive(:exists?).and_return(false)
+        UserConfig.config_parent.should == result
       end
     end
 
