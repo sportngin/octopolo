@@ -65,6 +65,67 @@ module Octopolo
           Config.new(github_repo: "tstmedia/ngin").github_repo.should == "tstmedia/ngin"
         end
       end
+
+      context "#use_pivotal_tracker" do
+        it "defaults to false" do
+          expect(Config.new.use_pivotal_tracker).to be_false
+        end
+
+        it "forces a truthy value to be true" do
+          expect(Config.new(use_pivotal_tracker: "true").use_pivotal_tracker).to be_true
+        end
+      end
+
+      context "#use_jira" do
+        it "defaults to false" do
+          expect(Config.new.use_jira).to be_false
+        end
+
+        it "forces a truthy value to be true" do
+          expect(Config.new(use_jira: "true").use_jira).to be_true
+        end
+      end
+
+      context "#jira_user" do
+        it "does not raise an exception if jira isn't enabled" do
+          expect { Config.new.jira_user }.to_not raise_error(Config::MissingRequiredAttribute)
+        end
+
+        it "raises an exception if not given" do
+          expect { Config.new(use_jira: true).jira_user }.to raise_error(Config::MissingRequiredAttribute)
+        end
+
+        it "returns the specified value otherwise" do
+          expect(Config.new(use_jira: true, jira_user: "jira-user").jira_user).to eq("jira-user")
+        end
+      end
+
+      context "#jira_password" do
+        it "does not raise an exception if jira isn't enabled" do
+          expect { Config.new.jira_password }.to_not raise_error(Config::MissingRequiredAttribute)
+        end
+
+        it "raises an exception if not given" do
+          expect { Config.new(use_jira: true).jira_password }.to raise_error(Config::MissingRequiredAttribute)
+        end
+
+        it "returns the specified value otherwise" do
+          expect(Config.new(use_jira: true, jira_password: "jira-password").jira_password).to eq("jira-password")
+        end
+      end
+      context "#jira_url" do
+        it "does not raise an exception if jira isn't enabled" do
+          expect { Config.new.jira_url }.to_not raise_error(Config::MissingRequiredAttribute)
+        end
+
+        it "raises an exception if not given" do
+          expect { Config.new(use_jira: true).jira_url }.to raise_error(Config::MissingRequiredAttribute)
+        end
+
+        it "returns the specified value otherwise" do
+          expect(Config.new(use_jira: true, jira_url: "jira-url").jira_url).to eq("jira-url")
+        end
+      end
     end
 
     context ".parse" do
