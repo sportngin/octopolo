@@ -80,5 +80,7 @@ module Octopolo
 
     end
   end
+
+  WrongBranch = Class.new(StandardError)
 end
 

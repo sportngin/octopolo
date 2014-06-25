@@ -7,7 +7,4 @@ require_relative "octopolo/version"
 require_relative "octopolo/convenience_wrappers"
 
 module Octopolo
-
-  WrongBranch = Class.new(StandardError)
-
 end
