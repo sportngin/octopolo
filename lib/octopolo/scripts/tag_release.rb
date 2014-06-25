@@ -24,6 +24,7 @@ module Octopolo
 
       attr_accessor :suffix
       attr_accessor :force
+      alias_method :force?, :force
 
       TIMESTAMP_FORMAT = "%Y.%m.%d.%H.%M"
 
@@ -43,10 +44,6 @@ module Octopolo
         else
           raise Octopolo::WrongBranch.new("Must perform this script from the deploy branch (#{config.deploy_branch})")
         end
-      end
-
-      def force?
-        force
       end
 
       # Public: Whether to create a new branch

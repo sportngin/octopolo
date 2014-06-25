@@ -21,6 +21,7 @@ module Octopolo
       include GitWrapper
 
       attr_accessor :delete
+      alias_method :delete?, :delete
 
       DEFAULT_BRANCHES = %W(HEAD master staging production)
 
@@ -34,10 +35,6 @@ module Octopolo
         else
           display_stale_branches
         end
-      end
-
-      def delete?
-        delete
       end
 
       # Private: Display the stale branches in the project
