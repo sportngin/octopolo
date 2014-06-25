@@ -1,3 +1,5 @@
+.automation.yml
+.octopolo.yml
 *.gem
 *.rbc
 .bundle

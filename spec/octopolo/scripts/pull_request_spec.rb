@@ -7,7 +7,9 @@ module Octopolo
       let(:config) do
         stub(:config, {
           deploy_branch: "production",
-          github_repo: "tstmedia/foo"
+          github_repo: "tstmedia/foo",
+          use_pivotal_tracker: true,
+          use_jira: true
         })
       end
       let(:cli) { stub(:cli) }
@@ -41,6 +43,7 @@ module Octopolo
           subject.should_receive(:ask_questionaire)
           subject.should_receive(:create_pull_request)
           subject.should_receive(:update_pivotal)
+          subject.should_receive(:update_jira)
           subject.should_receive(:open_pull_request)
 
           subject.execute
@@ -57,6 +60,7 @@ module Octopolo
           subject.should_receive(:announce)
           subject.should_receive(:ask_title)
           subject.should_receive(:ask_pivotal_ids)
+          subject.should_receive(:ask_jira_ids)
 
           subject.send(:ask_questionaire)
         end
@@ -66,6 +70,7 @@ module Octopolo
             subject.stub(:announce)
             subject.stub(:ask_title)
             subject.stub(:ask_pivotal_ids)
+            subject.stub(:ask_jira_ids)
           end
           it "exits when branch name is reserved" do
             subject.git.stub(:reserved_branch?).and_return true
@@ -160,6 +165,7 @@ module Octopolo
             destination_branch: subject.destination_branch,
             source_branch: git.current_branch,
             pivotal_ids: subject.pivotal_ids,
+            jira_ids: subject.jira_ids,
           }
         end
       end
@@ -175,6 +181,21 @@ module Octopolo
           Pivotal::StoryCommenter.should_receive(:new).with("123", "test") { story_commenter }
           Pivotal::StoryCommenter.should_receive(:new).with("234", "test") { story_commenter }
           subject.send(:update_pivotal)
+        end
+
+      end
+
+      context "#update_jira" do
+        before do
+          subject.jira_ids = %w(123 234)
+          subject.pull_request = stub(url: "test")
+        end
+        let(:story_commenter) { stub(perform: true) }
+
+        it "creates a story commenter for each pivotal_id" do
+          Jira::StoryCommenter.should_receive(:new).with("123", "test") { story_commenter }
+          Jira::StoryCommenter.should_receive(:new).with("234", "test") { story_commenter }
+          subject.send(:update_jira)
         end
 
       end

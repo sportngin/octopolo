@@ -3,6 +3,7 @@ require_relative "../renderer"
 module Octopolo
   module GitHub
     class PullRequestCreator
+      include ConfigWrapper
       # for instantiating the pull request creator
       attr_accessor :repo_name
       attr_accessor :options
@@ -78,10 +79,7 @@ module Octopolo
       #
       # Returns a String with the title
       def title
-        raw_title = options[:title]
-        raise MissingAttribute if raw_title.nil?
-
-        raw_title
+        options[:title] || raise(MissingAttribute)
       end
 
       # Public: The Pivotal Tracker story IDs associated with the pull request
@@ -89,6 +87,20 @@ module Octopolo
       # Returns an Array of Strings
       def pivotal_ids
         options[:pivotal_ids] || []
+      end
+
+      # Public: Jira Issue IDs associated with the pull request
+      #
+      # Returns an Array of Strings
+      def jira_ids
+        options[:jira_ids] || []
+      end
+
+      # Public: Jira Url associated with the pull request
+      #
+      # Returns Jira Url
+      def jira_url
+        config.jira_url
       end
 
       # Public: The body (primary copy) of the pull request
@@ -102,6 +114,8 @@ module Octopolo
       def body_locals
         {
           pivotal_ids: pivotal_ids,
+          jira_ids: jira_ids,
+          jira_url: jira_url,
         }
       end
 
