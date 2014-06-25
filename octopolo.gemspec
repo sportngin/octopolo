@@ -19,9 +19,12 @@ Gem::Specification.new do |gem|
   gem.add_dependency 'rake'
   gem.add_dependency 'gli', '~> 2.10'
   gem.add_dependency 'hashie', '~> 1.2'
-  gem.add_dependency 'octokit', '~> 2.1.1'
+  gem.add_dependency 'octokit', '~> 2.1.0'
   gem.add_dependency 'highline', '~> 1.6'
   gem.add_dependency 'pivotal-tracker', '~> 0.5'
+  gem.add_dependency 'jiralicious'
 
   gem.add_development_dependency 'rspec', '~> 2.11.0'
+  gem.add_development_dependency "guard"
+  gem.add_development_dependency "guard-rspec"
 end

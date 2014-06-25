@@ -17,6 +17,11 @@ module Octopolo
     attr_accessor :deploy_environments
     attr_accessor :deploy_methods
     attr_accessor :github_repo
+    attr_accessor :use_pivotal_tracker
+    attr_accessor :use_jira
+    attr_accessor :jira_user
+    attr_accessor :jira_password
+    attr_accessor :jira_url
 
     def initialize(attributes={})
       self.cli = Octopolo::CLI
@@ -44,8 +49,29 @@ module Octopolo
     end
 
     def github_repo
-      @github_repo || raise(MissingRequiredAttribute)
+      @github_repo || raise(MissingRequiredAttribute, "GitHub Repo is required")
     end
+
+    def use_pivotal_tracker
+      !!@use_pivotal_tracker
+    end
+
+    def use_jira
+      !!@use_jira
+    end
+
+    def jira_user
+      @jira_user || raise(MissingRequiredAttribute, "Jira User is required") if use_jira
+    end
+
+    def jira_password
+      @jira_password || raise(MissingRequiredAttribute, "Jira Password is required") if use_jira
+    end
+
+    def jira_url
+      @jira_url || raise(MissingRequiredAttribute, "Jira Url is required") if use_jira
+    end
+
     # end defaults
 
     def self.parse
