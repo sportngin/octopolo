@@ -10,3 +10,4 @@ _op() {
 }
 
 complete -F _op op
+complete -F _op octopolo
