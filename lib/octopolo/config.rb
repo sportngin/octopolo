@@ -4,7 +4,7 @@ require_relative "user_config"
 
 module Octopolo
   class Config
-    FILE_NAME = ".octopolo.yml"
+    FILE_NAMES = %w[.octopolo.yml .automation.yml]
 
     RECENT_TAG_LIMIT = 9
     # we use date-based tags, so look for anything starting with a 4-digit year
@@ -83,15 +83,15 @@ module Octopolo
     end
 
     def self.octopolo_config_path
-      if File.exists?(FILE_NAME)
-        File.join(Dir.pwd, FILE_NAME)
+      if filepath = FILE_NAMES.detect {|filename| File.exists?(filename)}
+        File.join(Dir.pwd, filepath)
       else
         old_dir = Dir.pwd
         Dir.chdir('..')
         if old_dir != Dir.pwd
           octopolo_config_path
         else
-          Octopolo::CLI.say "Could not find #{FILE_NAME}"
+          Octopolo::CLI.say "Could not find #{FILE_NAMES.join(' or ')}"
           exit
         end
       end
