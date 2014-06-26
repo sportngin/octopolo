@@ -1,6 +1,6 @@
 require 'fileutils'
 
-module Automation
+module Octopolo
   class Changelog
     attr_reader :filename
 
