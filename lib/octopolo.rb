@@ -7,4 +7,9 @@ require_relative "octopolo/version"
 require_relative "octopolo/convenience_wrappers"
 
 module Octopolo
+
+  def self.config
+    @config ||= Octopolo::Config.parse
+  end
+
 end
