@@ -5,6 +5,7 @@ module Octopolo
   module Scripts
     class Deployable
       include CLIWrapper
+      include ConfigWrapper
 
       attr_accessor :pull_request_id
 
@@ -19,7 +20,7 @@ module Octopolo
       # Public: Perform the script
       def execute
         self.pull_request_id ||= cli.prompt("Pull Request ID: ")
-        PullRequestMerger.perform Git::DEPLOYABLE_PREFIX, Integer(@pull_request_id), { notify_automation: true }
+        PullRequestMerger.perform Git::DEPLOYABLE_PREFIX, Integer(@pull_request_id), :user_notifications => config.user_notifications
       end
     end
   end

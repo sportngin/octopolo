@@ -10,9 +10,9 @@ module Octopolo
       let(:pull_request) { stub(:PullRequest, branch: "cool-feature", url: "http://example.com/") }
       let(:branch_type) { Git::DEPLOYABLE_PREFIX }
       let(:git) { stub(:git, deployable_branch: "deployable") }
-      let(:options) { { notify_automation: true } }
+      let(:options) { { :user_notifications => ['NickLaMuro', 'anfleene'] } }
 
-      subject { PullRequestMerger.new(Git::DEPLOYABLE_PREFIX, 42, { notify_automation: true }) }
+      subject { PullRequestMerger.new(Git::DEPLOYABLE_PREFIX, 42, options) }
 
       before do
         subject.git = git
@@ -136,7 +136,7 @@ module Octopolo
       context "#comment_body" do
         it "contains the default comment body" do
           git.should_receive(:latest_branch_for).with("deployable").and_return("deployable")
-          subject.comment_body.should == "Merged into #{git.deployable_branch}. /cc @tst-automation"
+          subject.comment_body.should == "Merged into #{git.deployable_branch}. /cc @NickLaMuro @anfleene"
         end
       end
     end
