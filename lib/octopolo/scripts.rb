@@ -9,7 +9,7 @@ module Octopolo
           attr_accessor :cli
         end
 
-        klass.config = Octopolo::Config.parse
+        klass.config = Octopolo.config
         klass.cli = Octopolo::CLI
       end
     end

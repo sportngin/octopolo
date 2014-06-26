@@ -19,7 +19,7 @@ module Octopolo
     #
     # Returns an instance of Config or equivalent
     def config
-      @config ||= Config.parse
+      @config ||= Octopolo.config
     end
   end
 
