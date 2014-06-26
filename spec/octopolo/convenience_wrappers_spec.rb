@@ -32,7 +32,7 @@ module Octopolo
 
     context "#config" do
       it "parses the current config" do
-        Config.should_receive(:parse) { config }
+        Octopolo.should_receive(:config) { config }
         foo.config.should == config
       end
 
