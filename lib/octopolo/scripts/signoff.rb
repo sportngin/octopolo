@@ -1,16 +1,6 @@
 require_relative "../scripts"
 require_relative "../github/pull_request"
 
-arg :pull_request_id
-
-desc 'Provide standardized signoff message to a pull request.'
-long_desc "pull_request_id - The ID of the pull request to sign off on"
-command 'signoff' do |c|
-  c.action do |global_options, options, args|
-    Octopolo::Scripts::Signoff.execute args.first
-  end
-end
-
 module Octopolo
   module Scripts
     class Signoff

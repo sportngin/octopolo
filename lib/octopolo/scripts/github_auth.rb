@@ -2,11 +2,6 @@ require "json"
 require_relative "../github"
 require_relative "../scripts"
 
-desc 'Generate a GitHub auth token for octopolo commands to use.'
-command 'github-auth' do |c|
-  c.action { Octopolo::Scripts::GithubAuth.execute }
-end
-
 module Octopolo
   module Scripts
     class GithubAuth
