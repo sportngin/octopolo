@@ -66,6 +66,24 @@ module Octopolo
         end
       end
 
+      context "#user_notifications" do
+        it "is nil by default" do
+          Config.new.user_notifications.should == nil
+        end
+
+        it "raise an error if it is not an array" do
+          expect { Config.new(user_notifications: {:user => "NickLaMuro"}).user_notifications }.to raise_error(Config::InvalidAttributeSupplied)
+        end
+
+        it "returns the specified value if an array" do
+          Config.new(user_notifications: ["NickLaMuro"]).user_notifications.should == ["NickLaMuro"]
+        end
+
+        it "returns the specified value if as an array if a string" do
+          Config.new(user_notifications: "NickLaMuro").user_notifications.should == ["NickLaMuro"]
+        end
+      end
+
       context "#use_pivotal_tracker" do
         it "defaults to false" do
           expect(Config.new.use_pivotal_tracker).to be_false
