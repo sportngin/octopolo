@@ -17,6 +17,7 @@ module Octopolo
     attr_accessor :deploy_environments
     attr_accessor :deploy_methods
     attr_accessor :github_repo
+    attr_accessor :user_notifications
     attr_accessor :use_pivotal_tracker
     attr_accessor :use_jira
     attr_accessor :jira_user
@@ -50,6 +51,14 @@ module Octopolo
 
     def github_repo
       @github_repo || raise(MissingRequiredAttribute, "GitHub Repo is required")
+    end
+
+    def user_notifications
+      if [NilClass, Array, String].include?(@user_notifications.class)
+        Array(@user_notifications) if @user_notifications
+      else
+        raise(InvalidAttributeSupplied, "User notifications must be an array or string")
+      end
     end
 
     def use_pivotal_tracker
@@ -112,6 +121,9 @@ module Octopolo
       basedir
     end
 
+    # To be used when attempting to call a Config attribute for which there is
+    # a value supplied that is of not the correct type
+    InvalidAttributeSupplied = Class.new(StandardError)
     # To be used when attempting to call a Config attribute for which there is
     # no sensible default and one hasn't been supplied by the app
     MissingRequiredAttribute = Class.new(StandardError)

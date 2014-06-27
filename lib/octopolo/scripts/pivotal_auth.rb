@@ -1,11 +1,6 @@
 require_relative "../scripts"
 require_relative "../pivotal"
 
-desc 'Generate a Pivotal Tracker auth token for Octopolo commands to use.'
-command 'pivotal-auth' do |c|
-  c.action { Octopolo::Scripts::PivotalAuth.execute }
-end
-
 module Octopolo
   module Scripts
     class PivotalAuth

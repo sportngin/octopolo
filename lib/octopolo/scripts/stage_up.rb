@@ -1,14 +1,6 @@
 require_relative "../scripts"
 require_relative "../pull_request_merger"
 
-arg :pull_request_id
-desc 'Merges PR into the staging branch'
-command 'stage-up' do |c|
-  c.action do |global_options, options, args|
-    Octopolo::Scripts::StageUp.execute args.first
-  end
-end
-
 module Octopolo
   module Scripts
     class StageUp

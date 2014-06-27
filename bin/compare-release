@@ -1,7 +1,0 @@
-#!/usr/bin/env ruby
-require "rubygems"
-require_relative "../lib/octopolo"
-require_relative "../lib/octopolo/scripts/compare_release"
-
-Octopolo::Scripts::CompareRelease.run
-

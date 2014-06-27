@@ -75,8 +75,8 @@ module Octopolo
     # Returns a String
     def comment_body
       body = "Merged into #{branch_to_merge_into}."
-      if options[:notify_automation]
-        body << " /cc @tst-automation"
+      if options[:user_notifications]
+        body << " /cc #{options[:user_notifications].map {|name| "@#{name}"}.join(' ')}"
       end
       body
     end
