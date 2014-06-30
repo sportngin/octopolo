@@ -18,6 +18,7 @@ module Octopolo
       attributes.each do |key, value|
         self.instance_variable_set("@#{key}", value)
       end
+      load_plugins
     end
 
     # default values for these customizations
@@ -99,6 +100,16 @@ module Octopolo
         else
           Octopolo::CLI.say "Could not find #{FILE_NAMES.join(' or ')}"
           exit
+        end
+      end
+    end
+
+    def load_plugins
+      plugins.each do |plugin|
+        begin
+          require plugin
+        rescue LoadError
+          puts "Plugin '#{plugin}' failed to load"
         end
       end
     end

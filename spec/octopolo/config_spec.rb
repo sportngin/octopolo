@@ -8,6 +8,11 @@ module Octopolo
     context "#initialize" do
       subject { Config }
 
+      it "loads plugins" do
+        subject.any_instance.should_receive(:load_plugins)
+        subject.new(deploy_branch: "foo", branches_to_keep: ["a", "b"])
+      end
+
       it "sets up methods for all the attributes it receives" do
         config = subject.new(deploy_branch: "foo", branches_to_keep: ["a", "b"])
 
@@ -86,6 +91,8 @@ module Octopolo
       end
 
       context "#plugins" do
+        before { Config.any_instance.stub(:load_plugins) }
+
         it "defaults to an empty array" do
           Config.new.plugins.should == []
         end
@@ -245,6 +252,28 @@ module Octopolo
         end
       end
 
+    end
+
+    context "#load_plugins" do
+      context "with valid plugins" do
+        subject { Config.new(:plugins => "rspec") }
+
+        it "loads the plugins" do
+          subject.load_plugins
+        end
+      end
+
+      context "with invalid plugins" do
+        subject { Config.new }
+
+        it "skips loading the plugin and displays a message" do
+          subject.instance_variable_set(:@plugins, "not-a-real-plugin")
+          subject.should_receive(:puts)
+                 .with("Plugin 'not-a-real-plugin' failed to load")
+
+          subject.load_plugins
+        end
+      end
     end
 
     context "#remote_branch_exists?" do
