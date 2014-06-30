@@ -11,24 +11,12 @@ module Octopolo
     RECENT_TAG_FILTER = /^\d{4}.*/
 
     attr_accessor :cli
-    # customizable bits
-    attr_accessor :branches_to_keep
-    attr_accessor :deploy_branch
-    attr_accessor :deploy_environments
-    attr_accessor :deploy_methods
-    attr_accessor :github_repo
-    attr_accessor :user_notifications
-    attr_accessor :use_pivotal_tracker
-    attr_accessor :use_jira
-    attr_accessor :jira_user
-    attr_accessor :jira_password
-    attr_accessor :jira_url
 
     def initialize(attributes={})
       self.cli = Octopolo::CLI
 
       attributes.each do |key, value|
-        self.send("#{key}=", value)
+        self.instance_variable_set("@#{key}", value)
       end
     end
 
