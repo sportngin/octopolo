@@ -85,6 +85,24 @@ module Octopolo
         end
       end
 
+      context "#plugins" do
+        it "defaults to an empty array" do
+          Config.new.plugins.should == []
+        end
+
+        it "raise an error if it is not a string or array" do
+          expect { Config.new(plugins: {:user => "foo-plugin"}).plugins }.to raise_error(Config::InvalidAttributeSupplied)
+        end
+
+        it "returns the specified single plugin as an array" do
+          Config.new(plugins: "octopolo-templates").plugins.should == ["octopolo-templates"]
+        end
+
+        it "returns the specified plugins as an array" do
+          Config.new(plugins: ["op-templates", "op-pivotal"]).plugins.should == ["op-templates", "op-pivotal"]
+        end
+      end
+
       context "#use_pivotal_tracker" do
         it "defaults to false" do
           expect(Config.new.use_pivotal_tracker).to be_false

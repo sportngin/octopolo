@@ -49,6 +49,15 @@ module Octopolo
       end
     end
 
+    def plugins
+      case @plugins
+      when Array, String then Array(@plugins)
+      when NilClass then []
+      else
+        raise(InvalidAttributeSupplied, "Plugins must be an array or string")
+      end
+    end
+
     def use_pivotal_tracker
       !!@use_pivotal_tracker
     end
