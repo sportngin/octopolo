@@ -15,9 +15,7 @@ module Octopolo
     def initialize(attributes={})
       self.cli = Octopolo::CLI
 
-      attributes.each do |key, value|
-        self.instance_variable_set("@#{key}", value)
-      end
+      assign attributes
       load_plugins
     end
 
@@ -111,6 +109,12 @@ module Octopolo
         rescue LoadError
           puts "Plugin '#{plugin}' failed to load"
         end
+      end
+    end
+
+    def assign(attributes)
+      attributes.each do |key, value|
+        self.instance_variable_set("@#{key}", value)
       end
     end
 
