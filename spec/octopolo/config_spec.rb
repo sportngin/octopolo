@@ -172,6 +172,32 @@ module Octopolo
       end
     end
 
+    context "loading in plugins" do
+      context "in a seperate state" do
+        fork {
+          before { Config.new(:plugins => "octopolo_plugin_example") }
+
+          it "include the plugin in the object space" do
+            expect{ ExamplePlugin.new.example_method }.not_to raise_error
+          end
+
+          it "includes any monkey patching" do
+            subject.example_var.should == ExamplePlugin::EXAMPLE_CONSTANT
+          end
+        }
+      end
+
+      context "in a clean state" do
+        it "not include the plugin in the object space" do
+          expect{ ExamplePlugin.new.example_method }.to raise_error NameError
+        end
+
+        it "not include any monkey patching" do
+          expect{ subject.example_var.should }.to raise_error NoMethodError
+        end
+      end
+    end
+
     context ".parse" do
       let(:parsed_attributes) { { :foo => "bar" }}
       subject { Config }
