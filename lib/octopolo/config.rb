@@ -15,9 +15,8 @@ module Octopolo
     def initialize(attributes={})
       self.cli = Octopolo::CLI
 
-      attributes.each do |key, value|
-        self.instance_variable_set("@#{key}", value)
-      end
+      assign attributes
+      load_plugins
     end
 
     # default values for these customizations
@@ -46,6 +45,15 @@ module Octopolo
         Array(@user_notifications) if @user_notifications
       else
         raise(InvalidAttributeSupplied, "User notifications must be an array or string")
+      end
+    end
+
+    def plugins
+      case @plugins
+      when Array, String then Array(@plugins)
+      when NilClass then []
+      else
+        raise(InvalidAttributeSupplied, "Plugins must be an array or string")
       end
     end
 
@@ -91,6 +99,22 @@ module Octopolo
           Octopolo::CLI.say "Could not find #{FILE_NAMES.join(' or ')}"
           exit
         end
+      end
+    end
+
+    def load_plugins
+      plugins.each do |plugin|
+        begin
+          require plugin
+        rescue LoadError
+          puts "Plugin '#{plugin}' failed to load"
+        end
+      end
+    end
+
+    def assign(attributes)
+      attributes.each do |key, value|
+        self.instance_variable_set("@#{key}", value)
       end
     end
 

@@ -8,6 +8,11 @@ module Octopolo
     context "#initialize" do
       subject { Config }
 
+      it "loads plugins" do
+        subject.any_instance.should_receive(:load_plugins)
+        subject.new(deploy_branch: "foo", branches_to_keep: ["a", "b"])
+      end
+
       it "sets up methods for all the attributes it receives" do
         config = subject.new(deploy_branch: "foo", branches_to_keep: ["a", "b"])
 
@@ -85,6 +90,26 @@ module Octopolo
         end
       end
 
+      context "#plugins" do
+        before { Config.any_instance.stub(:load_plugins) }
+
+        it "defaults to an empty array" do
+          Config.new.plugins.should == []
+        end
+
+        it "raise an error if it is not a string or array" do
+          expect { Config.new(plugins: {:user => "foo-plugin"}).plugins }.to raise_error(Config::InvalidAttributeSupplied)
+        end
+
+        it "returns the specified single plugin as an array" do
+          Config.new(plugins: "octopolo-templates").plugins.should == ["octopolo-templates"]
+        end
+
+        it "returns the specified plugins as an array" do
+          Config.new(plugins: ["op-templates", "op-pivotal"]).plugins.should == ["op-templates", "op-pivotal"]
+        end
+      end
+
       context "#use_pivotal_tracker" do
         it "defaults to false" do
           expect(Config.new.use_pivotal_tracker).to be_false
@@ -143,6 +168,32 @@ module Octopolo
 
         it "returns the specified value otherwise" do
           expect(Config.new(use_jira: true, jira_url: "jira-url").jira_url).to eq("jira-url")
+        end
+      end
+    end
+
+    context "loading in plugins" do
+      context "in a seperate state" do
+        fork {
+          before { Config.new(:plugins => "octopolo_plugin_example") }
+
+          it "include the plugin in the object space" do
+            expect{ ExamplePlugin.new.example_method }.not_to raise_error
+          end
+
+          it "includes any monkey patching" do
+            subject.example_var.should == ExamplePlugin::EXAMPLE_CONSTANT
+          end
+        }
+      end
+
+      context "in a clean state" do
+        it "not include the plugin in the object space" do
+          expect{ ExamplePlugin.new.example_method }.to raise_error NameError
+        end
+
+        it "not include any monkey patching" do
+          expect{ subject.example_var.should }.to raise_error NoMethodError
         end
       end
     end
@@ -227,6 +278,28 @@ module Octopolo
         end
       end
 
+    end
+
+    context "#load_plugins" do
+      context "with valid plugins" do
+        subject { Config.new(:plugins => "rspec") }
+
+        it "loads the plugins" do
+          subject.load_plugins
+        end
+      end
+
+      context "with invalid plugins" do
+        subject { Config.new }
+
+        it "skips loading the plugin and displays a message" do
+          subject.instance_variable_set(:@plugins, "not-a-real-plugin")
+          subject.should_receive(:puts)
+                 .with("Plugin 'not-a-real-plugin' failed to load")
+
+          subject.load_plugins
+        end
+      end
     end
 
     context "#remote_branch_exists?" do
