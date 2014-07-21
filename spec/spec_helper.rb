@@ -8,6 +8,7 @@ require_relative "../lib/octopolo"
 Octopolo.instance_variable_set(:@config, Octopolo::Config.new({:deploy_branch => "master"}))
 
 RSpec.configure do |config|
+  config.deprecation_stream = 'log/deprecations.log'
   config.treat_symbols_as_metadata_keys_with_true_values = true
   config.run_all_when_everything_filtered = true
   config.filter_run :focus
