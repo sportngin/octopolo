@@ -86,6 +86,9 @@ module Octopolo
       ["tst-octopolo"]
     end
 
+    def self.labels *args
+      client.labels *args
+    end
     # now that you've set up your credentials, try again
     TryAgain = Class.new(StandardError)
     # the credentials you've entered are bad
