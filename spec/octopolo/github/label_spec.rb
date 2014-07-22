@@ -33,13 +33,13 @@ module Octopolo
       context "#first_or_create" do
         it "finds the existing label and doesn't do anything" do
           allow(Label).to receive(:all_names).and_return(["low-risk","high-risk"])
-          expect(GitHub).not_to receive(:labels)
+          expect(GitHub).not_to receive(:add_label)
           Label.first_or_create("low-risk", "565656")
         end
 
         it "doesn't find a label and creates one" do
           allow(Label).to receive(:all_names).and_return(["low-risk","high-risk"])
-          expect(GitHub).to receive(:labels).with(config.github_repo, "medium-risk", "454545")
+          expect(GitHub).to receive(:add_label).with(config.github_repo, "medium-risk", "454545")
           Label.first_or_create("medium-risk", "454545")
         end
       end

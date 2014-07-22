@@ -23,7 +23,7 @@ module Octopolo
       # Public: Checks to see if label exists on remote, if not makes one.
       def self.first_or_create(name, color)
         if !(all_names.include? name)
-          GitHub.labels(config.github_repo, name, color)
+          GitHub.add_label(config.github_repo, name, color)
         end
       end
 
