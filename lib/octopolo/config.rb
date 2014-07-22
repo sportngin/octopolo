@@ -36,6 +36,12 @@ module Octopolo
       @deploy_methods || []
     end
 
+    def deploy_label
+      if @deployable
+        @deploy_label = {name: "deployable", color: "428BCA"}
+      end
+    end
+
     def github_repo
       @github_repo || raise(MissingRequiredAttribute, "GitHub Repo is required")
     end
