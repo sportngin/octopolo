@@ -37,9 +37,7 @@ module Octopolo
     end
 
     def deploy_label
-      if @deployable
-        @deploy_label = {name: "deployable", color: "428BCA"}
-      end
+      @deploy_label || true
     end
 
     def github_repo
