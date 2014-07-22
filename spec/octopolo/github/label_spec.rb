@@ -45,6 +45,21 @@ module Octopolo
           Label.send(:to_label, label_hash_1)
         end
       end
+
+      context "#add_to_pull" do
+        let (:pull_number) {007}
+        it "sends the correct arguments to add_labels_to_pull for multiple labels" do
+          allow(Label).to receive(:first_or_create).and_return([label1, label2])
+          expect(GitHub).to receive(:add_labels_to_pull).with(config.github_repo, pull_number, ["low-risk","high-risk"])
+          Label.add_to_pull(pull_number,[label1, label2])
+        end
+
+        it "sends the correct arguments to add_labels_to_pull for a single label" do
+          allow(Label).to receive(:first_or_create).and_return(label1)
+          expect(GitHub).to receive(:add_labels_to_pull).with(config.github_repo, pull_number, ["low-risk"])
+          Label.add_to_pull(pull_number,label1)
+        end
+      end  
     end
   end
 end

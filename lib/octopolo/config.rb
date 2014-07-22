@@ -36,8 +36,8 @@ module Octopolo
       @deploy_methods || []
     end
 
-    def deploy_label
-      @deploy_label || true
+    def deployable_label
+      @deployable_label.nil? ? true : @deployable_label
     end
 
     def github_repo

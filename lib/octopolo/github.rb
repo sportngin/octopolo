@@ -94,6 +94,10 @@ module Octopolo
       client.add_label *args
     end
     
+    def add_labels_to_pull *args
+      client.add_labels_to_an_issue *args
+    end
+    
     # now that you've set up your credentials, try again
     TryAgain = Class.new(StandardError)
     # the credentials you've entered are bad

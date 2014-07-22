@@ -62,6 +62,16 @@ module Octopolo
         end
       end
 
+      context "#deployable_label" do 
+        it "is true by default" do
+          expect(Config.new.deployable_label).to eq(true)
+        end
+
+        it "is can be configured as well" do
+          expect(Config.new(deployable_label: false).deployable_label).to eq(false)
+        end
+      end
+
       context "#github_repo" do
         it "raises an exception if not given" do
           expect { Config.new.github_repo }.to raise_error(Config::MissingRequiredAttribute)

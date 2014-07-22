@@ -32,6 +32,19 @@ module Octopolo
         end
       end
 
+      # Public: Adds labels to a pull-request
+      #
+      # labels: an array of labels
+      # pull_number: number of the pull_request to add label to
+      def self.add_to_pull(pull_number, labels)
+        if !(labels.is_a? Array)
+          labels = [labels]
+        end
+
+        labels.each {|label| first_or_create(label) }
+        GitHub.add_labels_to_pull(config.github_repo, pull_number, labels.map{ |label| label.name } )
+      end
+
       # Private: takes in a hash, out puts a label
       #  
       def self.to_label(label_hash)

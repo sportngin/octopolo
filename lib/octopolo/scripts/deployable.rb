@@ -8,7 +8,7 @@ module Octopolo
       include CLIWrapper
       include ConfigWrapper
 
-      @deploy_label = Octopolo::GitHub::Label.new("deployable", "428BCA")
+      @deployable_label = Octopolo::GitHub::Label.new("deployable", "428BCA")
       attr_accessor :pull_request_id
 
       def self.execute(pull_request_id=nil)
@@ -23,6 +23,7 @@ module Octopolo
       def execute
         self.pull_request_id ||= cli.prompt("Pull Request ID: ")
         PullRequestMerger.perform Git::DEPLOYABLE_PREFIX, Integer(@pull_request_id), :user_notifications => config.user_notifications
+        Octopolo::GitHub::Label.add_to_pull(Integer(@pull_request_id), @deployable_label) if config.deployable_label
       end
 
     end
