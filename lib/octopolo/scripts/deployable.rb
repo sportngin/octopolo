@@ -1,5 +1,6 @@
 require_relative "../scripts"
 require_relative "../pull_request_merger"
+require_relative "../github/label"
 
 module Octopolo
   module Scripts
@@ -7,6 +8,7 @@ module Octopolo
       include CLIWrapper
       include ConfigWrapper
 
+      @deploy_label = Octopolo::GitHub::Label.new("deployable", "428BCA")
       attr_accessor :pull_request_id
 
       def self.execute(pull_request_id=nil)
@@ -22,6 +24,7 @@ module Octopolo
         self.pull_request_id ||= cli.prompt("Pull Request ID: ")
         PullRequestMerger.perform Git::DEPLOYABLE_PREFIX, Integer(@pull_request_id), :user_notifications => config.user_notifications
       end
+
     end
   end
 end
