@@ -48,8 +48,8 @@ module Octopolo
       # labels - an array of labels
       # pull_number - number of the pull_request to add label to
       def self.add_to_pull(pull_number, *labels)
-        label_names = get_names(build_label_array(labels))
-        GitHub.add_labels_to_pull(config.github_repo, pull_number, label_names )
+        built_labels = build_label_array(labels)
+        GitHub.add_labels_to_pull(config.github_repo, pull_number, get_names(built_labels) )
       end
 
       # Private: takes in a hash, out puts a label

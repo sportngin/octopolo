@@ -50,20 +50,21 @@ module Octopolo
         end
 
         context "with various values for deployable_label" do
+          let(:deployable_label) {Octopolo::GitHub::Label.new("deployable", "428BCA")}
           subject { Deployable.new 42 }
           before do
             allow(PullRequestMerger).to receive(:perform)
           end
 
           it "calls add_to_pull when deployable_label is true" do
-            expect(Octopolo::GitHub::Label).to receive(:add_to_pull)
+            expect(Octopolo::GitHub::Label).to receive(:add_to_pull).with(42,deployable_label)
             subject.execute
           end
 
           context "deployable_label is set to false " do 
             let(:config) { stub(:user_notifications => ['NickLaMuro'], :github_repo => 'foo', :deployable_label => false) }
             it "skips add_to_pull when deployable_label is false" do
-              expect(Octopolo::GitHub::Label).to_not receive(:add_to_pull)
+              expect(Octopolo::GitHub::Label).to_not receive(:add_to_pull).with(42,deployable_label)
               subject.execute
             end
           end
