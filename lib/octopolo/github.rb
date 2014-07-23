@@ -94,7 +94,7 @@ module Octopolo
       client.add_label *args
     end
     
-    def add_labels_to_pull *args
+    def self.add_labels_to_pull *args
       client.add_labels_to_an_issue *args
     end
     
