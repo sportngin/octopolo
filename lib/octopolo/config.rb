@@ -36,6 +36,10 @@ module Octopolo
       @deploy_methods || []
     end
 
+    def deployable_label
+      @deployable_label.nil? ? true : @deployable_label
+    end
+
     def github_repo
       @github_repo || raise(MissingRequiredAttribute, "GitHub Repo is required")
     end
