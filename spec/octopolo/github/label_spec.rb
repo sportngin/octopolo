@@ -71,6 +71,29 @@ module Octopolo
         end
       end 
 
+      context "#remove_from_pull" do
+        let (:pull_number) {007}
+
+        before do
+          allow(Label).to receive(:first_or_create)
+        end
+
+        it "sends the correct arguments to remove_label" do
+          expect(GitHub).to receive(:remove_label).with(config.github_repo, pull_number, "low-risk")
+          Label.remove_from_pull(pull_number,label1)
+        end
+
+        it "calls remove_label only once" do
+          expect(GitHub).to receive(:remove_label).once
+          Label.remove_from_pull(pull_number,label1)
+        end
+
+        it "calls remove_label only once" do
+          expect(GitHub).to receive(:remove_label).twice
+          Label.remove_from_pull(pull_number,[label1,label2])
+        end
+      end
+
       context "#build_labels" do 
         it "returns an array of label when given a label" do
           allow(Label).to receive(:first_or_create)

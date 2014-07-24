@@ -25,10 +25,28 @@ module Octopolo
       # Public: Perform the script
       def execute
         self.pull_request_id ||= cli.prompt("Pull Request ID: ")
-        Octopolo::GitHub::Label.add_to_pull(Integer(@pull_request_id), Deployable.deployable_label) if config.deployable_label
-        PullRequestMerger.perform Git::DEPLOYABLE_PREFIX, Integer(@pull_request_id), :user_notifications => config.user_notifications
+        merge_and_label
       end
 
-    end
+      def merge_and_label
+        if config.deployable_label
+          ensure_label_was_created
+        else
+          PullRequestMerger.perform Git::DEPLOYABLE_PREFIX, Integer(@pull_request_id), :user_notifications => config.user_notifications
+        end
+      end
+
+      def ensure_label_was_created
+        begin
+          Octopolo::GitHub::Label.add_to_pull(Integer(@pull_request_id), Deployable.deployable_label)
+          unless PullRequestMerger.perform Git::DEPLOYABLE_PREFIX, Integer(@pull_request_id), :user_notifications => config.user_notifications
+             Octopolo::GitHub::Label.remove_from_pull(Integer(@pull_request_id), Deployable.deployable_label)
+          end
+        rescue Octokit::Error
+          cli.say("Unable to mark as deployable, please try command again")
+        end
+      end
+
+    end 
   end
 end
