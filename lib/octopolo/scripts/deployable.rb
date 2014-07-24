@@ -25,8 +25,8 @@ module Octopolo
       # Public: Perform the script
       def execute
         self.pull_request_id ||= cli.prompt("Pull Request ID: ")
-        PullRequestMerger.perform Git::DEPLOYABLE_PREFIX, Integer(@pull_request_id), :user_notifications => config.user_notifications
         Octopolo::GitHub::Label.add_to_pull(Integer(@pull_request_id), Deployable.deployable_label) if config.deployable_label
+        PullRequestMerger.perform Git::DEPLOYABLE_PREFIX, Integer(@pull_request_id), :user_notifications => config.user_notifications
       end
 
     end
