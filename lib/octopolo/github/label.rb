@@ -56,7 +56,7 @@ module Octopolo
       # 
       # label_hash - a hashed label
       #
-      # returns - a label
+      # returns - a label object
       def self.to_label(label_hash)
         Label.new(label_hash[:name], label_hash[:color])
       end
