@@ -21,7 +21,7 @@ module Octopolo
 
       # Public: Grabs all labels from either file or github
       #         This is the method to override for labels from files
-      def self.all_labels        
+      def self.all        
         all_from_repo
       end
 
@@ -38,7 +38,7 @@ module Octopolo
       #
       # label - a label object
       def self.first_or_create(label)
-        unless all_labels.include?(label)
+        unless all.include?(label)
           GitHub.add_label(config.github_repo, label.name, label.color)
         end
       end

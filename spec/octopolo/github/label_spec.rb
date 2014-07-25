@@ -28,19 +28,19 @@ module Octopolo
       context "#all_labels" do
         it "gets and returns all labels belonging to a repository" do
           allow(GitHub).to receive(:labels).and_return(labels_hash)
-          expect(Label.all_labels).to eq([label1,label2])
+          expect(Label.all).to eq([label1,label2])
         end
       end
 
       context "#first_or_create" do
         it "finds the existing label and doesn't do anything" do
-          allow(Label).to receive(:all_labels).and_return([label1,label2])
+          allow(Label).to receive(:all).and_return([label1,label2])
           expect(GitHub).not_to receive(:add_label)
           Label.first_or_create(label1)
         end
 
         it "doesn't find a label and creates one" do
-          allow(Label).to receive(:all_labels).and_return([label1,label2])
+          allow(Label).to receive(:all).and_return([label1,label2])
           expect(GitHub).to receive(:add_label).with(config.github_repo, "medium-risk", "454545")
           Label.first_or_create(Label.new(name: "medium-risk", color: "454545"))
         end

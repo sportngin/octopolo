@@ -2,6 +2,7 @@ require_relative "../scripts"
 require_relative "../github/pull_request"
 require_relative "../pivotal/story_commenter"
 require_relative "../jira/story_commenter"
+require_relative "../github/label"
 
 module Octopolo
   module Scripts
@@ -15,6 +16,7 @@ module Octopolo
       attr_accessor :pivotal_ids
       attr_accessor :jira_ids
       attr_accessor :destination_branch
+      attr_accessor :label
 
       def self.execute(destination_branch=nil)
         new(destination_branch).execute
@@ -34,6 +36,7 @@ module Octopolo
           create_pull_request
           update_pivotal
           update_jira
+          update_label
           open_pull_request
         end
       end
@@ -43,6 +46,7 @@ module Octopolo
         alert_reserved_and_exit if git.reserved_branch?
         announce
         ask_title
+        ask_label
         ask_pivotal_ids if config.use_pivotal_tracker
         ask_jira_ids if config.use_jira
       end
@@ -66,6 +70,14 @@ module Octopolo
         self.title = cli.prompt "Title:"
       end
       private :ask_title
+
+      # Private: Ask for a label for the pull request
+      def ask_label
+        labels = Octopolo::GitHub::Label.all
+        response = cli.ask("Label:", Octopolo::GitHub::Label.get_names(labels).unshift("Don't know yet"))
+        self.label = Hash[labels.map{|l| [l.name,l]}][response]
+      end
+      private :ask_label
 
       # Private: Ask for a Pivotal Tracker story IDs
       def ask_pivotal_ids
@@ -121,6 +133,11 @@ module Octopolo
         end if jira_ids
       end
       private :update_jira
+
+      def update_label
+        pull_request.add_labels(label) if label 
+      end
+      private :update_label
 
     end
   end
