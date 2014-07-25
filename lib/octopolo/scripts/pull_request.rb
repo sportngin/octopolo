@@ -73,8 +73,9 @@ module Octopolo
 
       # Private: Ask for a label for the pull request
       def ask_label
-        choices = Octopolo::GitHub::Label.get_names(Octopolo::GitHub::Label.all).unshift("Don't know yet")
-        self.label = cli.ask("Label:", choices)
+        labels = Octopolo::GitHub::Label.all
+        response = cli.ask("Label:", Octopolo::GitHub::Label.get_names(labels).unshift("Don't know yet"))
+        labels.each{ |label| self.label = label if label.name == response}
       end
       private :ask_label
 
@@ -134,7 +135,7 @@ module Octopolo
       private :update_jira
 
       def update_label
-        pull_request.add_labels(label) unless (label == "Don't know yet")
+        pull_request.add_labels(label) if label 
       end
       private :update_label
 

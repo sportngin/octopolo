@@ -115,9 +115,11 @@ module Octopolo
       end
 
       context "#ask_label" do
+        let(:label1) {Octopolo::GitHub::Label.new(name: "low-risk", color: '151515')}
+        let(:label2) {Octopolo::GitHub::Label.new(name: "high-risk", color: '151515')}
         let(:choices) {["Don't know yet", "low-risk","high-risk"]}
         it "asks for and capture a label" do
-          allow(Octopolo::GitHub::Label).to receive(:all)
+          allow(Octopolo::GitHub::Label).to receive(:all) {[label1,label2]}
           allow(Octopolo::GitHub::Label).to receive(:get_names) {choices}
           expect(cli).to receive(:ask).with("Label:",choices)
           subject.send(:ask_label)
@@ -222,9 +224,9 @@ module Octopolo
           subject.send(:update_label)
         end
 
-        context "don't know label yet" do
+        context "doesn't know yet label" do
           before do
-            subject.label = "Don't know yet"
+            subject.label = nil
           end
           it "doesn't call update_label when label is don't know yet" do
             expect(subject.pull_request).to_not receive(:add_labels)
