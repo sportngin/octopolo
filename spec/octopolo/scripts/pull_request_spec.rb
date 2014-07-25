@@ -213,15 +213,25 @@ module Octopolo
       end
 
       context "#update_label" do
-
         before do
           subject.label = "high-risk"
-          subject.pull_request = stub(number: 7, repo_name: "tstmedia/foo")
+          subject.pull_request = stub(number: '7', repo_name: "tstmedia/foo")
         end
         it "calls update_label with proper arguments" do
-          expect(subject.pull_request).to receive(:add_labels).with("tstmedia/foo", 7,'high-risk')
+          expect(subject.pull_request).to receive(:add_labels).with("tstmedia/foo", '7','high-risk')
           subject.send(:update_label)
         end
+
+        context "don't know label yet" do
+          before do
+            subject.label = "Don't know yet"
+          end
+          it "doesn't call update_label when label is don't know yet" do
+            expect(subject.pull_request).to_not receive(:add_labels)
+            subject.send(:update_label)
+          end
+        end
+
       end
 
       context "#open_pull_request" do

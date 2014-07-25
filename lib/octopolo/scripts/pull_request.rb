@@ -134,7 +134,7 @@ module Octopolo
       private :update_jira
 
       def update_label
-        pull_request.add_labels(pull_request.repo_name, pull_request.number, label)
+        pull_request.add_labels(pull_request.repo_name, pull_request.number, label) unless (label == "Don't know yet")
       end
       private :update_label
 
