@@ -215,10 +215,10 @@ module Octopolo
       context "#update_label" do
         before do
           subject.label = "high-risk"
-          subject.pull_request = stub(number: '7', repo_name: "tstmedia/foo")
+          subject.pull_request = stub()
         end
         it "calls update_label with proper arguments" do
-          expect(subject.pull_request).to receive(:add_labels).with("tstmedia/foo", '7','high-risk')
+          expect(subject.pull_request).to receive(:add_labels).with('high-risk')
           subject.send(:update_label)
         end
 
