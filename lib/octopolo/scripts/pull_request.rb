@@ -2,6 +2,7 @@ require_relative "../scripts"
 require_relative "../github/pull_request"
 require_relative "../pivotal/story_commenter"
 require_relative "../jira/story_commenter"
+require_relative "../github/label"
 
 module Octopolo
   module Scripts
