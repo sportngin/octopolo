@@ -39,8 +39,9 @@ module Octopolo
 
       context "#ensure_label_was_created" do
         subject { Deployable.new 42}
+        let(:pull_request) {Octopolo::GitHub::PullRequest.new('foo', subject.pull_request_id, nil)}
         before do
-          allow(Octopolo::GitHub::Label).to receive(:add_to_pull)
+          allow_any_instance_of(Octopolo::GitHub::PullRequest).to receive(:add_labels)
         end
 
         context "with a PR passed in via the command args" do
@@ -80,19 +81,15 @@ module Octopolo
         end
 
         context "when it creates a label successfully" do
-          subject { Deployable.new 42}
-          before do
-            allow(Octopolo::GitHub::Label).to receive(:add_to_pull) {true}
-          end
 
           it "calls remove_label when pull_request_merge fails" do
             allow(PullRequestMerger).to receive(:perform) {nil}
-            expect(Octopolo::GitHub::Label).to receive(:remove_from_pull)
-            subject.execute
+            expect_any_instance_of(Octopolo::GitHub::PullRequest).to receive(:remove_labels)
+            subject.ensure_label_was_created
           end
         end
-
       end
+      
     end
   end
 end
