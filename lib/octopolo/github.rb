@@ -93,10 +93,16 @@ module Octopolo
     def self.add_label *args
       client.add_label *args
     end
+
+    def self.remove_label *args
+      client.remove_label *args
+    end
     
     def self.add_labels_to_pull *args
       client.add_labels_to_an_issue *args
     end
+
+
     
     # now that you've set up your credentials, try again
     TryAgain = Class.new(StandardError)

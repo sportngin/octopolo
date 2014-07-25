@@ -3,6 +3,7 @@ require_relative "commit"
 require_relative "pull_request_creator"
 require_relative "user"
 require_relative "../week"
+require_relative "label"
 require "octokit"
 
 module Octopolo
@@ -116,6 +117,25 @@ module Octopolo
         GitHub.add_comment repo_name, number, ":octocat: #{message}"
       rescue Octokit::UnprocessableEntity => error
         raise CommentFailed, "Unable to write the comment: '#{error.message}'"
+      end
+
+      # Public: Adds labels to a pull-request
+      #
+      # labels - label objects, can be a single label, an array of labels,
+      #          or a list of labels
+      def add_labels(*labels)
+        built_labels = Label.build_label_array(labels)
+        GitHub.add_labels_to_pull(repo_name, number, built_labels.map(&:name) )
+      end
+
+      # Public: Removes labels from a pull-request, 
+      #
+      # labels - label objects, can be a single label, an array of labels,
+      #          or a list of labels
+      def remove_labels(*labels)
+        Label.build_label_array(labels).each do |built_label| 
+          GitHub.remove_label(repo_name, number, built_label.name)
+        end
       end
 
       MissingParameter = Class.new StandardError

@@ -8,8 +8,8 @@ module Octopolo
       let(:label_hash_1) { {name: "low-risk", url: "github.com", color: "343434"} }
       let(:label_hash_2) { {name: "high-risk", url: "github.com", color: "565656"} }
       let(:labels_hash) { [label_hash_1,label_hash_2] }
-      let(:label1) { Label.new("low-risk", "343434") }
-      let(:label2) { Label.new("high-risk", '565656') }
+      let(:label1) { Label.new(name: "low-risk", color: "343434") }
+      let(:label2) { Label.new(name: "high-risk", color: '565656') }
       let(:config) { stub(:config, github_repo: "foo") }
 
       subject { Label }
@@ -17,6 +17,13 @@ module Octopolo
       before do
         subject.config = config
       end
+
+      context "#initialize" do
+        it "creates a label from a hash" do
+          expect(Label.new(name: "low", color: "151515").name).to eq('low')
+        end
+      end
+
 
       context "#all_labels" do
         it "gets and returns all labels belonging to a repository" do
@@ -35,20 +42,13 @@ module Octopolo
         it "doesn't find a label and creates one" do
           allow(Label).to receive(:all_labels).and_return([label1,label2])
           expect(GitHub).to receive(:add_label).with(config.github_repo, "medium-risk", "454545")
-          Label.first_or_create(Label.new("medium-risk","454545"))
-        end
-      end
-
-      context "#to_label" do 
-        it "returns a label object" do
-          expect(Label).to receive(:new)
-          Label.send(:to_label, label_hash_1)
+          Label.first_or_create(Label.new(name: "medium-risk", color: "454545"))
         end
       end
 
       context "#==" do
         it "returns true if names are same ignoring color" do
-          expect(label1 == Label.new("low-risk","121212")).to eq(true)
+          expect(label1 == Label.new(name: "low-risk",color: "121212")).to eq(true)
         end
 
         it "returns true if names are same ignoring color" do
@@ -56,22 +56,8 @@ module Octopolo
         end
       end
 
-      context "#add_to_pull" do
-        let (:pull_number) {007}
-        it "sends the correct arguments to add_labels_to_pull for multiple labels" do
-          allow(Label).to receive(:first_or_create)
-          expect(GitHub).to receive(:add_labels_to_pull).with(config.github_repo, pull_number, ["low-risk","high-risk"])
-          Label.add_to_pull(pull_number,[label1, label2])
-        end
 
-        it "sends the correct arguments to add_labels_to_pull for a single label" do
-          allow(Label).to receive(:first_or_create)
-          expect(GitHub).to receive(:add_labels_to_pull).with(config.github_repo, pull_number, ["low-risk"])
-          Label.add_to_pull(pull_number,label1)
-        end
-      end 
-
-      context "#build_labels" do 
+      context "#build_label_array" do 
         it "returns an array of label when given a label" do
           allow(Label).to receive(:first_or_create)
           expect(Label.send(:build_label_array,label1)).to eq([label1])

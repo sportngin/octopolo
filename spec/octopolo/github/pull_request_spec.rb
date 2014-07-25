@@ -286,6 +286,47 @@ module Octopolo
           PullRequest.create(repo_name, options).should == pull_request
         end
       end
+
+      context "labeling" do
+        let(:label1) { Label.new(name: "low-risk", color: "343434") }
+        let(:label2) { Label.new(name: "high-risk", color: '565656') }
+        let(:pull_request) { PullRequest.new repo_name, pr_number }
+
+        context "#add_labels" do
+          it "sends the correct arguments to add_labels_to_pull for multiple labels" do
+            allow(Label).to receive(:build_label_array) {[label1,label2]}
+            expect(GitHub).to receive(:add_labels_to_pull).with(repo_name, pr_number, ["low-risk","high-risk"])
+            pull_request.add_labels([label1, label2])
+          end
+
+          it "sends the correct arguments to add_labels_to_pull for a single label" do
+            allow(Label).to receive(:build_label_array) {[label1]}  
+            expect(GitHub).to receive(:add_labels_to_pull).with(repo_name, pr_number, ["low-risk"])
+            pull_request.add_labels(label1)
+          end
+        end 
+
+        context "#remove_from_pull" do
+
+          it "sends the correct arguments to remove_label" do
+            allow(Label).to receive(:build_label_array) {[label1]} 
+            expect(GitHub).to receive(:remove_label).with(repo_name, pr_number, "low-risk")
+            pull_request.remove_labels(label1)
+          end
+
+          it "calls remove_label only once" do
+            allow(Label).to receive(:build_label_array) {[label1]}
+            expect(GitHub).to receive(:remove_label).once
+            pull_request.remove_labels(label1)
+          end
+
+          it "calls remove_label twice" do
+            allow(Label).to receive(:build_label_array) {[label1, label2]}
+            expect(GitHub).to receive(:remove_label).twice
+            pull_request.remove_labels([label1,label2])
+          end
+        end
+      end
     end
   end
 end
