@@ -123,7 +123,6 @@ module Octopolo
       #
       # labels - label objects, can be a single label, an array of labels,
       #          or a list of labels
-      # pull_number - number of the pull_request to add label to
       def add_labels(*labels)
         built_labels = Label.build_label_array(labels)
         GitHub.add_labels_to_pull(repo_name, number, built_labels.map(&:name) )
@@ -133,7 +132,6 @@ module Octopolo
       #
       # labels - label objects, can be a single label, an array of labels,
       #          or a list of labels
-      # pull_number - number of the pull_request to add label to
       def remove_labels(*labels)
         Label.build_label_array(labels).each do |built_label| 
           GitHub.remove_label(repo_name, number, built_label.name)
