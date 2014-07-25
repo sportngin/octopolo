@@ -10,9 +10,9 @@ module Octopolo
       attr_accessor :name
       attr_accessor :color
 
-      def initialize(name, color)
-        self.name = name
-        self.color = color
+      def initialize(args)
+        self.name = args[:name]
+        self.color = args[:color]
       end
 
       def == (obj)
@@ -22,7 +22,7 @@ module Octopolo
       # Public: Grabs all labels from either file or github
       #         This is the method to override for labels from files
       def self.all_labels        
-        from_github
+        all_from_repo
       end
 
       # Public: Gets the names of labels
@@ -43,45 +43,7 @@ module Octopolo
         end
       end
 
-      # Public: Adds labels to a pull-request
-      #
-      # labels - label objects, can be a single label, an array of labels,
-      #          or a list of labels
-      # pull_number - number of the pull_request to add label to
-      def self.add_to_pull(pull_number, *labels)
-        built_labels = build_label_array(labels)
-        GitHub.add_labels_to_pull(config.github_repo, pull_number, get_names(built_labels) )
-      end
-
-      # Public: Removes labels from a pull-request, 
-      #
-      # labels - label objects, can be a single label, an array of labels,
-      #          or a list of labels
-      # pull_number - number of the pull_request to add label to
-      def self.remove_from_pull(pull_number, *labels)
-        build_label_array(labels).each {|built_label| 
-          GitHub.remove_label(config.github_repo, pull_number, built_label.name)}
-      end
-
-      # Private: takes in a hash, out puts a label
-      # 
-      # label_hash - a hashed label
-      #
-      # returns - a label object
-      def self.to_label(label_hash)
-        Label.new(label_hash[:name], label_hash[:color])
-      end
-      private_class_method :to_label
-
-      # Private: Gets all the labels from given repository on github
-      #
-      # returns - an array of labels
-      def self.from_github
-        GitHub.labels(config.github_repo).map{ |label_hash| to_label(label_hash) }
-      end
-      private_class_method :from_github
-
-      # Private: Finds or creates each of the passed in labels
+      # Public: Finds or creates each of the passed in labels
       #
       # labels - label objects, can be a single label, an array of labels,
       #          or a list of labels
@@ -90,7 +52,14 @@ module Octopolo
       def self.build_label_array(*labels)
         Array(labels).flatten.each {|label| first_or_create(label)}
       end
-      private_class_method :build_label_array
+
+      # Private: Gets all the labels from given repository on github
+      #
+      # returns - an array of labels
+      def self.all_from_repo
+        GitHub.labels(config.github_repo).map{ |label_hash| new(label_hash) }
+      end
+      private_class_method :all_from_repo
 
     end
   end
