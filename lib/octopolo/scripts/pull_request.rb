@@ -75,7 +75,7 @@ module Octopolo
       def ask_label
         labels = Octopolo::GitHub::Label.all
         response = cli.ask("Label:", Octopolo::GitHub::Label.get_names(labels).unshift("Don't know yet"))
-        self.label = labels.index_by(&:name)[response]
+        self.label = Hash[labels.map{|l| [l.name,l]}][response]
       end
       private :ask_label
 
