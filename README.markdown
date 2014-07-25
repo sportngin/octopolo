@@ -5,7 +5,6 @@ Octopolo
 
 A set of Github workflow scripts.
 
-
 ### GitHub Octopolo
 
 #### GitHub Setup
