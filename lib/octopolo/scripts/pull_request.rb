@@ -134,7 +134,7 @@ module Octopolo
       private :update_jira
 
       def update_label
-        Octopolo::GitHub::Label.add_label(config.github_repo, pull_request.id, label)
+        Octopolo::GitHub::Label.add_label(config.github_repo, pull_request.number, label)
       end
       private :update_label
 

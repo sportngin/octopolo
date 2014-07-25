@@ -59,6 +59,10 @@ module Octopolo
         pull_request_data.title
       end
 
+      def number
+        pull_request_data.number
+      end
+
       def url
         pull_request_data.html_url
       end
