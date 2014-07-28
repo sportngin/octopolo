@@ -1,9 +1,4 @@
-require_relative "../github"
-require_relative "commit"
-require_relative "pull_request_creator"
-require_relative "user"
 require_relative "../week"
-require_relative "label"
 require "octokit"
 
 module Octopolo
@@ -128,12 +123,12 @@ module Octopolo
         GitHub.add_labels_to_pull(repo_name, number, built_labels.map(&:name) )
       end
 
-      # Public: Removes labels from a pull-request, 
+      # Public: Removes labels from a pull-request,
       #
       # labels - label objects, can be a single label, an array of labels,
       #          or a list of labels
       def remove_labels(*labels)
-        Label.build_label_array(labels).each do |built_label| 
+        Label.build_label_array(labels).each do |built_label|
           GitHub.remove_label(repo_name, number, built_label.name)
         end
       end

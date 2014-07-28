@@ -1,4 +1,3 @@
-require_relative "../github"
 require "yaml"
 require "octokit"
 
@@ -21,7 +20,7 @@ module Octopolo
 
       # Public: Grabs all labels from either file or github
       #         This is the method to override for labels from files
-      def self.all        
+      def self.all
         all_from_repo
       end
 
@@ -47,7 +46,7 @@ module Octopolo
       #
       # labels - label objects, can be a single label, an array of labels,
       #          or a list of labels
-      # 
+      #
       # returns - an array of labels.
       def self.build_label_array(*labels)
         Array(labels).flatten.each {|label| first_or_create(label)}
