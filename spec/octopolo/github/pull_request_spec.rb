@@ -1,5 +1,5 @@
 require "spec_helper"
-require_relative "../../../lib/octopolo/github/pull_request"
+require_relative "../../../lib/octopolo/github"
 
 module Octopolo
   module GitHub
@@ -300,16 +300,16 @@ module Octopolo
           end
 
           it "sends the correct arguments to add_labels_to_pull for a single label" do
-            allow(Label).to receive(:build_label_array) {[label1]}  
+            allow(Label).to receive(:build_label_array) {[label1]}
             expect(GitHub).to receive(:add_labels_to_pull).with(repo_name, pr_number, ["low-risk"])
             pull_request.add_labels(label1)
           end
-        end 
+        end
 
         context "#remove_from_pull" do
 
           it "sends the correct arguments to remove_label" do
-            allow(Label).to receive(:build_label_array) {[label1]} 
+            allow(Label).to receive(:build_label_array) {[label1]}
             expect(GitHub).to receive(:remove_label).with(repo_name, pr_number, "low-risk")
             pull_request.remove_labels(label1)
           end

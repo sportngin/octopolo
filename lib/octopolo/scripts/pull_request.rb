@@ -1,8 +1,7 @@
 require_relative "../scripts"
-require_relative "../github/pull_request"
+require_relative "../github"
 require_relative "../pivotal/story_commenter"
 require_relative "../jira/story_commenter"
-require_relative "../github/label"
 
 module Octopolo
   module Scripts
@@ -135,7 +134,7 @@ module Octopolo
       private :update_jira
 
       def update_label
-        pull_request.add_labels(label) if label 
+        pull_request.add_labels(label) if label
       end
       private :update_label
 
