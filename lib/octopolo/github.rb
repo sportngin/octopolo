@@ -1,6 +1,4 @@
 require "octokit"
-# TODO this needs to get moved out of scripts and into its own new module
-require_relative "scripts/github_auth"
 require_relative "github/commit"
 require_relative "github/label"
 require_relative "github/pull_request"
