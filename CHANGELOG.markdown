@@ -1,3 +1,13 @@
+#### v0.1.1
+
+* Fix dependancy issues
+
+  > Nick LaMuro: Elliot Hursh: https://github.com/sportngin/octopolo/pull/27
+
+* Label support for pull requests
+
+  > Elliot Hursh: Andy Fleener: https://github.com/sportngin/octopolo/pull/23
+
 #### v0.1.0
 
 * Add Label for deployable
