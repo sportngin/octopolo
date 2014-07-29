@@ -37,7 +37,7 @@ module Octopolo
       #
       # label - a label object
       def self.first_or_create(label)
-        unless all.include?(label)
+        unless all_from_repo.include?(label)
           GitHub.add_label(config.github_repo, label.name, label.color)
         end
       end
