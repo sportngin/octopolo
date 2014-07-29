@@ -1,5 +1,5 @@
 require "spec_helper"
-require_relative "../../../lib/octopolo/github/label"
+require_relative "../../../lib/octopolo/github"
 
 module Octopolo
   module GitHub
@@ -57,7 +57,7 @@ module Octopolo
       end
 
 
-      context "#build_label_array" do 
+      context "#build_label_array" do
         it "returns an array of label when given a label" do
           allow(Label).to receive(:first_or_create)
           expect(Label.send(:build_label_array,label1)).to eq([label1])
