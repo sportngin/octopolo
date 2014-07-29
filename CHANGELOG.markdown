@@ -1,3 +1,9 @@
+#### v0.1.2
+
+* Fixed first_or_create
+
+  > Elliot Hursh: Nick LaMuro: https://github.com/sportngin/octopolo/pull/29
+
 #### v0.1.1
 
 * Fix dependancy issues
