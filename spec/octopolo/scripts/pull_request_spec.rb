@@ -124,6 +124,13 @@ module Octopolo
           expect(cli).to receive(:ask).with("Label:",choices)
           subject.send(:ask_label)
         end
+
+        it "asks for a label" do
+          allow(Octopolo::GitHub::Label).to receive(:all) {[label1,label2]}
+          allow(Octopolo::GitHub::Label).to receive(:get_names) {choices}
+          allow(cli).to receive(:ask) {"low-risk"}
+          expect(subject.send(:ask_label)).to eq(label1)
+        end
       end
 
       context "#ask_pivotal_ids" do
