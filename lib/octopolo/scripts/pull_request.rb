@@ -72,9 +72,9 @@ module Octopolo
 
       # Private: Ask for a label for the pull request
       def ask_label
-        labels = Octopolo::GitHub::Label.all
-        response = cli.ask(label_prompt, Octopolo::GitHub::Label.get_names(labels).unshift("Don't know yet"))
-        self.label = Hash[labels.map{|l| [l.name,l]}][response]
+        choices = Octopolo::GitHub::Label.get_names(label_choices).concat(["None"])
+        response = cli.ask(label_prompt, choices)
+        self.label = Hash[label_choices.map{|l| [l.name,l]}][response]
       end
       private :ask_label
 
@@ -121,6 +121,10 @@ module Octopolo
 
       def label_prompt
         'Label:'
+      end
+
+      def label_choices
+        Octopolo::GitHub::Label.all
       end
 
       def update_pivotal

@@ -117,11 +117,11 @@ module Octopolo
       context "#ask_label" do
         let(:label1) {Octopolo::GitHub::Label.new(name: "low-risk", color: '151515')}
         let(:label2) {Octopolo::GitHub::Label.new(name: "high-risk", color: '151515')}
-        let(:choices) {["Don't know yet", "low-risk","high-risk"]}
+        let(:choices) {["low-risk","high-risk","None"]}
+
         it "asks for and capture a label" do
           allow(Octopolo::GitHub::Label).to receive(:all) {[label1,label2]}
-          allow(Octopolo::GitHub::Label).to receive(:get_names) {choices}
-          expect(cli).to receive(:ask).with("Label:",choices)
+          expect(cli).to receive(:ask).with("Label:", choices)
           subject.send(:ask_label)
         end
 
@@ -189,6 +189,17 @@ module Octopolo
             pivotal_ids: subject.pivotal_ids,
             jira_ids: subject.jira_ids,
           }
+        end
+      end
+
+      context "#label_choices" do
+        let(:label1) { Octopolo::GitHub::Label.new(name: "low-risk", color: '151515') }
+        let(:label2) { Octopolo::GitHub::Label.new(name: "high-risk", color: '151515') }
+        let(:github_labels) { [label1, label2] }
+
+        it "returns the labels plus 'None'" do
+          allow(Octopolo::GitHub::Label).to receive(:all) { github_labels }
+          expect(subject.send(:label_choices)).to eq github_labels
         end
       end
 
