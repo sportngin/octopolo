@@ -1,3 +1,9 @@
+#### v0.1.3
+
+* Label tweaks
+
+  > Nick LaMuro: Ian Ehlert: https://github.com/sportngin/octopolo/pull/30
+
 #### v0.1.2
 
 * Fixed first_or_create
