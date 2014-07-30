@@ -73,7 +73,7 @@ module Octopolo
       # Private: Ask for a label for the pull request
       def ask_label
         labels = Octopolo::GitHub::Label.all
-        response = cli.ask("Label:", Octopolo::GitHub::Label.get_names(labels).unshift("Don't know yet"))
+        response = cli.ask(label_prompt, Octopolo::GitHub::Label.get_names(labels).unshift("Don't know yet"))
         self.label = Hash[labels.map{|l| [l.name,l]}][response]
       end
       private :ask_label
@@ -118,6 +118,10 @@ module Octopolo
         cli.open pull_request.url
       end
       private :open_pull_request
+
+      def label_prompt
+        'Label:'
+      end
 
       def update_pivotal
         pivotal_ids.each do |story_id|
