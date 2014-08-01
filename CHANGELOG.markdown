@@ -1,3 +1,7 @@
+* minor changes to the help text
+
+  > Michael Pillsbury: Andy Fleener: https://github.com/sportngin/octopolo/pull/32
+
 #### v0.1.3
 
 * Label tweaks
