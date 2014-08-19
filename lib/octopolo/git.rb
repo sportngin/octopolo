@@ -200,7 +200,7 @@ module Octopolo
       end
     end
 
-    # Public: The list of releases which have been tagged
+    # Public: The list of releases with semantic versioning which have been tagged
     #
     # Returns an Array of Strings containing the tag names
     def self.semver_tags
