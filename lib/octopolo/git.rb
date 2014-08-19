@@ -6,6 +6,9 @@ module Octopolo
     # we use date-based tags, so look for anything starting with a 4-digit year
     RELEASE_TAG_FILTER = /^\d{4}.*/
     RECENT_TAG_LIMIT = 9
+    # for semver tags, format is X.X.X
+    SEMVER_TAG_FILTER = /^([0-9]+)\.([0-9]+)\.([0-9]+)/
+
     # branch prefixes
     DEPLOYABLE_PREFIX = "deployable"
     STAGING_PREFIX = "staging"
@@ -194,6 +197,15 @@ module Octopolo
     def self.release_tags
       Git.perform_quietly("tag").split("\n").select do |tag|
         tag =~ RELEASE_TAG_FILTER
+      end
+    end
+
+    # Public: The list of releases which have been tagged
+    #
+    # Returns an Array of Strings containing the tag names
+    def self.semver_tags
+      Git.perform_quietly("tag").split("\n").select do |tag|
+        tag =~ SEMVER_TAG_FILTER
       end
     end
 

@@ -1,4 +1,6 @@
 require "date" # necessary to get the Date.today convenience method
+require "semantic" # semantic versioning class (parsing, comparing)
+
 require_relative "../scripts"
 require_relative "../changelog"
 
@@ -11,17 +13,23 @@ module Octopolo
 
       attr_accessor :suffix
       attr_accessor :force
+      attr_accessor :major
+      attr_accessor :minor
+      attr_accessor :patch
       alias_method :force?, :force
 
       TIMESTAMP_FORMAT = "%Y.%m.%d.%H.%M"
 
-      def self.execute(suffix=nil, force=false)
-        new(suffix, force).execute
+      def self.execute(suffix=nil, options)
+        new(suffix, options).execute
       end
 
-      def initialize(suffix=nil, force=false)
+      def initialize(suffix=nil, options)
         @suffix = suffix
-        @force = force
+        @force = options[:force]
+        @major = options[:major]
+        @minor = options[:minor]
+        @patch = options[:patch]
       end
 
       def execute
@@ -42,12 +50,67 @@ module Octopolo
 
       # Public: Generate a tag for the current release
       def tag_release
-        git.new_tag tag_name
+        new_tag = tag_name
+        git.new_tag new_tag if !new_tag.nil?
       end
 
       # Public: The name to apply to the new tag
       def tag_name
-        @tag_name ||= %Q(#{Time.now.strftime(TIMESTAMP_FORMAT)}#{"_#{suffix}" if suffix})
+        if config.semantic_versioning
+          @tag_name ||= "#{tag_semver}"
+        else
+          @tag_name ||= %Q(#{Time.now.strftime(TIMESTAMP_FORMAT)}#{"_#{suffix}" if suffix})
+        end
+      end
+
+      def tag_semver
+        current_version = get_current_version
+        if !@major && !@minor && !@patch
+          # prompt user
+          ask_user_version
+        end
+        new_version = upgrade_version current_version
+        new_version.to_s
+      end
+
+      def get_current_version
+        tags = git.semver_tags
+        max_version = Semantic::Version.new '0.0.0'
+        tags.each do |tag|
+          version = Semantic::Version.new tag
+          if version > max_version
+            max_version = version
+          end
+        end
+        max_version
+      end
+
+      def ask_user_version
+        choices = ["Major", "Minor", "Patch"]
+        response = cli.ask("Which version section do you want to increment?", choices)
+        if response == "Major"
+          @major = true
+        elsif response == "Minor"
+          @minor = true
+        elsif response == "Patch"
+          @patch = true
+        end
+      end
+
+      def upgrade_version current_version
+        if @major
+          current_version.major += 1
+          current_version.minor = 0
+          current_version.patch = 0
+        end
+        if @minor
+          current_version.minor += 1
+          current_version.patch = 0
+        end
+        if @patch
+          current_version.patch+=1
+        end
+        current_version
       end
 
       def changelog
