@@ -9,7 +9,7 @@ module Octopolo
     RELEASE_TAG_FILTER = /^\d{4}.*/
     RECENT_TAG_LIMIT = 9
     # for semver tags, format is X.X.X
-    SEMVER_TAG_FILTER = /^([0-9]+)\.([0-9]+)\.([0-9]+)/
+    SEMVER_TAG_FILTER = /\A(\d+\.\d+\.\d+)(-([0-9A-Za-z-]+(\.[0-9A-Za-z-]+)*))?(\+([0-9A-Za-z-]+(\.[0-9A-Za-z-]+)*))?\Z/
 
     # branch prefixes
     DEPLOYABLE_PREFIX = "deployable"
