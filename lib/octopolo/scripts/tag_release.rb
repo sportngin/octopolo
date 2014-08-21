@@ -28,12 +28,12 @@ module Octopolo
         new(suffix, options).execute
       end
 
-      def initialize(suffix=nil, options=nil)
+      def initialize(suffix=nil, options={})
         @suffix = suffix
-        @force = options[:force] if !options.nil?
-        @major = options[:major] if !options.nil?
-        @minor = options[:minor] if !options.nil?
-        @patch = options[:patch] if !options.nil?
+        @force = options[:force]
+        @major = options[:major]
+        @minor = options[:minor]
+        @patch = options[:patch]
       end
 
       def execute
@@ -54,13 +54,12 @@ module Octopolo
 
       # Public: Generate a tag for the current release
       def tag_release
-        new_tag = tag_name
-        git.new_tag new_tag if !new_tag.nil?
+        git.new_tag tag_name
       end
 
       # Public: The name to apply to the new tag
       def tag_name
-        if config.respond_to?(:semantic_versioning) && config.semantic_versioning == true
+        if config.semantic_versioning
           @tag_name ||= "#{tag_semver}"
         else
           @tag_name ||= %Q(#{Time.now.strftime(TIMESTAMP_FORMAT)}#{"_#{suffix}" if suffix})

@@ -4,7 +4,7 @@ require "octopolo/scripts/tag_release"
 module Octopolo
   module Scripts
     describe TagRelease do
-      let(:config) { stub(:config, deploy_branch: "something") }
+      let(:config) { stub(:config, deploy_branch: "something", semantic_versioning: false) }
       let(:cli) { stub(:cli) }
       let(:git) { stub(:git) }
       let(:suffix) { "foo" }
@@ -26,7 +26,7 @@ module Octopolo
 
       context "#new" do
         it "accepts the given parameter as the tag suffix" do
-          expect(TagRelease.new(suffix, nil).suffix).to eq(suffix)
+          expect(TagRelease.new(suffix).suffix).to eq(suffix)
         end
 
         it "accepts a flag to force creating the new tag even if not on deploy branch" do
