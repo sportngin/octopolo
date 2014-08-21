@@ -82,9 +82,9 @@ module Octopolo
     end
 
     def semantic_versioning
-      !!@semantic_versioning
+      @semantic_versioning || false
     end
-    
+
     # end defaults
 
     def self.parse

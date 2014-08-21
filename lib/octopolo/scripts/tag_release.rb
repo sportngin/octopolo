@@ -1,5 +1,6 @@
 require "date" # necessary to get the Date.today convenience method
 require "semantic" # semantic versioning class (parsing, comparing)
+require "semantic/core_ext"
 
 require_relative "../scripts"
 require_relative "../changelog"
@@ -17,19 +18,22 @@ module Octopolo
       attr_accessor :minor
       attr_accessor :patch
       alias_method :force?, :force
+      alias_method :major?, :major
+      alias_method :minor?, :minor
+      alias_method :patch?, :patch
 
       TIMESTAMP_FORMAT = "%Y.%m.%d.%H.%M"
 
-      def self.execute(suffix=nil, options)
+      def self.execute(suffix=nil, options=nil)
         new(suffix, options).execute
       end
 
-      def initialize(suffix=nil, options)
+      def initialize(suffix=nil, options=nil)
         @suffix = suffix
-        @force = options[:force]
-        @major = options[:major]
-        @minor = options[:minor]
-        @patch = options[:patch]
+        @force = options[:force] if !options.nil?
+        @major = options[:major] if !options.nil?
+        @minor = options[:minor] if !options.nil?
+        @patch = options[:patch] if !options.nil?
       end
 
       def execute
@@ -56,7 +60,7 @@ module Octopolo
 
       # Public: The name to apply to the new tag
       def tag_name
-        if config.semantic_versioning
+        if config.respond_to?(:semantic_versioning) && config.semantic_versioning == true
           @tag_name ||= "#{tag_semver}"
         else
           @tag_name ||= %Q(#{Time.now.strftime(TIMESTAMP_FORMAT)}#{"_#{suffix}" if suffix})
@@ -75,14 +79,7 @@ module Octopolo
 
       def get_current_version
         tags = git.semver_tags
-        max_version = Semantic::Version.new '0.0.0'
-        tags.each do |tag|
-          version = Semantic::Version.new tag
-          if version > max_version
-            max_version = version
-          end
-        end
-        max_version
+        tags.map(&:to_version).sort.last || "0.0.0".to_version
       end
 
       def ask_user_version

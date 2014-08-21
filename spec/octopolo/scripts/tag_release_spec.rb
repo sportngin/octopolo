@@ -8,6 +8,7 @@ module Octopolo
       let(:cli) { stub(:cli) }
       let(:git) { stub(:git) }
       let(:suffix) { "foo" }
+      let(:options) { Hash.new }
       subject { TagRelease.new }
 
       before do
@@ -17,19 +18,39 @@ module Octopolo
           :git => git
         })
         TagRelease.any_instance.stub(:update_changelog)
+        options[:force] = false
+        options[:major] = false
+        options[:minor] = false
+        options[:patch] = false
       end
 
       context "#new" do
         it "accepts the given parameter as the tag suffix" do
-          expect(TagRelease.new(suffix).suffix).to eq(suffix)
+          expect(TagRelease.new(suffix, nil).suffix).to eq(suffix)
         end
 
         it "accepts a flag to force creating the new tag even if not on deploy branch" do
+          options[:force] = true
+          expect(TagRelease.new(nil, options).force?).to be_true
+        end
 
-          expect(TagRelease.new(nil, true).force?).to be_true
+        it "accepts a flag to increment major version" do
+          options[:major] = true
+          expect(TagRelease.new(nil, options).major?).to be_true
+        end
+
+        it "accepts a flag to increment minor version" do
+          options[:minor] = true
+          expect(TagRelease.new(nil, options).minor?).to be_true
+        end
+
+        it "accepts a flag to increment patch version" do
+          options[:patch] = true
+          expect(TagRelease.new(nil, options).patch?).to be_true
         end
 
         it "defaults to no suffix and not to force" do
+          options[:force] = false
           expect(subject.suffix).to be_nil
           expect(subject.force?).to be_false
         end
@@ -78,28 +99,42 @@ module Octopolo
 
       context "#tag_release" do
         it "tells Git to make the tag" do
-          subject.stub(:tag_name) { "somet-tag" }
+          subject.stub(:tag_name) { "some-tag" }
           git.should_receive(:new_tag).with(subject.tag_name)
           subject.tag_release
         end
       end
 
       context "#tag_name" do
-        let(:sample_time) { Time.new }
-        let(:formatted_timestamp) { sample_time.strftime(TagRelease::TIMESTAMP_FORMAT) }
+        describe "with timestamp tag" do
+          let(:sample_time) { Time.new }
+          let(:formatted_timestamp) { sample_time.strftime(TagRelease::TIMESTAMP_FORMAT) }
 
-        before do
-          Time.stub(:now) { sample_time }
+          before do
+            Time.stub(:now) { sample_time }
+          end
+
+          it "is based on the timestamp" do
+            subject.suffix = nil
+            expect(subject.tag_name).to eq(formatted_timestamp)
+          end
+
+          it "applies the suffix if has one" do
+            subject.suffix = suffix
+            expect(subject.tag_name).to eq("#{formatted_timestamp}_#{suffix}")
+          end
         end
 
-        it "is based on the timestamp" do
-          subject.suffix = nil
-          expect(subject.tag_name).to eq(formatted_timestamp)
-        end
-
-        it "applies the suffix if has one" do
-          subject.suffix = suffix
-          expect(subject.tag_name).to eq("#{formatted_timestamp}_#{suffix}")
+        describe "with semantic versioning tag" do
+          before do
+            subject.patch = true
+            subject.config.stub(:semantic_versioning) { true }
+            subject.git.stub(:semver_tags) {['0.0.1', '0.0.2']}
+          end
+          it "is semantic version tag" do
+            subject.suffix = nil
+            expect(subject.tag_name).to eq('0.0.3') # should increment patch version
+          end
         end
       end
     end

@@ -1,3 +1,5 @@
+require "semantic" # semantic versioning class (parsing, comparing)
+
 module Octopolo
   # Abstraction around local Git commands
   class Git
