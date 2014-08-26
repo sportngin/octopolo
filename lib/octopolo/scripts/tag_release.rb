@@ -68,10 +68,7 @@ module Octopolo
 
       def tag_semver
         current_version = get_current_version
-        if !@major && !@minor && !@patch
-          # prompt user
-          ask_user_version
-        end
+        ask_user_version  unless @major || @minor || @patch
         new_version = upgrade_version current_version
         new_version.to_s
       end
@@ -84,13 +81,7 @@ module Octopolo
       def ask_user_version
         choices = ["Major", "Minor", "Patch"]
         response = cli.ask("Which version section do you want to increment?", choices)
-        if response == "Major"
-          @major = true
-        elsif response == "Minor"
-          @minor = true
-        elsif response == "Patch"
-          @patch = true
-        end
+        instance_variable_set("#{response.downcase}=", true)
       end
 
       def upgrade_version current_version
@@ -98,11 +89,11 @@ module Octopolo
           current_version.major += 1
           current_version.minor = 0
           current_version.patch = 0
-        end
+        elsif
         if @minor
           current_version.minor += 1
           current_version.patch = 0
-        end
+        elsif
         if @patch
           current_version.patch+=1
         end
