@@ -125,7 +125,7 @@ module Octopolo
           end
         end
 
-        describe "with semantic versioning tag" do
+        describe "with semantic versioning tag, increment patch" do
           before do
             subject.patch = true
             subject.config.stub(:semantic_versioning) { true }
@@ -134,6 +134,28 @@ module Octopolo
           it "is semantic version tag" do
             subject.suffix = nil
             expect(subject.tag_name).to eq('0.0.3') # should increment patch version
+          end
+        end
+        describe "with semantic versioning tag, increment minor" do
+          before do
+            subject.minor = true
+            subject.config.stub(:semantic_versioning) { true }
+            subject.git.stub(:semver_tags) {['0.0.1', '0.0.2']}
+          end
+          it "is semantic version tag" do
+            subject.suffix = nil
+            expect(subject.tag_name).to eq('0.1.0') # should increment patch version
+          end
+        end
+        describe "with semantic versioning tag, increment major" do
+          before do
+            subject.major = true
+            subject.config.stub(:semantic_versioning) { true }
+            subject.git.stub(:semver_tags) {['0.0.1', '0.0.2']}
+          end
+          it "is semantic version tag" do
+            subject.suffix = nil
+            expect(subject.tag_name).to eq('1.0.0') # should increment patch version
           end
         end
       end

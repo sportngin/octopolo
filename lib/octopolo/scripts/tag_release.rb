@@ -89,12 +89,10 @@ module Octopolo
           current_version.major += 1
           current_version.minor = 0
           current_version.patch = 0
-        elsif
-        if @minor
+        elsif @minor
           current_version.minor += 1
           current_version.patch = 0
-        elsif
-        if @patch
+        elsif @patch
           current_version.patch+=1
         end
         current_version
