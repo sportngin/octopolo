@@ -177,25 +177,6 @@ module Octopolo
         end
       end # describe "#tag_name"
 
-      describe "#scrub_tag" do
-        let(:tag) { "v0.0.2" }
-
-        it "sets the prefix" do
-          subject.scrub_tag tag
-          expect(subject.prefix).to eq("v")
-        end
-
-        it "does not overwrite the prefix" do
-          subject.prefix = "prefix"
-          subject.scrub_tag tag
-          expect(subject.prefix).to eq("prefix")
-        end
-
-        it "returns the scrubbed tag" do
-          expect(subject.scrub_tag tag).to eq("0.0.2")
-        end
-      end
-
       describe "#ask_user_version" do
         let(:semver_choice_question) { "Which version section do you want to increment?" }
 
@@ -218,6 +199,25 @@ module Octopolo
                                               .and_return('Patch')
           subject.ask_user_version
           expect(subject.patch).to be_true
+        end
+      end
+
+      describe "#scrub_tag" do
+        let(:tag) { "v0.0.2" }
+
+        it "sets the prefix" do
+          subject.scrub_tag tag
+          expect(subject.prefix).to eq("v")
+        end
+
+        it "does not overwrite the prefix" do
+          subject.prefix = "prefix"
+          subject.scrub_tag tag
+          expect(subject.prefix).to eq("prefix")
+        end
+
+        it "returns the scrubbed tag" do
+          expect(subject.scrub_tag tag).to eq("0.0.2")
         end
       end
 

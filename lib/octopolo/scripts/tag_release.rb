@@ -56,6 +56,14 @@ module Octopolo
         force? || (git.current_branch == config.deploy_branch)
       end
 
+      def update_changelog
+        changelog.open do |log|
+          log.puts "#### #{tag_name}"
+        end
+        git.perform("add #{changelog.filename}")
+        git.perform("commit -m 'Updating Changelog for #{tag_name}'")
+      end
+
       # Public: Generate a tag for the current release
       def tag_release
         git.new_tag tag_name
@@ -68,11 +76,6 @@ module Octopolo
         else
           @tag_name ||= %Q(#{Time.now.strftime(TIMESTAMP_FORMAT)}#{"_#{suffix}" if suffix})
         end
-      end
-
-      def scrub_tag(tag)
-        @prefix ||= Octopolo::SemverTagScrubber.scrub_prefix(tag)
-        tag
       end
 
       def tag_semver
@@ -106,18 +109,18 @@ module Octopolo
         current_version
       end
 
+      # Private: the changelog file
       def changelog
         @changelog ||= Changelog.new
       end
 
-      def update_changelog
-        changelog.open do |log|
-          log.puts "#### #{tag_name}"
-        end
-        git.perform("add #{changelog.filename}")
-        git.perform("commit -m 'Updating Changelog for #{tag_name}'")
+      # Private: sets/removes the prefix from the tag
+      #
+      # Allows the tag to play nice with the semantic gem
+      def scrub_tag(tag)
+        @prefix ||= Octopolo::SemverTagScrubber.scrub_prefix(tag)
+        tag
       end
-
     end
   end
 
