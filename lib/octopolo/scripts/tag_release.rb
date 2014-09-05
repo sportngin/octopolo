@@ -25,6 +25,7 @@ module Octopolo
       alias_method :patch?, :patch
 
       TIMESTAMP_FORMAT = "%Y.%m.%d.%H.%M"
+      SEMVER_CHOICES   = %w[Major Minor Patch]
 
       def self.execute(options=nil)
         new(options).execute
@@ -87,9 +88,8 @@ module Octopolo
       end
 
       def ask_user_version
-        choices = ["Major", "Minor", "Patch"]
-        response = cli.ask("Which version section do you want to increment?", choices)
-        instance_variable_set("#{response.downcase}=", true)
+        response = cli.ask("Which version section do you want to increment?", SEMVER_CHOICES)
+        send("#{response.downcase}=", true)
       end
 
       def upgrade_version current_version

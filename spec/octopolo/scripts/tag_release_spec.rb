@@ -196,6 +196,31 @@ module Octopolo
         end
       end
 
+      describe "#ask_user_version" do
+        let(:semver_choice_question) { "Which version section do you want to increment?" }
+
+        it "sets @major when user response with 'Major'" do
+          expect(subject.cli).to receive(:ask).with(semver_choice_question, TagRelease::SEMVER_CHOICES)
+                                              .and_return('Major')
+          subject.ask_user_version
+          expect(subject.major).to be_true
+        end
+
+        it "sets @minor when user response with 'minor'" do
+          expect(subject.cli).to receive(:ask).with(semver_choice_question, TagRelease::SEMVER_CHOICES)
+                                              .and_return('Minor')
+          subject.ask_user_version
+          expect(subject.minor).to be_true
+        end
+
+        it "sets @patch when user response with 'patch'" do
+          expect(subject.cli).to receive(:ask).with(semver_choice_question, TagRelease::SEMVER_CHOICES)
+                                              .and_return('Patch')
+          subject.ask_user_version
+          expect(subject.patch).to be_true
+        end
+      end
+
     end
   end
 end
