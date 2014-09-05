@@ -30,22 +30,22 @@ module Octopolo
           expect(TagRelease.new(options).suffix).to eq(suffix)
         end
 
-        it "accepts a flag to force creating the new tag even if not on deploy branch" do
+        it "accepts a switch to force creating the new tag even if not on deploy branch" do
           options[:force] = true
           expect(TagRelease.new(options).force?).to be_true
         end
 
-        it "accepts a flag to increment major version" do
+        it "accepts a switch to increment major version" do
           options[:major] = true
           expect(TagRelease.new(options).major?).to be_true
         end
 
-        it "accepts a flag to increment minor version" do
+        it "accepts a switch to increment minor version" do
           options[:minor] = true
           expect(TagRelease.new(options).minor?).to be_true
         end
 
-        it "accepts a flag to increment patch version" do
+        it "accepts a switch to increment patch version" do
           options[:patch] = true
           expect(TagRelease.new(options).patch?).to be_true
         end
