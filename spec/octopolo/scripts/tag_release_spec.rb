@@ -51,9 +51,8 @@ module Octopolo
         end
 
         it "defaults to no suffix and not to force" do
-          options[:force] = false
           expect(subject.suffix).to be_nil
-          expect(subject.force?).to be_false
+          expect(subject.force?).to be_falsey
         end
       end
 
