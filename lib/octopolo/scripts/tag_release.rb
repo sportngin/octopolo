@@ -12,6 +12,7 @@ module Octopolo
       include ConfigWrapper
       include GitWrapper
 
+      attr_accessor :prefix
       attr_accessor :suffix
       attr_accessor :force
       attr_accessor :major
@@ -29,6 +30,7 @@ module Octopolo
       end
 
       def initialize(options={})
+        @prefix = options[:prefix]
         @suffix = options[:suffix]
         @force = options[:force]
         @major = options[:major]

@@ -7,7 +7,8 @@ module Octopolo
       let(:config) { stub(:config, deploy_branch: "something", semantic_versioning: false) }
       let(:cli) { stub(:cli) }
       let(:git) { stub(:git) }
-      let(:suffix) { "foo" }
+      let(:prefix) { "foo" }
+      let(:suffix) { "bar" }
       let(:options) { Hash.new }
       subject { TagRelease.new }
 
@@ -25,6 +26,11 @@ module Octopolo
       end
 
       context "#new" do
+        it "accepts a flag to set the tag prefix" do
+          options[:prefix] = prefix
+          expect(TagRelease.new(options).prefix).to eq(prefix)
+        end
+
         it "accepts a flag to set the tag suffix" do
           options[:suffix] = suffix
           expect(TagRelease.new(options).suffix).to eq(suffix)

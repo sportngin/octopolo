@@ -1,7 +1,7 @@
-
 desc "Create and push a tag (timestamped tag with an optional suffix or semantic version tag)"
 command 'tag-release' do |c|
-  c.flag :suffix, :desc => "Suffix to apply to to the dated tag"
+  c.flag :prefix, :desc => "Prefix to apply to to the tag"
+  c.flag :suffix, :desc => "Suffix to apply to to the tag"
 
   c.desc "Create tag even if not on deploy branch"
   c.switch :force, :negatable => false
