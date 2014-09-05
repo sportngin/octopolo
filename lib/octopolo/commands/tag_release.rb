@@ -15,6 +15,6 @@ command 'tag-release' do |c|
   c.action do |global_options, options, args|
     require_relative '../scripts/tag_release'
     options = global_options.merge(options)
-    Octopolo::Scripts::TagRelease.execute args.first, options
+    Octopolo::Scripts::TagRelease.execute options
   end
 end
