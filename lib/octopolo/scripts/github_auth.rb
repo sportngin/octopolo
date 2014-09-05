@@ -13,6 +13,10 @@ module Octopolo
       attr_accessor :auth_response
       attr_accessor :user_defined_token
 
+      def self.execute
+        new.execute
+      end
+
       def execute
         case ask_auth_method
         when "Generate an API token with my credentials"
