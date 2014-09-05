@@ -1,7 +1,8 @@
-arg :suffix, :desc => "Suffix to apply to to the dated tag"
 
 desc "Create and push a tag (timestamped tag with an optional suffix or semantic version tag)"
 command 'tag-release' do |c|
+  c.flag :suffix, :desc => "Suffix to apply to to the dated tag"
+
   c.desc "Create tag even if not on deploy branch"
   c.switch :force, :negatable => false
   c.desc "Increment major version (if semantic_versioning enabled)"

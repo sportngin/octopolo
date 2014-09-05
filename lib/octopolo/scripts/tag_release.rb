@@ -24,12 +24,12 @@ module Octopolo
 
       TIMESTAMP_FORMAT = "%Y.%m.%d.%H.%M"
 
-      def self.execute(suffix=nil, options=nil)
-        new(suffix, options).execute
+      def self.execute(options=nil)
+        new(options).execute
       end
 
-      def initialize(suffix=nil, options={})
-        @suffix = suffix
+      def initialize(options={})
+        @suffix = options[:suffix]
         @force = options[:force]
         @major = options[:major]
         @minor = options[:minor]
