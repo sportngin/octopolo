@@ -1,3 +1,5 @@
+require "semantic" # semantic versioning class (parsing, comparing)
+
 module Octopolo
   # Abstraction around local Git commands
   class Git
@@ -6,6 +8,9 @@ module Octopolo
     # we use date-based tags, so look for anything starting with a 4-digit year
     RELEASE_TAG_FILTER = /^\d{4}.*/
     RECENT_TAG_LIMIT = 9
+    # for semver tags
+    SEMVER_TAG_FILTER = Semantic::Version::SemVerRegexp
+
     # branch prefixes
     DEPLOYABLE_PREFIX = "deployable"
     STAGING_PREFIX = "staging"
@@ -202,6 +207,15 @@ module Octopolo
     # Returns an Array of Strings containing the tag names
     def self.recent_release_tags
       release_tags.last(RECENT_TAG_LIMIT)
+    end
+
+    # Public: The list of releases with semantic versioning which have been tagged
+    #
+    # Returns an Array of Strings containing the tag names
+    def self.semver_tags
+      Git.perform_quietly("tag").split("\n").select do |tag|
+        tag.sub(/\Av/i,'') =~ SEMVER_TAG_FILTER
+      end
     end
 
     # Public: Create a new tag with the given name

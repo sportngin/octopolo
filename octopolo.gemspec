@@ -23,6 +23,7 @@ Gem::Specification.new do |gem|
   gem.add_dependency 'highline', '~> 1.6'
   gem.add_dependency 'pivotal-tracker', '~> 0.5'
   gem.add_dependency 'jiralicious'
+  gem.add_dependency 'semantic', '~> 1.3.0'
 
   gem.add_development_dependency 'rspec', '~> 2.99.0'
   gem.add_development_dependency "guard"
