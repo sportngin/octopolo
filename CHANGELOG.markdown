@@ -1,3 +1,16 @@
+#### v0.2.0
+* Fixes github-auth
+
+  > Nick LaMuro: Elliot Hursh: https://github.com/sportngin/octopolo/pull/38
+
+* Add semantic versioning tagging
+
+  > Alec Gorjestani, Nick LaMuro: Michael Pillsbury: https://github.com/sportngin/octopolo/pull/35
+
+* Use the correct key when passing destination flag
+
+  > Nick LaMuro: Elliot Hursh: https://github.com/sportngin/octopolo/pull/33
+
 * minor changes to the help text
 
   > Michael Pillsbury: Andy Fleener: https://github.com/sportngin/octopolo/pull/32
