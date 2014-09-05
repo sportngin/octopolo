@@ -1,6 +1,7 @@
 require "date" # necessary to get the Date.today convenience method
 require "semantic" # semantic versioning class (parsing, comparing)
 require "semantic/core_ext"
+require "octopolo/semver_tag_scrubber"
 
 require_relative "../scripts"
 require_relative "../changelog"
@@ -62,22 +63,27 @@ module Octopolo
       # Public: The name to apply to the new tag
       def tag_name
         if config.semantic_versioning
-          @tag_name ||= "#{tag_semver}"
+          @tag_name ||= tag_semver
         else
           @tag_name ||= %Q(#{Time.now.strftime(TIMESTAMP_FORMAT)}#{"_#{suffix}" if suffix})
         end
+      end
+
+      def scrub_tag(tag)
+        @prefix ||= Octopolo::SemverTagScrubber.scrub_prefix(tag)
+        tag
       end
 
       def tag_semver
         current_version = get_current_version
         ask_user_version  unless @major || @minor || @patch
         new_version = upgrade_version current_version
-        new_version.to_s
+        "#{prefix}#{new_version.to_s}"
       end
 
       def get_current_version
         tags = git.semver_tags
-        tags.map(&:to_version).sort.last || "0.0.0".to_version
+        scrub_tag(tags.sort.last).to_version || "0.0.0".to_version
       end
 
       def ask_user_version

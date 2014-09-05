@@ -202,20 +202,20 @@ module Octopolo
       end
     end
 
-    # Public: The list of releases with semantic versioning which have been tagged
-    #
-    # Returns an Array of Strings containing the tag names
-    def self.semver_tags
-      Git.perform_quietly("tag").split("\n").select do |tag|
-        tag =~ SEMVER_TAG_FILTER
-      end
-    end
-
     # Public: Only the most recent release tags
     #
     # Returns an Array of Strings containing the tag names
     def self.recent_release_tags
       release_tags.last(RECENT_TAG_LIMIT)
+    end
+
+    # Public: The list of releases with semantic versioning which have been tagged
+    #
+    # Returns an Array of Strings containing the tag names
+    def self.semver_tags
+      Git.perform_quietly("tag").split("\n").select do |tag|
+        tag.sub(/\Av/i,'') =~ SEMVER_TAG_FILTER
+      end
     end
 
     # Public: Create a new tag with the given name

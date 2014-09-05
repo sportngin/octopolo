@@ -157,8 +157,45 @@ module Octopolo
               expect(subject.tag_name).to eq('1.0.0')
             end
           end
+
+          context "with a prefix of v" do
+            before do
+              subject.major = true
+              subject.git.stub(:semver_tags) { %w[v0.0.1 v0.0.2] }
+            end
+
+            it "sets the prefix to v" do
+              subject.tag_name
+              expect(subject.prefix).to eq('v')
+            end
+
+            it "returns the tag name with the prefix" do
+              subject.instance_variable_set(:@tag_name, nil)
+              expect(subject.tag_name).to eq('v1.0.0')
+            end
+          end
+        end
+      end # describe "#tag_name"
+
+      describe "#scrub_tag" do
+        let(:tag) { "v0.0.2" }
+
+        it "sets the prefix" do
+          subject.scrub_tag tag
+          expect(subject.prefix).to eq("v")
+        end
+
+        it "does not overwrite the prefix" do
+          subject.prefix = "prefix"
+          subject.scrub_tag tag
+          expect(subject.prefix).to eq("prefix")
+        end
+
+        it "returns the scrubbed tag" do
+          expect(subject.scrub_tag tag).to eq("0.0.2")
         end
       end
+
     end
   end
 end

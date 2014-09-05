@@ -323,6 +323,21 @@ module Octopolo
       end
     end
 
+    context ".semver_tags" do
+      let(:valid1) { "0.0.1" }
+      let(:valid2) { "v0.0.3" }
+      let(:invalid) { "foothing" }
+      let(:tags) { [valid1, invalid, valid2].join("\n") }
+
+      it "returns all the tags set as a sematic version" do
+        Git.should_receive(:perform_quietly).with("tag") { tags }
+        release_tags = Git.semver_tags
+        release_tags.should_not include invalid
+        release_tags.should include valid1
+        release_tags.should include valid2
+      end
+    end
+
     context ".new_branch(new_branch_name, source_branch_name)" do
       let(:new_branch_name) { "foo" }
       let(:source_branch_name) { "bar" }
