@@ -25,7 +25,7 @@ module Octopolo
         options[:patch] = false
       end
 
-      context "#new" do
+      describe "#new" do
         it "accepts a flag to set the tag prefix" do
           options[:prefix] = prefix
           expect(TagRelease.new(options).prefix).to eq(prefix)
@@ -62,7 +62,7 @@ module Octopolo
         end
       end
 
-      context "#execute" do
+      describe "#execute" do
         it "tags the release if on the release branch" do
           subject.stub(:should_create_branch?) { true }
           subject.should_receive(:tag_release)
@@ -76,7 +76,7 @@ module Octopolo
         end
       end
 
-      context "#should_create_branch?" do
+      describe "#should_create_branch?" do
         before do
           subject.force = false
         end
@@ -103,7 +103,7 @@ module Octopolo
         end
       end
 
-      context "#tag_release" do
+      describe "#tag_release" do
         it "tells Git to make the tag" do
           subject.stub(:tag_name) { "some-tag" }
           git.should_receive(:new_tag).with(subject.tag_name)
@@ -111,8 +111,8 @@ module Octopolo
         end
       end
 
-      context "#tag_name" do
-        describe "with timestamp tag" do
+      describe "#tag_name" do
+        context "with timestamp tag" do
           let(:sample_time) { Time.new }
           let(:formatted_timestamp) { sample_time.strftime(TagRelease::TIMESTAMP_FORMAT) }
 
@@ -131,37 +131,31 @@ module Octopolo
           end
         end
 
-        describe "with semantic versioning tag, increment patch" do
+        context "with semantic versioning tag of 0.0.2" do
           before do
-            subject.patch = true
             subject.config.stub(:semantic_versioning) { true }
-            subject.git.stub(:semver_tags) {['0.0.1', '0.0.2']}
+            subject.git.stub(:semver_tags) { ['0.0.1', '0.0.2'] }
           end
-          it "is semantic version tag" do
-            subject.suffix = nil
-            expect(subject.tag_name).to eq('0.0.3') # should increment patch version
+
+          context "incrementing patch" do
+            it "bumps the version to 0.0.3" do
+              subject.patch = true
+              expect(subject.tag_name).to eq('0.0.3')
+            end
           end
-        end
-        describe "with semantic versioning tag, increment minor" do
-          before do
-            subject.minor = true
-            subject.config.stub(:semantic_versioning) { true }
-            subject.git.stub(:semver_tags) {['0.0.1', '0.0.2']}
+
+          context "incrementing minor" do
+            it "bumps the version to 0.1.0" do
+              subject.minor = true
+              expect(subject.tag_name).to eq('0.1.0')
+            end
           end
-          it "is semantic version tag" do
-            subject.suffix = nil
-            expect(subject.tag_name).to eq('0.1.0') # should increment patch version
-          end
-        end
-        describe "with semantic versioning tag, increment major" do
-          before do
-            subject.major = true
-            subject.config.stub(:semantic_versioning) { true }
-            subject.git.stub(:semver_tags) {['0.0.1', '0.0.2']}
-          end
-          it "is semantic version tag" do
-            subject.suffix = nil
-            expect(subject.tag_name).to eq('1.0.0') # should increment patch version
+
+          context "incrementing major" do
+            it "bumps the version to 1.0.0" do
+              subject.major = true
+              expect(subject.tag_name).to eq('1.0.0')
+            end
           end
         end
       end
