@@ -1,7 +1,7 @@
 #!/usr/bin/env zsh
 
 if [[ ! -o interactive ]]; then
-    return
+  return
 fi
 
 compctl -K _octopolo octopolo op
