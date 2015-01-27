@@ -80,6 +80,7 @@ module Octopolo
 
       def tag_semver
         current_version = get_current_version
+        set_prefix
         ask_user_version  unless @major || @minor || @patch
         new_version = upgrade_version current_version
         "#{prefix}#{new_version.to_s}"
@@ -87,7 +88,7 @@ module Octopolo
 
       def get_current_version
         tags = git.semver_tags
-        scrub_tag(tags.sort.last).to_version || "0.0.0".to_version
+        tags.map{|tag| Octopolo::SemverTagScrubber.scrub_prefix(tag); tag.to_version }.sort.last || "0.0.0".to_version
       end
 
       def ask_user_version
@@ -117,9 +118,8 @@ module Octopolo
       # Private: sets/removes the prefix from the tag
       #
       # Allows the tag to play nice with the semantic gem
-      def scrub_tag(tag)
-        @prefix ||= Octopolo::SemverTagScrubber.scrub_prefix(tag)
-        tag
+      def set_prefix
+        @prefix ||= Octopolo::SemverTagScrubber.scrub_prefix(git.semver_tags.last)
       end
     end
   end
