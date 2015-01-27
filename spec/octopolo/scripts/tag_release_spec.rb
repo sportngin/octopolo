@@ -202,22 +202,19 @@ module Octopolo
         end
       end
 
-      describe "#scrub_tag" do
+      describe "#set_prefix" do
         let(:tag) { "v0.0.2" }
+        let(:git) { double(:semver_tags => [tag]) }
 
         it "sets the prefix" do
-          subject.scrub_tag tag
+          subject.set_prefix
           expect(subject.prefix).to eq("v")
         end
 
         it "does not overwrite the prefix" do
           subject.prefix = "prefix"
-          subject.scrub_tag tag
+          subject.set_prefix
           expect(subject.prefix).to eq("prefix")
-        end
-
-        it "returns the scrubbed tag" do
-          expect(subject.scrub_tag tag).to eq("0.0.2")
         end
       end
 
