@@ -16,13 +16,15 @@ module Octopolo
       attr_accessor :jira_ids
       attr_accessor :destination_branch
       attr_accessor :label
+      attr_accessor :options
 
-      def self.execute(destination_branch=nil)
-        new(destination_branch).execute
+      def self.execute(destination_branch=nil, options={})
+        new(destination_branch, options).execute
       end
 
-      def initialize(destination_branch=nil)
+      def initialize(destination_branch=nil, options={})
         @destination_branch = destination_branch || default_destination_branch
+        @options = options
       end
 
       def default_destination_branch
@@ -108,6 +110,7 @@ module Octopolo
           source_branch: git.current_branch,
           pivotal_ids: pivotal_ids,
           jira_ids: jira_ids,
+          editor: options[:editor]
         }
       end
       private :pull_request_attributes
