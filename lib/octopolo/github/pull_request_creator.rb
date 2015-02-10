@@ -117,7 +117,7 @@ module Octopolo
         return body unless ENV['EDITOR']
 
         # Open the file, write the contents, and close it
-        tempfile = Tempfile.new('octopolo_pull_request')
+        tempfile = Tempfile.new(['octopolo_pull_request', '.md'])
         tempfile.write(body)
         tempfile.close
 

@@ -183,7 +183,7 @@ module Octopolo
           end
 
           it "creates a tempfile, write default contents, and close it" do
-            Tempfile.should_receive(:new) { tempfile }
+            Tempfile.should_receive(:new).with(['octopolo_pull_request', '.md']) { tempfile }
             tempfile.should_receive(:write).with(body)
             tempfile.should_receive(:close)
             creator.edit_body body
