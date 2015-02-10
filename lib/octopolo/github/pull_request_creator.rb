@@ -115,10 +115,20 @@ module Octopolo
 
       def edit_body(body)
         return body unless ENV['EDITOR']
+
+        # Open the file, write the contents, and close it
         tempfile = Tempfile.new('octopolo_pull_request')
-        Octopolo::CLI.perform("#{ENV['EDITOR']} #{tempfile.path}")
+        tempfile.write(body)
+        tempfile.close
+
+        # Allow the user to edit the file
+        system "#{ENV['EDITOR']} #{tempfile.path}"
+
+        # Reopen the file, read the contents, and delete it
+        tempfile.open
         output = tempfile.read
         tempfile.unlink
+
         output
       end
 

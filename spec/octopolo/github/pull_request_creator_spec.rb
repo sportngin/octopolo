@@ -162,8 +162,8 @@ module Octopolo
 
         before do
           Tempfile.stub(:new) { tempfile }
-          tempfile.stub(path: path, read: edited_body, unlink: nil)
-          Octopolo::CLI.stub(:perform)
+          tempfile.stub(path: path, write: nil, read: edited_body, unlink: nil, close: nil, open: nil)
+          creator.stub(:system)
         end
 
         context "without the $EDITOR env var set" do
@@ -182,20 +182,27 @@ module Octopolo
             stub_const('ENV', {'EDITOR' => 'vim'})
           end
 
-          it "creates a tempfile" do
+          it "creates a tempfile, write default contents, and close it" do
             Tempfile.should_receive(:new) { tempfile }
+            tempfile.should_receive(:write).with(body)
+            tempfile.should_receive(:close)
             creator.edit_body body
           end
 
           it "edits the tempfile with the $EDITOR" do
             tempfile.should_receive(:path) { path }
-            Octopolo::CLI.should_receive(:perform).with("vim #{path}")
+            creator.should_receive(:system).with("vim #{path}")
             creator.edit_body body
           end
 
-          it "returns the body of the tempfile and deletes it" do
+          it "reopens the file, gets the contents, and deletes the temp file" do
+            tempfile.should_receive(:open)
             tempfile.should_receive(:read) { edited_body }
             tempfile.should_receive(:unlink)
+            creator.edit_body body
+          end
+
+          it "returns the user edited output" do
             creator.edit_body(body).should == edited_body
           end
         end
