@@ -215,6 +215,23 @@ module Octopolo
           Renderer.should_receive(:render).with(Renderer::PULL_REQUEST_BODY, locals) { output }
           creator.body.should == output
         end
+
+        context "when the editor option is set" do
+          let(:edited_output) { stub(:output) }
+
+          before do
+            creator.stub({
+              body_locals: locals,
+              options: { editor: true }
+            })
+          end
+
+          it "calls the edit_body method" do
+            Renderer.should_receive(:render).with(Renderer::PULL_REQUEST_BODY, locals) { output }
+            creator.should_receive(:edit_body).with(output) { edited_output }
+            creator.body.should == edited_output
+          end
+        end
       end
     end
   end

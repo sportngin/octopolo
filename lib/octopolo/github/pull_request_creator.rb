@@ -108,7 +108,9 @@ module Octopolo
       #
       # Returns a String
       def body
-        Renderer.render Renderer::PULL_REQUEST_BODY, body_locals
+        output = Renderer.render Renderer::PULL_REQUEST_BODY, body_locals
+        output = edit_body(output) if options[:editor]
+        output
       end
 
       def edit_body(body)
