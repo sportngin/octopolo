@@ -154,6 +154,53 @@ module Octopolo
         end
       end
 
+      context "#edit_body" do
+        let(:path) { stub(:path) }
+        let(:body) { stub(:string) }
+        let(:tempfile) { stub(:tempfile) }
+        let(:edited_body) { stub(:edited_body) }
+
+        before do
+          Tempfile.stub(:new) { tempfile }
+          tempfile.stub(path: path, read: edited_body, unlink: nil)
+          Octopolo::CLI.stub(:perform)
+        end
+
+        context "without the $EDITOR env var set" do
+          before do
+            stub_const('ENV', {'EDITOR' => nil})
+          end
+
+          it "returns the un-edited output" do
+            creator.edit_body(body).should == body
+          end
+        end
+
+        context "with the $EDITOR env set" do
+
+          before do
+            stub_const('ENV', {'EDITOR' => 'vim'})
+          end
+
+          it "creates a tempfile" do
+            Tempfile.should_receive(:new) { tempfile }
+            creator.edit_body body
+          end
+
+          it "edits the tempfile with the $EDITOR" do
+            tempfile.should_receive(:path) { path }
+            Octopolo::CLI.should_receive(:perform).with("vim #{path}")
+            creator.edit_body body
+          end
+
+          it "returns the body of the tempfile and deletes it" do
+            tempfile.should_receive(:read) { edited_body }
+            tempfile.should_receive(:unlink)
+            creator.edit_body(body).should == edited_body
+          end
+        end
+      end
+
       context "#body" do
         let(:locals) { stub(:hash) }
         let(:output) { stub(:string) }
