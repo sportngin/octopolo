@@ -25,30 +25,37 @@ module Octopolo
       # Public: Perform the script
       def execute
         self.pull_request_id ||= cli.prompt("Pull Request ID: ")
-        merge_and_label
-      end
-
-      def merge_and_label
         if config.deployable_label
-          ensure_label_was_created
+          with_labelling do
+            merge
+          end
         else
-          PullRequestMerger.perform Git::DEPLOYABLE_PREFIX, Integer(@pull_request_id), :user_notifications => config.user_notifications
+          merge
         end
       end
 
-      def ensure_label_was_created
+      def merge
+        PullRequestMerger.perform Git::DEPLOYABLE_PREFIX, Integer(@pull_request_id), :user_notifications => config.user_notifications
+      end
+      private :merge
+
+      def with_labelling(&block)
         pull_request = Octopolo::GitHub::PullRequest.new(config.github_repo, @pull_request_id)
         begin
           pull_request.add_labels(Deployable.deployable_label)
-          unless PullRequestMerger.perform Git::DEPLOYABLE_PREFIX, Integer(@pull_request_id), :user_notifications => config.user_notifications
+          unless yield
              pull_request.remove_labels(Deployable.deployable_label)
           end
-        rescue Octokit::Error
-
-          cli.say("Unable to mark as deployable, please try command again")
+        rescue => e
+          case e
+          when Octokit::Unauthorized
+            cli.say "Your stored credentials were rejected by GitHub. Run `bundle exec github-auth` to generate a new token."
+          else
+            cli.say "An unknown error occurred:  #{e.class.to_s}"
+          end
         end
       end
-
+      private :with_labelling
     end
   end
 end
