@@ -49,7 +49,7 @@ module Octopolo
         rescue => e
           case e
           when Octokit::Unauthorized
-            cli.say "Your stored credentials were rejected by GitHub. Run `bundle exec github-auth` to generate a new token."
+            cli.say "Your stored credentials were rejected by GitHub. Run `op github-auth` to generate a new token."
           else
             cli.say "An unknown error occurred:  #{e.class.to_s}"
           end

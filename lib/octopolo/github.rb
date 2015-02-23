@@ -35,7 +35,7 @@ module Octopolo
     def self.client(options = {})
       Octokit::Client.new(options.merge(login: user_config.github_user, access_token: user_config.github_token))
     rescue UserConfig::MissingGitHubAuth
-      raise TryAgain, "No GitHub API token stored. Please run `bundle exec github-auth` to generate your token."
+      raise TryAgain, "No GitHub API token stored. Please run `op github-auth` to generate your token."
     end
 
     # Public: A GitHub client configured to crawl through pages
@@ -48,7 +48,7 @@ module Octopolo
       # we don't care about the output, just try to hit the API
       client.user && nil
     rescue Octokit::Unauthorized
-      raise BadCredentials, "Your stored credentials were rejected by GitHub. Run `bundle exec github-auth` to generate a new token."
+      raise BadCredentials, "Your stored credentials were rejected by GitHub. Run `op github-auth` to generate a new token."
     end
 
     def self.pull_request *args
