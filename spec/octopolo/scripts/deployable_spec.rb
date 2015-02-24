@@ -59,6 +59,17 @@ module Octopolo
               pull_request.should_not_receive(:remove_labels)
             end
           end
+
+          context "with an invalid auth token" do
+            before do
+              allow(pull_request).to receive(:add_labels).and_raise(Octokit::Unauthorized)
+            end
+
+            it "should give a helpful error message saying your token is invalid" do
+              cli.should_receive(:say)
+                .with("Your stored credentials were rejected by GitHub. Run `op github-auth` to generate a new token.")
+            end
+          end
         end
 
         context "with labelling disabled" do
