@@ -25,12 +25,14 @@ module Octopolo
       # Public: Perform the script
       def execute
         self.pull_request_id ||= cli.prompt("Pull Request ID: ")
-        if config.deployable_label
-          with_labelling do
+        GitHub.connect do
+          if config.deployable_label
+            with_labelling do
+              merge
+            end
+          else
             merge
           end
-        else
-          merge
         end
       end
 
@@ -41,18 +43,9 @@ module Octopolo
 
       def with_labelling(&block)
         pull_request = Octopolo::GitHub::PullRequest.new(config.github_repo, @pull_request_id)
-        begin
-          pull_request.add_labels(Deployable.deployable_label)
-          unless yield
-             pull_request.remove_labels(Deployable.deployable_label)
-          end
-        rescue => e
-          case e
-          when Octokit::Unauthorized
-            cli.say "Your stored credentials were rejected by GitHub. Run `op github-auth` to generate a new token."
-          else
-            cli.say "An unknown error occurred:  #{e.class.to_s}"
-          end
+        pull_request.add_labels(Deployable.deployable_label)
+        unless yield
+          pull_request.remove_labels(Deployable.deployable_label)
         end
       end
       private :with_labelling

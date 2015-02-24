@@ -16,6 +16,7 @@ module Octopolo
         allow(subject).to receive(:config) { config }
         allow(Octopolo::GitHub::PullRequest).to receive(:new) { pull_request }
         allow(PullRequestMerger).to receive(:perform) { true }
+        allow(Octopolo::GitHub).to receive(:check_connection) { true }
       end
 
       context "#execute" do
@@ -62,12 +63,11 @@ module Octopolo
 
           context "with an invalid auth token" do
             before do
-              allow(pull_request).to receive(:add_labels).and_raise(Octokit::Unauthorized)
+              Octopolo::GitHub.stub(:check_connection) { raise GitHub::BadCredentials, "Your stored credentials were rejected by GitHub. Run `op github-auth` to generate a new token." }
             end
 
             it "should give a helpful error message saying your token is invalid" do
-              cli.should_receive(:say)
-                .with("Your stored credentials were rejected by GitHub. Run `op github-auth` to generate a new token.")
+              expect(CLI).to receive(:say).with("Your stored credentials were rejected by GitHub. Run `op github-auth` to generate a new token.")
             end
           end
         end
