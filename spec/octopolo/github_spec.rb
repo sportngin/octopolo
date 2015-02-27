@@ -24,7 +24,7 @@ module Octopolo
       it "properly handles if the github authentication isn't configured" do
         user_config.should_receive(:github_user).and_raise(UserConfig::MissingGitHubAuth)
         Scripts::GithubAuth.should_not_receive(:invoke)
-        expect { GitHub.client }.to raise_error(GitHub::TryAgain, "No GitHub API token stored. Please run `bundle exec github-auth` to generate your token.")
+        expect { GitHub.client }.to raise_error(GitHub::TryAgain, "No GitHub API token stored. Please run `op github-auth` to generate your token.")
       end
     end
 
