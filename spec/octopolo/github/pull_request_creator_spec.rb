@@ -154,6 +154,60 @@ module Octopolo
         end
       end
 
+      context "#edit_body" do
+        let(:path) { stub(:path) }
+        let(:body) { stub(:string) }
+        let(:tempfile) { stub(:tempfile) }
+        let(:edited_body) { stub(:edited_body) }
+
+        before do
+          Tempfile.stub(:new) { tempfile }
+          tempfile.stub(path: path, write: nil, read: edited_body, unlink: nil, close: nil, open: nil)
+          creator.stub(:system)
+        end
+
+        context "without the $EDITOR env var set" do
+          before do
+            stub_const('ENV', {'EDITOR' => nil})
+          end
+
+          it "returns the un-edited output" do
+            creator.edit_body(body).should == body
+          end
+        end
+
+        context "with the $EDITOR env set" do
+
+          before do
+            stub_const('ENV', {'EDITOR' => 'vim'})
+          end
+
+          it "creates a tempfile, write default contents, and close it" do
+            Tempfile.should_receive(:new).with(['octopolo_pull_request', '.md']) { tempfile }
+            tempfile.should_receive(:write).with(body)
+            tempfile.should_receive(:close)
+            creator.edit_body body
+          end
+
+          it "edits the tempfile with the $EDITOR" do
+            tempfile.should_receive(:path) { path }
+            creator.should_receive(:system).with("vim #{path}")
+            creator.edit_body body
+          end
+
+          it "reopens the file, gets the contents, and deletes the temp file" do
+            tempfile.should_receive(:open)
+            tempfile.should_receive(:read) { edited_body }
+            tempfile.should_receive(:unlink)
+            creator.edit_body body
+          end
+
+          it "returns the user edited output" do
+            creator.edit_body(body).should == edited_body
+          end
+        end
+      end
+
       context "#body" do
         let(:locals) { stub(:hash) }
         let(:output) { stub(:string) }
@@ -167,6 +221,23 @@ module Octopolo
         it "renders the body template with the body locals" do
           Renderer.should_receive(:render).with(Renderer::PULL_REQUEST_BODY, locals) { output }
           creator.body.should == output
+        end
+
+        context "when the editor option is set" do
+          let(:edited_output) { stub(:output) }
+
+          before do
+            creator.stub({
+              body_locals: locals,
+              options: { editor: true }
+            })
+          end
+
+          it "calls the edit_body method" do
+            Renderer.should_receive(:render).with(Renderer::PULL_REQUEST_BODY, locals) { output }
+            creator.should_receive(:edit_body).with(output) { edited_output }
+            creator.body.should == edited_output
+          end
         end
       end
     end

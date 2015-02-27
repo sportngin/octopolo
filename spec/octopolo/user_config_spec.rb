@@ -119,6 +119,19 @@ module Octopolo
       end
     end
 
+    context "#editor" do
+      let(:config) { UserConfig.new }
+
+      it "returns the configured value" do
+        config.editor = true
+        config.editor.should == true
+      end
+
+      it "returns false otherwise" do
+        config.editor.should == false
+      end
+    end
+
     context "#github_user" do
       let(:config) { UserConfig.new }
       let(:username) { "joeperson" }

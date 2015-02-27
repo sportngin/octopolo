@@ -4,6 +4,7 @@ module Octopolo
     attr_accessor :github_user
     attr_accessor :github_token
     attr_accessor :full_name
+    attr_accessor :editor
     attr_accessor :pivotal_token
     attr_accessor :attributes # keep the whole hash
 
@@ -77,6 +78,13 @@ module Octopolo
     # Returns a String
     def full_name
       @full_name || ENV["USER"]
+    end
+
+    # Public: Always use the $EDITOR when available
+    #
+    # Returns a value or false
+    def editor
+      @editor || false
     end
 
     # Public: The GitHub username

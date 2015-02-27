@@ -1,4 +1,5 @@
 require_relative "../renderer"
+require 'tempfile'
 
 module Octopolo
   module GitHub
@@ -107,7 +108,28 @@ module Octopolo
       #
       # Returns a String
       def body
-        Renderer.render Renderer::PULL_REQUEST_BODY, body_locals
+        output = Renderer.render Renderer::PULL_REQUEST_BODY, body_locals
+        output = edit_body(output) if options[:editor]
+        output
+      end
+
+      def edit_body(body)
+        return body unless ENV['EDITOR']
+
+        # Open the file, write the contents, and close it
+        tempfile = Tempfile.new(['octopolo_pull_request', '.md'])
+        tempfile.write(body)
+        tempfile.close
+
+        # Allow the user to edit the file
+        system "#{ENV['EDITOR']} #{tempfile.path}"
+
+        # Reopen the file, read the contents, and delete it
+        tempfile.open
+        output = tempfile.read
+        tempfile.unlink
+
+        output
       end
 
       # Public: The local variables to pass into the template

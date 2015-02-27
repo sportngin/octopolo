@@ -12,4 +12,8 @@ module Octopolo
     @config ||= Octopolo::Config.parse
   end
 
+  def self.user_config
+    @user_config ||= Octopolo::UserConfig.parse
+  end
+
 end
