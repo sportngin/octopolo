@@ -1,4 +1,4 @@
-#### 2015.03.06.11.21
+#### v0.3.2
 * Add new autocomplete_commands toggle; fixes #34
 
   > Chris Arcand: Andy Fleener: https://github.com/sportngin/octopolo/pull/44
