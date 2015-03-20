@@ -8,6 +8,11 @@ A set of Github workflow scripts.
 
 ### GitHub Octopolo
 
+#### Octopolo Installation
+
+`$ rvm use system && brew gem uninstall sportngin-octopolo-workflow && brew gem install sportngin-octopolo-workflow
+` or part of the brew gem quickstart [script](https://sportngin.atlassian.net/wiki/display/DEV/Brew+Gem)
+
 #### GitHub Setup
 
 Interactively set up your local machine for GitHub octopolo, including
