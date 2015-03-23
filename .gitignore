@@ -15,6 +15,7 @@ test/tmp
 test/version_tmp
 tmp
 log/
+.idea
 
 # YARD artifacts
 .yardoc
