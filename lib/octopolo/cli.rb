@@ -26,7 +26,7 @@ module Octopolo
       # and then perform it
       if Open3.respond_to?(:capture3)
         output, error, status = Open3.capture3(command)
-        raise "exit_status=#{status.exitstatus}; stderr=#{error}" if status.nil? || !status.success?
+        raise "exit_status=#{status.exitstatus}; stderr=#{error}" unless status.success?
       else
         # Only necessary as long as we use 1.8.7, which doesn't have Open3.capture3
         output = `#{command}`
