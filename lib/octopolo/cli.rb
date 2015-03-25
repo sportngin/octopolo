@@ -26,7 +26,7 @@ module Octopolo
       # and then perform it
       if Open3.respond_to?(:capture3)
         output, error, status = Open3.capture3(command)
-        raise "exit_status=#{status.exitstatus}; stderr=#{error}" unless status.success?
+        raise "command=#{command}; exit_status=#{status.exitstatus}; stderr=#{error}" unless status.success?
       else
         # Only necessary as long as we use 1.8.7, which doesn't have Open3.capture3
         output = `#{command}`
@@ -36,8 +36,6 @@ module Octopolo
       say output if say_command
       # return the output of the command
       output
-    rescue => e
-      say "Unable to perform '#{command}': #{e.message}"
     end
 
     # Public: Perform the command, but do not print out the command
