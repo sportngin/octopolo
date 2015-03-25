@@ -6,8 +6,8 @@ module Octopolo
     class NewStaging
       include CLIWrapper
 
-      def execute
-        DatedBranchCreator.perform Git::STAGING_PREFIX
+      def execute(delete_old_branches=false)
+        DatedBranchCreator.perform(Git::STAGING_PREFIX, delete_old_branches)
       end
     end
   end

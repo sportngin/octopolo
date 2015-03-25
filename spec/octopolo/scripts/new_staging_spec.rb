@@ -7,9 +7,13 @@ module Octopolo
       subject { NewStaging.new }
 
       context "#execute" do
-        it "delegates to DatedBranchCreator to create the branch" do
-          DatedBranchCreator.should_receive(:perform).with(Git::STAGING_PREFIX)
+        it "delegates to DatedBranchCreator to create the branch with default delete flag" do
+          DatedBranchCreator.should_receive(:perform).with(Git::STAGING_PREFIX, false)
           subject.execute
+        end
+        it "delegates to DatedBranchCreator to create the branch with delete flag" do
+          DatedBranchCreator.should_receive(:perform).with(Git::STAGING_PREFIX, true)
+          subject.execute(true)
         end
       end
     end

@@ -7,9 +7,13 @@ module Octopolo
       subject { NewDeployable.new }
 
       context "#execute" do
-        it "delegates the work to DatedBranchCreator" do
-          DatedBranchCreator.should_receive(:perform).with(Git::DEPLOYABLE_PREFIX)
+        it "delegates the work to DatedBranchCreator with default delete flag" do
+          DatedBranchCreator.should_receive(:perform).with(Git::DEPLOYABLE_PREFIX, false)
           subject.execute
+        end
+        it "delegates the work to DatedBranchCreator with delete flag" do
+          DatedBranchCreator.should_receive(:perform).with(Git::DEPLOYABLE_PREFIX, true)
+          subject.execute(true)
         end
       end
     end
