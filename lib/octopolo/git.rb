@@ -88,7 +88,7 @@ module Octopolo
     def self.new_branch(new_branch_name, source_branch_name)
       fetch
       perform("branch --no-track #{new_branch_name} origin/#{source_branch_name}")
-      check_out new_branch_name
+      check_out(new_branch_name, false)
       perform("push --set-upstream origin #{new_branch_name}")
     end
 
