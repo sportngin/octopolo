@@ -1,3 +1,8 @@
+#### v0.3.3
+* Errors from CLI commands should throw and exception
+
+  > Brian Bergstrom: Andy Fleener: https://github.com/sportngin/octopolo/pull/46
+  
 #### v0.3.2
 * Add new autocomplete_commands toggle; fixes #34
 
