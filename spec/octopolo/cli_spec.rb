@@ -31,17 +31,14 @@ module Octopolo
       it "should raise exception" do
         subject.should_receive(:say).with(command)
         Open3.should_receive(:capture3).with(command).and_raise(exception_message)
-        expect do
-          subject.perform(command)
-        end.to raise_error(RuntimeError, exception_message)
+        expect { subject.perform(command) }.to raise_error(RuntimeError, exception_message)
       end
 
       it "should raise errors from command" do
         subject.should_receive(:say).with(command)
         Open3.should_receive(:capture3).with(command).and_return([result, "kaboom", status_error])
-        expect do
-          subject.perform(command)
-        end.to raise_error(RuntimeError, "command=#{command}; exit_status=1; stderr=kaboom")
+        expect { subject.perform(command) }
+            .to raise_error(RuntimeError, "command=#{command}; exit_status=1; stderr=kaboom")
       end
 
       it "should not speak the command if told not to" do
