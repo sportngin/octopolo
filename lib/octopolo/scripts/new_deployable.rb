@@ -5,8 +5,8 @@ module Octopolo
   module Scripts
     class NewDeployable
 
-      def execute(delete_old_branches=false)
-        DatedBranchCreator.perform(Git::DEPLOYABLE_PREFIX, delete_old_branches)
+      def execute(options={:delete_old_branches => false})
+        DatedBranchCreator.perform(Git::DEPLOYABLE_PREFIX, options[:delete_old_branches])
       end
     end
   end

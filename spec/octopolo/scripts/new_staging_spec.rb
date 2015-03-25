@@ -13,7 +13,7 @@ module Octopolo
         end
         it "delegates to DatedBranchCreator to create the branch with delete flag" do
           DatedBranchCreator.should_receive(:perform).with(Git::STAGING_PREFIX, true)
-          subject.execute(true)
+          subject.execute(:delete_old_branches => true)
         end
       end
     end
