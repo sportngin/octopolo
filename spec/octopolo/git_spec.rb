@@ -353,7 +353,7 @@ module Octopolo
       it "creates and pushes a new branch from the source branch" do
         Git.should_receive(:fetch)
         Git.should_receive(:perform).with("branch --no-track #{new_branch_name} origin/#{source_branch_name}")
-        Git.should_receive(:check_out).with(new_branch_name)
+        Git.should_receive(:check_out).with(new_branch_name, false)
         Git.should_receive(:perform).with("push --set-upstream origin #{new_branch_name}")
 
         Git.new_branch(new_branch_name, source_branch_name)
