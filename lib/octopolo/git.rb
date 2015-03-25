@@ -67,10 +67,11 @@ module Octopolo
     # Public: Check out the given branch name
     #
     # branch_name - The name of the branch to check out
-    def self.check_out branch_name
+    # do_after_pull - Should a pull be done after checkout?
+    def self.check_out(branch_name, do_after_pull=true)
       fetch
       perform "checkout #{branch_name}"
-      pull
+      pull if do_after_pull
       unless current_branch == branch_name
         raise CheckoutFailed, "Failed to check out '#{branch_name}'"
       end

@@ -79,6 +79,14 @@ module Octopolo
         Git.check_out name
       end
 
+      it "checks out the given branch name without after pull" do
+        Git.should_receive(:fetch)
+        Git.should_receive(:perform).with("checkout #{name}")
+        Git.should_not_receive(:pull)
+        Git.should_receive(:current_branch) { name }
+        Git.check_out(name, false)
+      end
+
       it "raises an exception if the current branch is not the requested branch afterward" do
         Git.should_receive(:fetch)
         Git.should_receive(:perform)
