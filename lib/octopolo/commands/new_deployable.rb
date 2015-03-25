@@ -8,6 +8,6 @@ command 'new-deployable' do |c|
   c.action do |global_options, options, args|
     require_relative '../scripts/new_deployable'
     options = global_options.merge(options)
-    Octopolo::Scripts::NewDeployable.new.execute(options[:delete_old_branches])
+    Octopolo::Scripts::NewDeployable.new.execute(options)
   end
 end

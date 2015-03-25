@@ -8,6 +8,6 @@ command 'new-staging' do |c|
   c.action do |global_options, options, args|
     require_relative '../scripts/new_staging'
     options = global_options.merge(options)
-    Octopolo::Scripts::NewStaging.new.execute(options[:delete_old_branches])
+    Octopolo::Scripts::NewStaging.new.execute(options)
   end
 end
