@@ -1,3 +1,8 @@
+#### v0.3.6
+* Some git commands are expected to return non-zero
+
+  > Brian Bergstrom: : https://github.com/sportngin/octopolo/pull/51
+
 #### v0.3.5
 * Dated branch delete flag patch
 
