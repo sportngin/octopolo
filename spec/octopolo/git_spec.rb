@@ -11,7 +11,7 @@ module Octopolo
       before { Git.cli = cli }
 
       it "performs the given subcommand" do
-        cli.should_receive(:perform).with("git #{command}")
+        cli.should_receive(:perform).with("git #{command}", true, false)
         Git.perform command
       end
     end
