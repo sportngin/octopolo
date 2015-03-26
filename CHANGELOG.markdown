@@ -1,3 +1,4 @@
+#### v0.3.5
 * Dated branch delete flag patch
 
   > Brian Bergstrom: Andy Fleener: https://github.com/sportngin/octopolo/pull/50
