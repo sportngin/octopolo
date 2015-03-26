@@ -29,7 +29,8 @@ module Octopolo
     #
     #   > Git.perform "status"
     #   # => output of `git status`
-    def self.perform(subcommand, options={:ignore_non_zero => false})
+    def self.perform(subcommand, options={})
+      options[:ignore_non_zero] ||= false
       cli.perform("git #{subcommand}", true, options[:ignore_non_zero])
     end
 
