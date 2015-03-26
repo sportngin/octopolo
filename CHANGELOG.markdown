@@ -1,7 +1,3 @@
-* Dated branch delete flag patch
-
-  > Brian Bergstrom: Andy Fleener: https://github.com/sportngin/octopolo/pull/50
-
 #### v0.3.4
 * Adding delete flag to dated branch creation commands for non-interactive support
 
