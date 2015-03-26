@@ -28,18 +28,17 @@ module Octopolo
         subject.perform(command).should == result
       end
 
-      it "should handle exception gracefully" do
+      it "should raise exception" do
         subject.should_receive(:say).with(command)
         Open3.should_receive(:capture3).with(command).and_raise(exception_message)
-        subject.should_receive(:say).with("Unable to perform '#{command}': #{exception_message}")
-        subject.perform(command).should be_nil
+        expect { subject.perform(command) }.to raise_error(RuntimeError, exception_message)
       end
 
-      it "should handle errors gracefully" do
+      it "should raise errors from command" do
         subject.should_receive(:say).with(command)
         Open3.should_receive(:capture3).with(command).and_return([result, "kaboom", status_error])
-        subject.should_receive(:say).with("Unable to perform '#{command}': exit_status=1; stderr=kaboom")
-        subject.perform(command).should be_nil
+        expect { subject.perform(command) }
+            .to raise_error(RuntimeError, "command=#{command}; exit_status=1; stderr=kaboom")
       end
 
       it "should not speak the command if told not to" do

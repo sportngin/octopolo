@@ -1,3 +1,12 @@
+#### v0.3.4
+* Adding delete flag to dated branch creation commands for non-interactive support
+
+  > Brian Bergstrom: Andy Fleener: https://github.com/sportngin/octopolo/pull/49
+
+* Command Errors Should Not Be Rescued
+
+  > Brian Bergstrom: Andy Fleener: https://github.com/sportngin/octopolo/pull/47
+
 #### v0.3.3
 * Errors from CLI commands should throw and exception
 
