@@ -21,9 +21,9 @@ module Octopolo
       let(:creator) { stub(:DatedBranchCreator) }
 
       it "instantiates a new creator and performs it" do
-        DatedBranchCreator.should_receive(:new).with(type) { creator }
+        DatedBranchCreator.should_receive(:new).with(type, true) { creator }
         creator.should_receive(:perform)
-        DatedBranchCreator.perform(type).should == creator
+        DatedBranchCreator.perform(type, true).should == creator
       end
     end
 

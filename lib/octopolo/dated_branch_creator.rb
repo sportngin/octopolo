@@ -27,7 +27,7 @@ module Octopolo
     #
     # Returns a DatedBranchCreator
     def self.perform(branch_type, should_delete_old_branches=false)
-      new(branch_type).tap do |creator|
+      new(branch_type, should_delete_old_branches).tap do |creator|
         creator.perform
       end
     end
