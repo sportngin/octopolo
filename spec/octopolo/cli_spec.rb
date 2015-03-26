@@ -41,6 +41,13 @@ module Octopolo
             .to raise_error(RuntimeError, "command=#{command}; exit_status=1; stderr=kaboom")
       end
 
+      it "should ignore non zero return from command" do
+        subject.should_receive(:say).with(command)
+        Open3.should_receive(:capture3).with(command).and_return([result, "kaboom", status_error])
+        subject.should_receive(:say).with(result)
+        expect { subject.perform(command, true, true) }.to_not raise_error
+      end
+
       it "should not speak the command if told not to" do
         subject.should_receive(:say).with(command).never
         subject.perform(command, false)

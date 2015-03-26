@@ -176,7 +176,7 @@ module Octopolo
       it "fetches the latest code and merges the given branch name" do
         Git.should_receive(:if_clean).and_yield
         Git.should_receive(:fetch)
-        Git.should_receive(:perform).with("merge --no-ff origin/#{branch_name}")
+        Git.should_receive(:perform).with("merge --no-ff origin/#{branch_name}", :ignore_non_zero => true)
         Git.should_receive(:clean?) { true }
         Git.should_receive(:push)
 
@@ -186,7 +186,7 @@ module Octopolo
       it "does not push and raises MergeFailed if the merge failed" do
         Git.should_receive(:if_clean).and_yield
         Git.should_receive(:fetch)
-        Git.should_receive(:perform).with("merge --no-ff origin/#{branch_name}")
+        Git.should_receive(:perform).with("merge --no-ff origin/#{branch_name}", :ignore_non_zero => true)
         Git.should_receive(:clean?) { false }
         Git.should_not_receive(:push)
 
@@ -434,7 +434,7 @@ module Octopolo
 
       it "leverages git-extra's delete-branch command" do
         Git.should_receive(:perform).with("push origin :#{branch_name}")
-        Git.should_receive(:perform).with("branch -D #{branch_name}")
+        Git.should_receive(:perform).with("branch -D #{branch_name}", :ignore_non_zero => true)
         Git.delete_branch branch_name
       end
     end

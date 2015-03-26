@@ -22,12 +22,14 @@ module Octopolo
     # Public: Perform the given Git subcommand
     #
     # subcommand - String containing the subcommand and its parameters
+    # options - Hash
+    #   ignore_non_zero - Ignore exception for non-zero exit status of command.
     #
     # Example:
     #
     #   > Git.perform "status"
     #   # => output of `git status`
-    def self.perform(subcommand)
+    def self.perform(subcommand, options={:ignore_non_zero => false})
       cli.perform "git #{subcommand}"
     end
 
@@ -125,7 +127,7 @@ module Octopolo
     def self.merge(branch_name)
       Git.if_clean do
         Git.fetch
-        perform "merge --no-ff origin/#{branch_name}"
+        perform "merge --no-ff origin/#{branch_name}", :ignore_non_zero => true
         raise MergeFailed unless Git.clean?
         Git.push
       end
@@ -233,7 +235,7 @@ module Octopolo
     # branch_name - The name of the branch to delete
     def self.delete_branch(branch_name)
       perform "push origin :#{branch_name}"
-      perform "branch -D #{branch_name}"
+      perform "branch -D #{branch_name}", :ignore_non_zero => true
     end
 
     # Public: Branches which have been merged into the given branch
