@@ -1,0 +1,22 @@
+<%= description %>
+
+Deploy Plan
+-----------
+How will the changes to resolve this issue be deployed.
+
+Rollback Plan
+-------------
+How would the changes applied to resolve this issue be reverted?
+
+URLs
+----
+<% pivotal_ids.each do |pivotal_id| -%>
+* [pivotal tracker story <%= pivotal_id %>](https://www.pivotaltracker.com/story/show/<%= pivotal_id %>)
+<% end -%>
+<% jira_ids.each do |jira_id| -%>
+* [Jira issue <%= jira_id %>](<%= jira_url %>/browse/<%= jira_id %>)
+<% end -%>
+
+QA Plan
+-------
+Provide a detailed QA plan, or other developers will retain the right to mock you mercilessly.
