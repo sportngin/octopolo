@@ -1,4 +1,5 @@
 require_relative "../scripts"
+require_relative "../scripts/issue"
 require_relative "../github"
 require_relative "../pivotal/story_commenter"
 require_relative "../jira/story_commenter"
