@@ -3,16 +3,16 @@ require "octokit"
 module Octopolo
   module GitHub
     class Issue
-      attr_accessor :issue_data
+      attr_accessor :data
       attr_accessor :repo_name
       attr_accessor :number
 
-      def initialize repo_name, number, issue_data = nil
+      def initialize repo_name, number, data = nil
         raise MissingParameter if repo_name.nil? or number.nil?
 
         self.repo_name = repo_name
         self.number = number
-        self.issue_data = issue_data
+        self.data = data
       end
 
       # Public: Create a issue for the given repo
@@ -27,33 +27,33 @@ module Octopolo
         # create via the API
         creator = IssueCreator.perform(repo_name, options)
         # wrap in our class
-        new repo_name, creator.number, creator.issue_data
+        new repo_name, creator.number, creator.data
       end
 
-      def issue_data
-        @issue_data ||= GitHub.issue(repo_name, number)
+      def data
+        @data ||= GitHub.issue(repo_name, number)
       rescue Octokit::NotFound
         raise NotFound
       end
 
       def title
-        issue_data.title
+        data.title
       end
 
       def url
-        issue_data.html_url
+        data.html_url
       end
 
       def commenter_names
-        exlude_octopolo_user (comments.map{ |comment| GitHub::User.new(comment.user.login).author_name }.uniq)
+        exclude_octopolo_user (comments.map{ |comment| GitHub::User.new(comment.user.login).author_name }.uniq)
       end
 
-      def exlude_octopolo_user(user_list)
+      def exclude_octopolo_user(user_list)
         user_list.reject{|u| GitHub.excluded_users.include?(u) }
       end
 
       def body
-        issue_data.body || ""
+        data.body || ""
       end
 
       def external_urls

@@ -20,7 +20,7 @@ module Octopolo
 
         it "optionally accepts the github data" do
           pr = PullRequest.new repo_name, pr_number, octo
-          pr.pull_request_data.should == octo
+          pr.data.should == octo
         end
 
         it "fails if not given a repo name" do
@@ -32,23 +32,23 @@ module Octopolo
         end
       end
 
-      context "#pull_request_data" do
+      context "#data" do
         let(:pull) { PullRequest.new repo_name, pr_number }
 
         it "fetches the details from GitHub" do
           GitHub.should_receive(:pull_request).with(pull.repo_name, pull.number) { octo }
-          pull.pull_request_data.should == octo
+          pull.data.should == octo
         end
 
         it "catches the information" do
           GitHub.should_receive(:pull_request).once { octo }
-          pull.pull_request_data
-          pull.pull_request_data
+          pull.data
+          pull.data
         end
 
         it "fails if given invalid information" do
           GitHub.should_receive(:pull_request).and_raise(Octokit::NotFound)
-          expect { pull.pull_request_data }.to raise_error(PullRequest::NotFound)
+          expect { pull.data }.to raise_error(PullRequest::NotFound)
         end
       end
 
@@ -56,7 +56,7 @@ module Octopolo
         let(:pull) { PullRequest.new repo_name, pr_number }
 
         before do
-          pull.stub(pull_request_data: octo)
+          pull.stub(data: octo)
         end
 
         context "#title" do
@@ -276,13 +276,13 @@ module Octopolo
       context ".create repo_name, options" do
         let(:options) { stub(:hash) }
         let(:number) { stub(:integer) }
-        let(:pull_request_data) { stub(:pull_request_data)}
-        let(:creator) { stub(:pull_request_creator, number: number, pull_request_data: pull_request_data)}
+        let(:data) { stub(:data)}
+        let(:creator) { stub(:pull_request_creator, number: number, data: data)}
         let(:pull_request) { stub(:pull_request) }
 
         it "passes on to PullRequestCreator and returns a new PullRequest" do
           PullRequestCreator.should_receive(:perform).with(repo_name, options) { creator }
-          PullRequest.should_receive(:new).with(repo_name, number, pull_request_data) { pull_request }
+          PullRequest.should_receive(:new).with(repo_name, number, data) { pull_request }
           PullRequest.create(repo_name, options).should == pull_request
         end
       end
@@ -295,13 +295,13 @@ module Octopolo
         context "#add_labels" do
           it "sends the correct arguments to add_labels_to_pull for multiple labels" do
             allow(Label).to receive(:build_label_array) {[label1,label2]}
-            expect(GitHub).to receive(:add_labels_to_pull).with(repo_name, pr_number, ["low-risk","high-risk"])
+            expect(GitHub).to receive(:add_labels_to_issue).with(repo_name, pr_number, ["low-risk","high-risk"])
             pull_request.add_labels([label1, label2])
           end
 
           it "sends the correct arguments to add_labels_to_pull for a single label" do
             allow(Label).to receive(:build_label_array) {[label1]}
-            expect(GitHub).to receive(:add_labels_to_pull).with(repo_name, pr_number, ["low-risk"])
+            expect(GitHub).to receive(:add_labels_to_issue).with(repo_name, pr_number, ["low-risk"])
             pull_request.add_labels(label1)
           end
         end

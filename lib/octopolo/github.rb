@@ -109,10 +109,6 @@ module Octopolo
       client.remove_label *args
     end
 
-    def self.add_labels_to_pull *args
-      client.add_labels_to_an_issue *args
-    end
-
     def self.add_labels_to_issue *args
       client.add_labels_to_an_issue *args
     end

@@ -20,7 +20,7 @@ module Octopolo
 
         it "optionally accepts the github data" do
           i = Issue.new repo_name, issue_number, octo
-          i.issue_data.should == octo
+          i.data.should == octo
         end
 
         it "fails if not given a repo name" do
@@ -32,23 +32,23 @@ module Octopolo
         end
       end
 
-      context "#issue_data" do
+      context "#data" do
         let(:issue) { Issue.new repo_name, issue_number }
 
         it "fetches the details from GitHub" do
           GitHub.should_receive(:issue).with(issue.repo_name, issue.number) { octo }
-          issue.issue_data.should == octo
+          issue.data.should == octo
         end
 
         it "catches the information" do
           GitHub.should_receive(:issue).once { octo }
-          issue.issue_data
-          issue.issue_data
+          issue.data
+          issue.data
         end
 
         it "fails if given invalid information" do
           GitHub.should_receive(:issue).and_raise(Octokit::NotFound)
-          expect { issue.issue_data }.to raise_error(Issue::NotFound)
+          expect { issue.data }.to raise_error(Issue::NotFound)
         end
       end
 
@@ -56,7 +56,7 @@ module Octopolo
         let(:issue) { Issue.new repo_name, issue_number }
 
         before do
-          issue.stub(issue_data: octo)
+          issue.stub(data: octo)
         end
 
         context "#title" do
@@ -100,8 +100,8 @@ module Octopolo
           let(:users) { ["anfleene", "tst-octopolo"] }
 
           it "excludes the github octopolo users" do
-            issue.exlude_octopolo_user(users).should_not include("tst-octopolo")
-            issue.exlude_octopolo_user(users).should include("anfleene")
+            issue.exclude_octopolo_user(users).should_not include("tst-octopolo")
+            issue.exclude_octopolo_user(users).should include("anfleene")
           end
         end
 
@@ -187,13 +187,13 @@ module Octopolo
       context ".create repo_name, options" do
         let(:options) { stub(:hash) }
         let(:number) { stub(:integer) }
-        let(:issue_data) { stub(:issue_data)}
-        let(:creator) { stub(:issue_creator, number: number, issue_data: issue_data)}
+        let(:data) { stub(:data)}
+        let(:creator) { stub(:issue_creator, number: number, data: data)}
         let(:issue) { stub(:issue) }
 
         it "passes on to IssueCreator and returns a new Issue" do
           IssueCreator.should_receive(:perform).with(repo_name, options) { creator }
-          Issue.should_receive(:new).with(repo_name, number, issue_data) { issue }
+          Issue.should_receive(:new).with(repo_name, number, data) { issue }
           Issue.create(repo_name, options).should == issue
         end
       end
