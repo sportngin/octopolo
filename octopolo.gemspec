@@ -19,7 +19,7 @@ Gem::Specification.new do |gem|
   gem.add_dependency 'rake'
   gem.add_dependency 'gli', '~> 2.13'
   gem.add_dependency 'hashie', '~> 1.2'
-  gem.add_dependency 'octokit', '~> 3.8.0'
+  gem.add_dependency 'octokit', '~> 2.7.1'
   gem.add_dependency 'highline', '~> 1.6'
   gem.add_dependency 'pivotal-tracker', '~> 0.5'
   gem.add_dependency 'jiralicious'

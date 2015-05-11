@@ -40,7 +40,8 @@ module Octopolo
       # Returns an array with the first element being the issue's
       # number, the second being a Mash of the response from GitHub's API
       def perform
-        result = GitHub.create_issue(repo_name, title, body)
+        # labels option cannot be null due to https://github.com/octokit/octokit.rb/pull/538
+        result = GitHub.create_issue(repo_name, title, body, labels: [])
         # capture the information
         self.number = result.number
         self.data = result
