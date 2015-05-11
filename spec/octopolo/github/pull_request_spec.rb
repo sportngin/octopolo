@@ -130,11 +130,11 @@ module Octopolo
 
           before do
             pull.stub(comments: [comment1, comment2], author_names: [])
+            GitHub::User.stub(:new).with("pbyrne").and_return(stub(:author_name => "pbyrne"))
+            GitHub::User.stub(:new).with("anfleene").and_return(stub(:author_name => "anfleene"))
           end
 
           it "returns the names of the commit authors" do
-            GitHub.stub(:user).with("pbyrne").and_return(Hashie::Mash.new(:name => "pbyrne"))
-            GitHub.stub(:user).with("anfleene").and_return(Hashie::Mash.new(:name => "anfleene"))
             names = pull.commenter_names
             names.should_not be_empty
             names.size.should == 2
@@ -160,8 +160,8 @@ module Octopolo
           let(:users) { ["anfleene", "tst-octopolo"] }
 
           it "excludes the github octopolo users" do
-            pull.exlude_octopolo_user(users).should_not include("tst-octopolo")
-            pull.exlude_octopolo_user(users).should include("anfleene")
+            pull.exclude_octopolo_user(users).should_not include("tst-octopolo")
+            pull.exclude_octopolo_user(users).should include("anfleene")
           end
         end
 

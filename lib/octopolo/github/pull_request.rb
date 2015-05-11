@@ -72,14 +72,14 @@ module Octopolo
       end
 
       def commenter_names
-        exlude_octopolo_user (comments.map{ |comment| GitHub::User.new(comment.user.login).author_name }.uniq - author_names)
+        exclude_octopolo_user (comments.map{ |comment| GitHub::User.new(comment.user.login).author_name }.uniq - author_names)
       end
 
       def author_names
-        exlude_octopolo_user commits.map(&:author_name).uniq
+        exclude_octopolo_user commits.map(&:author_name).uniq
       end
 
-      def exlude_octopolo_user(user_list)
+      def exclude_octopolo_user(user_list)
         user_list.reject{|u| GitHub.excluded_users.include?(u) }
       end
 
