@@ -10,7 +10,7 @@ module Octopolo
       attr_accessor :options
       # for caputuring the created issue information
       attr_accessor :number
-      attr_accessor :issue_data
+      attr_accessor :data
 
       # Public: Create a issue for the given repo with the given options
       #
@@ -43,14 +43,14 @@ module Octopolo
         result = GitHub.create_issue(repo_name, title, body)
         # capture the information
         self.number = result.number
-        self.issue_data = result
+        self.data = result
       rescue => e
         raise CannotCreate, e.message
       end
 
-      # Public: The created issue's details
-      def issue_data
-        @issue_data || raise(NotYetCreated)
+      # Public: The created resource's details
+      def data
+        @data || raise(NotYetCreated)
       end
 
       # Public: The created issue's number
@@ -86,11 +86,26 @@ module Octopolo
         config.jira_url
       end
 
+      # Public: Rendering template for body property
+      #
+      # Returns Name of template file
+      def renderer_template
+        Renderer::ISSUE_BODY
+      end
+
+      # Public: Temporary file for body editing
+      #
+      # Returns Name of temporary file
+      def body_edit_temp_name
+        'octopolo_issue'
+      end
+
+
       # Public: The body (primary copy) of the issue
       #
       # Returns a String
       def body
-        output = Renderer.render Renderer::ISSUE_BODY, body_locals
+        output = Renderer.render renderer_template, body_locals
         output = edit_body(output) if options[:editor]
         output
       end
@@ -99,7 +114,7 @@ module Octopolo
         return body unless ENV['EDITOR']
 
         # Open the file, write the contents, and close it
-        tempfile = Tempfile.new(['octopolo_issue', '.md'])
+        tempfile = Tempfile.new([body_edit_temp_name, '.md'])
         tempfile.write(body)
         tempfile.close
 

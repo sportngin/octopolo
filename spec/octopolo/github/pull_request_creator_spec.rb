@@ -34,7 +34,7 @@ module Octopolo
       end
 
       context "#perform" do
-        let(:pull_request_data) { stub(:mash, number: 123) }
+        let(:data) { stub(:mash, number: 123) }
 
         before do
           creator.stub({
@@ -46,10 +46,10 @@ module Octopolo
         end
 
         it "generates the pull request with the given details and retains the information" do
-          GitHub.should_receive(:create_pull_request).with(repo_name, destination_branch, source_branch, title, body) { pull_request_data }
-          creator.perform.should == pull_request_data
-          creator.number.should == pull_request_data.number
-          creator.pull_request_data.should == pull_request_data
+          GitHub.should_receive(:create_pull_request).with(repo_name, destination_branch, source_branch, title, body) { data }
+          creator.perform.should == data
+          creator.number.should == data.number
+          creator.data.should == data
         end
 
         it "raises CannotCreate if any exception occurs" do
@@ -72,17 +72,17 @@ module Octopolo
         end
       end
 
-      context "#pull_request_data" do
-        let(:details) { stub(:pull_request_data) }
+      context "#data" do
+        let(:details) { stub(:data) }
 
         it "returns the stored pull request details" do
-          creator.pull_request_data = details
-          creator.pull_request_data.should == details
+          creator.data = details
+          creator.data.should == details
         end
 
         it "raises an exception if no information has been captured yet" do
-          creator.pull_request_data = nil
-          expect { creator.pull_request_data }.to raise_error(PullRequestCreator::NotYetCreated)
+          creator.data = nil
+          expect { creator.data }.to raise_error(PullRequestCreator::NotYetCreated)
         end
       end
 

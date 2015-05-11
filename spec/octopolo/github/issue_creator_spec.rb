@@ -32,7 +32,7 @@ module Octopolo
       end
 
       context "#perform" do
-        let(:issue_data) { stub(:mash, number: 123) }
+        let(:data) { stub(:mash, number: 123) }
 
         before do
           creator.stub({
@@ -42,10 +42,10 @@ module Octopolo
         end
 
         it "generates the issue with the given details and retains the information" do
-          GitHub.should_receive(:create_issue).with(repo_name, title, body) { issue_data }
-          creator.perform.should == issue_data
-          creator.number.should == issue_data.number
-          creator.issue_data.should == issue_data
+          GitHub.should_receive(:create_issue).with(repo_name, title, body) { data }
+          creator.perform.should == data
+          creator.number.should == data.number
+          creator.data.should == data
         end
 
         it "raises CannotCreate if any exception occurs" do
@@ -68,17 +68,17 @@ module Octopolo
         end
       end
 
-      context "#issue_data" do
-        let(:details) { stub(:issue_data) }
+      context "#data" do
+        let(:details) { stub(:data) }
 
         it "returns the stored issue details" do
-          creator.issue_data = details
-          creator.issue_data.should == details
+          creator.data = details
+          creator.data.should == details
         end
 
         it "raises an exception if no information has been captured yet" do
-          creator.issue_data = nil
-          expect { creator.issue_data }.to raise_error(IssueCreator::NotYetCreated)
+          creator.data = nil
+          expect { creator.data }.to raise_error(IssueCreator::NotYetCreated)
         end
       end
 
