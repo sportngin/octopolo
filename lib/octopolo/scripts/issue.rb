@@ -38,7 +38,7 @@ module Octopolo
         end
       end
 
-      # Private: Ask questions to create an issue
+      # Protected: Ask questions to create an issue
       def ask_questionaire
         announce
         ask_title
@@ -46,49 +46,49 @@ module Octopolo
         ask_pivotal_ids if config.use_pivotal_tracker
         ask_jira_ids if config.use_jira
       end
-      private :ask_questionaire
+      protected :ask_questionaire
 
-      # Private: Announce to the user the branches the issue will reference
+      # Protected: Announce to the user the branches the issue will reference
       def announce
         cli.say "Preparing an issue for #{config.github_repo}."
       end
-      private :announce
+      protected :announce
 
-      # Private: Ask for a title for the issue
+      # Protected: Ask for a title for the issue
       def ask_title
         self.title = cli.prompt "Title:"
       end
-      private :ask_title
+      protected :ask_title
 
-      # Private: Ask for a label for the issue
+      # Protected: Ask for a label for the issue
       def ask_label
         choices = Octopolo::GitHub::Label.get_names(label_choices).concat(["None"])
         response = cli.ask(label_prompt, choices)
         self.label = Hash[label_choices.map{|l| [l.name,l]}][response]
       end
-      private :ask_label
+      protected :ask_label
 
-      # Private: Ask for a Pivotal Tracker story IDs
+      # Protected: Ask for a Pivotal Tracker story IDs
       def ask_pivotal_ids
         self.pivotal_ids = cli.prompt("Pivotal Tracker story ID(s):").split(/[\s,]+/)
       end
-      private :ask_pivotal_ids
+      protected :ask_pivotal_ids
 
-      # Private: Ask for a Pivotal Tracker story IDs
+      # Protected: Ask for a Pivotal Tracker story IDs
       def ask_jira_ids
         self.jira_ids = cli.prompt("Jira story ID(s):").split(/[\s,]+/)
       end
-      private :ask_pivotal_ids
+      protected :ask_pivotal_ids
 
-      # Private: Create the issue
+      # Protected: Create the issue
       #
       # Returns a GitHub::Issue object
       def create_issue
         self.issue = GitHub::Issue.create config.github_repo, issue_attributes
       end
-      private :create_issue
+      protected :create_issue
 
-      # Private: The attributes to send to create the issue
+      # Protected: The attributes to send to create the issue
       #
       # Returns a Hash
       def issue_attributes
@@ -99,14 +99,14 @@ module Octopolo
           editor: options[:editor]
         }
       end
-      private :issue_attributes
+      protected :issue_attributes
 
-      # Private: Handle the newly created issue
+      # Protected: Handle the newly created issue
       def open_issue
         cli.copy_to_clipboard issue.url
         cli.open issue.url
       end
-      private :open_issue
+      protected :open_issue
 
       def label_prompt
         'Label:'
@@ -121,19 +121,19 @@ module Octopolo
           Pivotal::StoryCommenter.new(story_id, issue.url).perform
         end if pivotal_ids
       end
-      private :update_pivotal
+      protected :update_pivotal
 
       def update_jira
         jira_ids.each do |story_id|
           Jira::StoryCommenter.new(story_id, issue.url).perform
         end if jira_ids
       end
-      private :update_jira
+      protected :update_jira
 
       def update_label
         issue.add_labels(label) if label
       end
-      private :update_label
+      protected :update_label
 
     end
   end
