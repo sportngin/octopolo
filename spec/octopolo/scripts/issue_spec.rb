@@ -42,7 +42,7 @@ module Octopolo
           expect(subject).to receive(:update_pivotal)
           expect(subject).to receive(:update_jira)
           expect(subject).to receive(:update_label)
-          expect(subject).to receive(:open_issue)
+          expect(subject).to receive(:open_in_browser)
 
           subject.execute
         end
@@ -216,7 +216,7 @@ module Octopolo
 
       end
 
-      context "#open_issue" do
+      context "#open_in_browser" do
         before do
           subject.issue = issue
           issue.stub(:url) { issue_url }
@@ -225,7 +225,7 @@ module Octopolo
         it "copies the issue's URL to the clipboard and opens it in the browser" do
           cli.should_receive(:copy_to_clipboard) { issue.url}
           cli.should_receive(:open) { issue.url }
-          subject.send(:open_issue)
+          subject.send(:open_in_browser)
         end
       end
     end

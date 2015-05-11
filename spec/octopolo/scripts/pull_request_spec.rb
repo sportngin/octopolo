@@ -45,7 +45,7 @@ module Octopolo
           expect(subject).to receive(:update_pivotal)
           expect(subject).to receive(:update_jira)
           expect(subject).to receive(:update_label)
-          expect(subject).to receive(:open_pull_request)
+          expect(subject).to receive(:open_in_browser)
 
           subject.execute
         end
@@ -255,7 +255,7 @@ module Octopolo
 
       end
 
-      context "#open_pull_request" do
+      context "#open_in_browser" do
         before do
           subject.pull_request = pull_request
           pull_request.stub(:url) { pull_request_url }
@@ -264,7 +264,7 @@ module Octopolo
         it "copies the pull request's URL to the clipboard and opens it in the browser" do
           cli.should_receive(:copy_to_clipboard) { pull_request.url}
           cli.should_receive(:open) { pull_request.url }
-          subject.send(:open_pull_request)
+          subject.send(:open_in_browser)
         end
       end
     end

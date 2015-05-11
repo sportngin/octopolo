@@ -9,6 +9,8 @@ module Octopolo
       attr_accessor :pull_request
       attr_accessor :destination_branch
 
+      alias_method :issue, :pull_request
+
       def self.execute(destination_branch=nil, options={})
         new(destination_branch, options).execute
       end
@@ -16,10 +18,6 @@ module Octopolo
       def initialize(destination_branch=nil, options={})
         @destination_branch = destination_branch || default_destination_branch
         @options = options
-      end
-
-      def issue
-        pull_request
       end
 
       def default_destination_branch
@@ -33,7 +31,7 @@ module Octopolo
           update_pivotal
           update_jira
           update_label
-          open_pull_request
+          open_in_browser
         end
       end
 
@@ -83,13 +81,6 @@ module Octopolo
         }
       end
       private :pull_request_attributes
-
-      # Private: Handle the newly created pull request
-      def open_pull_request
-        cli.copy_to_clipboard pull_request.url
-        cli.open pull_request.url
-      end
-      private :open_pull_request
 
     end
   end

@@ -34,7 +34,7 @@ module Octopolo
           update_pivotal
           update_jira
           update_label
-          open_issue
+          open_in_browser
         end
       end
 
@@ -102,11 +102,11 @@ module Octopolo
       protected :issue_attributes
 
       # Protected: Handle the newly created issue
-      def open_issue
+      def open_in_browser
         cli.copy_to_clipboard issue.url
         cli.open issue.url
       end
-      protected :open_issue
+      protected :open_in_browser
 
       def label_prompt
         'Label:'
