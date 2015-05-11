@@ -14,8 +14,7 @@ module Octopolo
       #   destination_branch: Which branch to merge into
       #   source_branch: Which branch to be merged
       def initialize repo_name, options
-        self.repo_name = repo_name
-        self.options = options
+        super(repo_name, options)
       end
 
       # Public: Create the pull request
