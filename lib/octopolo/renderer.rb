@@ -5,6 +5,7 @@ module Octopolo
   class Renderer
     # Constants for the template file names
     PULL_REQUEST_BODY = "pull_request_body"
+    ISSUE_BODY = "issue_body"
 
     # Public: Render a given ERB template
     #

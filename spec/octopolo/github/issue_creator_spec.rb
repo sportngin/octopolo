@@ -1,14 +1,12 @@
 require "spec_helper"
-require_relative "../../../lib/octopolo/github"
+require_relative "../../../lib/octopolo/github/issue_creator"
 
 module Octopolo
   module GitHub
-    describe PullRequestCreator do
-      let(:creator) { PullRequestCreator.new repo_name, options }
+    describe IssueCreator do
+      let(:creator) { IssueCreator.new repo_name, options }
       let(:repo_name) { "foo/bar" }
       let(:options) { {} }
-      let(:destination_branch) { "master" }
-      let(:source_branch) { "cool-feature" }
       let(:title) { "title" }
       let(:body) { "body" }
       let(:pivotal_ids) { %w(123 456) }
@@ -19,15 +17,15 @@ module Octopolo
         let(:creator) { stub }
 
         it "instantiates a creator and perfoms it" do
-          PullRequestCreator.should_receive(:new).with(repo_name, options) { creator }
+          IssueCreator.should_receive(:new).with(repo_name, options) { creator }
           creator.should_receive(:perform)
-          PullRequestCreator.perform(repo_name, options).should == creator
+          IssueCreator.perform(repo_name, options).should == creator
         end
       end
 
       context ".new repo_name, options" do
         it "remembers the repo name and options" do
-          creator = PullRequestCreator.new repo_name, options
+          creator = IssueCreator.new repo_name, options
           creator.repo_name.should == repo_name
           creator.options.should == options
         end
@@ -38,75 +36,49 @@ module Octopolo
 
         before do
           creator.stub({
-            destination_branch: destination_branch,
-            source_branch: source_branch,
             title: title,
             body: body,
           })
         end
 
-        it "generates the pull request with the given details and retains the information" do
-          GitHub.should_receive(:create_pull_request).with(repo_name, destination_branch, source_branch, title, body) { data }
+        it "generates the issue with the given details and retains the information" do
+          GitHub.should_receive(:create_issue).with(repo_name, title, body, labels: []) { data }
           creator.perform.should == data
           creator.number.should == data.number
           creator.data.should == data
         end
 
         it "raises CannotCreate if any exception occurs" do
-          GitHub.should_receive(:create_pull_request).and_raise(Octokit::UnprocessableEntity)
-          expect { creator.perform }.to raise_error(PullRequestCreator::CannotCreate)
+          GitHub.should_receive(:create_issue).and_raise(Octokit::UnprocessableEntity)
+          expect { creator.perform }.to raise_error(IssueCreator::CannotCreate)
         end
       end
 
       context "#number" do
         let(:number) { 123 }
 
-        it "returns the stored pull request number" do
+        it "returns the stored issue number" do
           creator.number = number
           creator.number.should == number
         end
 
-        it "raises an exception if no pull request has been created yet" do
+        it "raises an exception if no issue has been created yet" do
           creator.number = nil
-          expect { creator.number }.to raise_error(PullRequestCreator::NotYetCreated)
+          expect { creator.number }.to raise_error(IssueCreator::NotYetCreated)
         end
       end
 
       context "#data" do
         let(:details) { stub(:data) }
 
-        it "returns the stored pull request details" do
+        it "returns the stored issue details" do
           creator.data = details
           creator.data.should == details
         end
 
         it "raises an exception if no information has been captured yet" do
           creator.data = nil
-          expect { creator.data }.to raise_error(PullRequestCreator::NotYetCreated)
-        end
-      end
-
-      context "#destination_branch" do
-        it "fetches from the options" do
-          creator.options[:destination_branch] = destination_branch
-          creator.destination_branch.should == destination_branch
-        end
-
-        it "raises an exception if it's missing" do
-          creator.options[:destination_branch] = nil
-          expect { creator.destination_branch }.to raise_error(PullRequestCreator::MissingAttribute)
-        end
-      end
-
-      context "#source_branch" do
-        it "fetches from the options" do
-          creator.options[:source_branch] = source_branch
-          creator.source_branch.should == source_branch
-        end
-
-        it "raises an exception if it's missing" do
-          creator.options[:source_branch] = nil
-          expect { creator.source_branch }.to raise_error(PullRequestCreator::MissingAttribute)
+          expect { creator.data }.to raise_error(IssueCreator::NotYetCreated)
         end
       end
 
@@ -121,7 +93,7 @@ module Octopolo
 
         it "raises an exception if it's missing" do
           creator.options[:title] = nil
-          expect { creator.title }.to raise_error(PullRequestCreator::MissingAttribute)
+          expect { creator.title }.to raise_error(IssueCreator::MissingAttribute)
         end
       end
 
@@ -183,7 +155,7 @@ module Octopolo
           end
 
           it "creates a tempfile, write default contents, and close it" do
-            Tempfile.should_receive(:new).with(['octopolo_pull_request', '.md']) { tempfile }
+            Tempfile.should_receive(:new).with(['octopolo_issue', '.md']) { tempfile }
             tempfile.should_receive(:write).with(body)
             tempfile.should_receive(:close)
             creator.edit_body body
@@ -219,7 +191,7 @@ module Octopolo
         end
 
         it "renders the body template with the body locals" do
-          Renderer.should_receive(:render).with(Renderer::PULL_REQUEST_BODY, locals) { output }
+          Renderer.should_receive(:render).with(Renderer::ISSUE_BODY, locals) { output }
           creator.body.should == output
         end
 
@@ -234,7 +206,7 @@ module Octopolo
           end
 
           it "calls the edit_body method" do
-            Renderer.should_receive(:render).with(Renderer::PULL_REQUEST_BODY, locals) { output }
+            Renderer.should_receive(:render).with(Renderer::ISSUE_BODY, locals) { output }
             creator.should_receive(:edit_body).with(output) { edited_output }
             creator.body.should == edited_output
           end

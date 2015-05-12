@@ -54,6 +54,14 @@ module Octopolo
         end
       end
 
+      context ".issue *args" do
+        it "sends onto the client wrapper" do
+          client.should_receive(:issue).with("a", "b") { data }
+          result = GitHub.issue("a", "b")
+          result.should == data
+        end
+      end
+
       context ".pull_request_commits *args" do
         it "sends onto the client wrapper" do
           client.should_receive(:pull_request_commits).with("a", "b") { data }
@@ -93,6 +101,13 @@ module Octopolo
         it "sends the pull request to the API" do
           client.should_receive(:create_pull_request).with("repo", "destination_branch", "source_branch", "title", "body") { data }
           GitHub.create_pull_request("repo", "destination_branch", "source_branch", "title", "body").should == data
+        end
+      end
+
+      context ".create_issue" do
+        it "sends the issue to the API" do
+          client.should_receive(:create_issue).with("repo", "title", "body") { data }
+          GitHub.create_issue("repo", "title", "body").should == data
         end
       end
 
