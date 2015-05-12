@@ -1,3 +1,8 @@
+#### v0.4.0
+* Adding issue command to create issues.
+
+  > Brian Bergstrom: Nick LaMuro: https://github.com/sportngin/octopolo/pull/54
+
 #### v0.3.6
 * Some git commands are expected to return non-zero
 
