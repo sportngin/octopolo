@@ -6,6 +6,7 @@ module Octopolo
     attr_accessor :full_name
     attr_accessor :editor
     attr_accessor :pivotal_token
+    attr_accessor :team
     attr_accessor :attributes # keep the whole hash
 
     # Public: Initialize a new UserConfig instance
