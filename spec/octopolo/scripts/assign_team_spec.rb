@@ -21,7 +21,7 @@ module Octopolo
           cli.should_receive(:ask).with("Assign yourself to which team?", ["Team Funny", "Team Happy", "Team Joyous"])
           allow(Octopolo::UserConfig).to receive(:set)
           allow(Octopolo::GitHub::Label).to receive(:all_from_repo).and_return([label0, label1, label2, label3])
-          allow(config).to receive(:exists).and_return(true)
+          allow(config).to receive(:config_exists?).and_return(true)
           subject.execute
         end
       end
@@ -34,7 +34,7 @@ module Octopolo
           allow(Octopolo::GitHub::Label).to receive(:all_from_repo).and_return([label3])
           allow(Octopolo::GitHub::Label).to receive(:first_or_create)
           allow(Octopolo::UserConfig).to receive(:set)
-          allow(config).to receive(:exists).and_return(true)
+          allow(config).to receive(:config_exists?).and_return(true)
           subject.execute
         end
       end
@@ -45,7 +45,7 @@ module Octopolo
           subject.cli = cli
           cli.should_receive(:prompt).with("Please type in your team name: ").and_return("Jolly")
           allow(Octopolo::UserConfig).to receive(:set)
-          allow(fake_config).to receive(:exists).and_return(false)
+          allow(fake_config).to receive(:config_exists?).and_return(false)
           subject.execute
         end
       end

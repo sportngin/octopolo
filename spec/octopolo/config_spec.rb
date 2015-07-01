@@ -353,9 +353,15 @@ module Octopolo
 
     context "#exists" do
       it "should return true if .octopolo or .automation exists" do
+        File.stub(:exists?) {true}
+        subject.config_exists?.should eq(true)
       end
 
       it "should return false if .octopolo or .automation doesn't exist" do
+        File.stub(:exists?) {false}
+        allow(Dir).to receive(:pwd).and_return('test/directory')
+        allow(Dir).to receive(:chdir)
+        subject.config_exists?.should eq(false)
       end
     end
   end

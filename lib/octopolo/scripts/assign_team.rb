@@ -17,13 +17,12 @@ module Octopolo
         @options = options
       end
 
-      # Public: Perform the script
       def execute
         ask_team
       end
 
       def ask_team
-        if config.exists == false
+        if config.config_exists? == false
           team = type_team
           Octopolo::UserConfig.set(:team, team)
         else

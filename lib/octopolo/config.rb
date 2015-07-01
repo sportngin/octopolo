@@ -44,14 +44,14 @@ module Octopolo
       @github_repo || raise(MissingRequiredAttribute, "GitHub Repo is required")
     end
 
-    def exists
+    def config_exists?
       if filepath = FILE_NAMES.detect {|filename| File.exists?(filename)}
         return true
       else
         old_dir = Dir.pwd
         Dir.chdir('..')
         if old_dir != Dir.pwd
-          exists
+          config_exists?
         else
           return false
         end
