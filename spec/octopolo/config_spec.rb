@@ -351,7 +351,7 @@ module Octopolo
       end
     end
 
-    context "#exists" do
+    context "#config_exists" do
       it "should return true if .octopolo or .automation exists" do
         File.stub(:exists?) {true}
         subject.config_exists?.should eq(true)

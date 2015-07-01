@@ -45,7 +45,7 @@ module Octopolo
     end
 
     def config_exists?
-      if filepath = FILE_NAMES.detect {|filename| File.exists?(filename)}
+      if FILE_NAMES.detect {|filename| File.exists?(filename)}
         return true
       else
         old_dir = Dir.pwd

@@ -24,9 +24,8 @@ module Octopolo
       def ask_team
         if config.config_exists? == false
           team = type_team
-          Octopolo::UserConfig.set(:team, team)
         else
-          teams = Octopolo::GitHub::Label.get_names(team_label_choices).find_all {|name| name.start_with?("Team")}
+          teams = Octopolo::GitHub::Label.get_names(team_label_choices).find_all {|name| name.start_with?("Team ")}
           if teams.empty?
             team = type_team
             color = "%06x" % (rand * 0xffffff)
@@ -36,8 +35,8 @@ module Octopolo
             response = cli.ask("Assign yourself to which team?", teams)
             team = Hash[team_label_choices.map{|t| [t.name, t]}][response]
           end
-          Octopolo::UserConfig.set(:team, team)
         end
+        Octopolo::UserConfig.set(:team, team)
       end
 
       def team_label_choices
