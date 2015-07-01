@@ -1,0 +1,51 @@
+require_relative "../scripts"
+
+module Octopolo
+  module Scripts
+    class AssignTeam
+      include CLIWrapper
+      include ConfigWrapper
+
+      attr_accessor :options
+      attr_accessor :filepath
+      attr_accessor :filename
+
+      def self.execute
+        new.execute
+      end
+
+      def initialize(options = nil)
+        @options = options
+      end
+
+      # Public: Perform the script
+      def execute
+        ask_team
+      end
+
+      def ask_team
+        teams = Octopolo::Github::Label.get_names(team_label_choices)
+        cli.ask("Assign yourself to which team?", teams)
+        team = Hash[team_label_choices.map{|t| [t.name, t]}][response]
+        change_or_add_octopolo_file(team)
+      end
+
+      def team_label_choices
+        Octopolo::GitHub::Label.where("label.name.start_with?(Team)") || []
+      end
+
+      def change_or_add_octopolo_file(team)
+        if File.exists?('~/.octopolo.yml')
+          data = YAML.load_file '~/.octopolo.yml'
+          data['team'] = team
+          File.open(path, 'w') {|f| YAML.dump(data, f)}
+        else
+          file = File.new('~/.octopolo.yml', 'w')
+          data = YAML.load_file '~/.octopolo.yml'
+          data['team'] = team
+          File.open(path, 'w') {|f| YAML.dump(data, f)}
+        end
+      end
+    end
+  end
+end
