@@ -350,5 +350,13 @@ module Octopolo
         FileUtils.rm "spec/support/.octopolo.yml"
       end
     end
+
+    context "#exists" do
+      it "should return true if .octopolo or .automation exists" do
+      end
+
+      it "should return false if .octopolo or .automation doesn't exist" do
+      end
+    end
   end
 end

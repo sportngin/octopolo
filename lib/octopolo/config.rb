@@ -44,6 +44,20 @@ module Octopolo
       @github_repo || raise(MissingRequiredAttribute, "GitHub Repo is required")
     end
 
+    def exists
+      if filepath = FILE_NAMES.detect {|filename| File.exists?(filename)}
+        return true
+      else
+        old_dir = Dir.pwd
+        Dir.chdir('..')
+        if old_dir != Dir.pwd
+          exists
+        else
+          return false
+        end
+      end
+    end
+
     def user_notifications
       if [NilClass, Array, String].include?(@user_notifications.class)
         Array(@user_notifications) if @user_notifications

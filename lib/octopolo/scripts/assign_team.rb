@@ -1,4 +1,5 @@
 require_relative "../scripts"
+require_relative "../github"
 
 module Octopolo
   module Scripts
@@ -22,22 +23,31 @@ module Octopolo
       end
 
       def ask_team
-        teams = Octopolo::Github::Label.get_names(team_label_choices)
-        if teams.nil?
-          team_name = String(cli.prompt "Please type in your team name: ")
-          team = "Team #{team_name}"
-          color = "%06x" % (rand * 0xffffff)
-          label = {:name => team, :color => color}
-          Octopolo::Github::Label.first_or_create(label)
+        if config.exists == false
+          team = type_team
+          Octopolo::UserConfig.set(:team, team)
         else
-          cli.ask("Assign yourself to which team?", teams)
-          team = Hash[team_label_choices.map{|t| [t.name, t]}][response]
+          teams = Octopolo::GitHub::Label.get_names(team_label_choices).find_all {|name| name.start_with?("Team")}
+          if teams.empty?
+            team = type_team
+            color = "%06x" % (rand * 0xffffff)
+            label = {:name => team, :color => color}
+            Octopolo::GitHub::Label.first_or_create(label)
+          else
+            response = cli.ask("Assign yourself to which team?", teams)
+            team = Hash[team_label_choices.map{|t| [t.name, t]}][response]
+          end
+          Octopolo::UserConfig.set(:team, team)
         end
-        Octopolo::UserConfig.set(:team, team)
       end
 
       def team_label_choices
-        Octopolo::GitHub::Label.where("label.name.start_with?(Team)")
+        Octopolo::GitHub::Label.all
+      end
+
+      def type_team
+        team_name = String(cli.prompt "Please type in your team name: ")
+        return "Team #{team_name}"
       end
     end
   end
