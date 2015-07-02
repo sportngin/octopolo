@@ -45,17 +45,13 @@ module Octopolo
     end
 
     def config_exists?
-      if FILE_NAMES.detect {|filename| File.exists?(filename)}
-        return true
-      else
-        old_dir = Dir.pwd
-        Dir.chdir('..')
-        if old_dir != Dir.pwd
-          config_exists?
-        else
-          return false
-        end
-      end
+      return true if FILE_NAMES.detect {|filename| File.exists?(filename)}
+
+      old_dir = Dir.pwd
+      Dir.chdir('..')
+      result = old_dir != Dir.pwd ? config_exists? : false
+      Dir.chdir(old_dir)
+      return result
     end
 
     def user_notifications
