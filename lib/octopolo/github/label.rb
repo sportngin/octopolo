@@ -11,7 +11,7 @@ module Octopolo
 
       def initialize(args)
         self.name = args[:name]
-        self.color = args[:color]
+        self.color = args[:color] || "%06x" % (rand * 0xffffff)
       end
 
       def == (obj)
@@ -40,11 +40,6 @@ module Octopolo
         unless all_from_repo.include?(label)
           GitHub.add_label(config.github_repo, label.name, label.color)
         end
-      end
-
-      def self.create(label_hash)
-        label = initialize(label_hash)
-        first_or_create(label)
       end
 
       # Public: Finds or creates each of the passed in labels
