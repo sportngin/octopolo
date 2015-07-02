@@ -42,6 +42,11 @@ module Octopolo
         end
       end
 
+      def self.create(label_hash)
+        label = initialize(label_hash)
+        first_or_create(label)
+      end
+
       # Public: Finds or creates each of the passed in labels
       #
       # labels - label objects, can be a single label, an array of labels,

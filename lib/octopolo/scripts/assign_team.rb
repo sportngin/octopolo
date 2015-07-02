@@ -30,7 +30,7 @@ module Octopolo
             team = type_team
             color = "%06x" % (rand * 0xffffff)
             label = {:name => team, :color => color}
-            Octopolo::GitHub::Label.first_or_create(label)
+            Octopolo::GitHub::Label.create(label)
           else
             response = cli.ask("Assign yourself to which team?", teams)
             team = Hash[team_label_choices.map{|t| [t.name, t]}][response]

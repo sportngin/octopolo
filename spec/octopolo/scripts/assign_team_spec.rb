@@ -32,7 +32,7 @@ module Octopolo
         it "should ask the user to type in a team" do
           cli.should_receive(:prompt).with("Please type in your team name: ").and_return("Jolly")
           allow(Octopolo::GitHub::Label).to receive(:all_from_repo).and_return([label3])
-          allow(Octopolo::GitHub::Label).to receive(:first_or_create)
+          allow(Octopolo::GitHub::Label).to receive(:create)
           allow(Octopolo::UserConfig).to receive(:set)
           allow(config).to receive(:config_exists?).and_return(true)
           subject.execute
