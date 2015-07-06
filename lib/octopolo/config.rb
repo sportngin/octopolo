@@ -44,6 +44,7 @@ module Octopolo
       @github_repo || raise(MissingRequiredAttribute, "GitHub Repo is required")
     end
 
+    # Public: checks to see if the user's config file exists in current directory or in above directory somewhere
     def config_exists?
       return true if FILE_NAMES.detect {|filename| File.exists?(filename)}
 
