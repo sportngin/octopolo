@@ -28,8 +28,8 @@ module Octopolo
       def ask_team
         if config.config_exists? == false
           team = type_team
-        else # Currently set to only look for teams with the format "Team ______"
-          teams = Octopolo::GitHub::Label.get_names(team_label_choices).find_all {|name| name.start_with?("Team ")}
+        else # Currently set to only look for teams with the format "team-______"
+          teams = Octopolo::GitHub::Label.get_names(team_label_choices).find_all {|name| name.start_with?("team-")}
           if teams.empty?
             team = type_team
             label = Octopolo::GitHub::Label.new(:name => team)
@@ -47,10 +47,10 @@ module Octopolo
         Octopolo::GitHub::Label.all
       end
 
-      # Public: asks to type in the team name and returns that name with the format "Team _______"
+      # Public: asks to type in the team name and returns that name with the format "team-______"
       def type_team
         team_name = String(cli.prompt "Please type in your team name: ")
-        return "Team #{team_name}"
+        return "team-#{team_name}"
       end
     end
   end
