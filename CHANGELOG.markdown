@@ -1,3 +1,8 @@
+#### v0.4.1
+* Fix warnings; Ruby 2.1 for development
+
+  > Chris Arcand: : https://github.com/sportngin/octopolo/pull/45
+
 #### v0.4.0
 * Adding issue command to create issues.
 
