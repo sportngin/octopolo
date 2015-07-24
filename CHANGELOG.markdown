@@ -1,3 +1,8 @@
+#### v1.0.0
+* Upgrade Octokit
+
+  > Brian Bergstrom: Andy Fleener: https://github.com/sportngin/octopolo/pull/65
+
 #### v0.4.1
 * Fix warnings; Ruby 2.1 for development
 
