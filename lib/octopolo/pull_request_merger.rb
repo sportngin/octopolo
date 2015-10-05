@@ -53,7 +53,7 @@ module Octopolo
       when GitHub::PullRequest::CommentFailed
         cli.say "Unable to write comment. Please navigate to #{pull_request.url} and add the comment, '#{comment_body}'"
       else
-        cli.say "An unknown error occurred:  #{e.class.to_s}"
+        cli.say "An unknown error occurred: #{e.inspect}"
       end
       false
     end
