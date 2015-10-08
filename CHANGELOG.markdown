@@ -1,3 +1,8 @@
+#### v1.0.1
+* Inspect error to get message + class name
+
+  > Bob Black: Andy Fleener: https://github.com/sportngin/octopolo/pull/67
+
 #### v1.0.0
 * Upgrade Octokit
 
