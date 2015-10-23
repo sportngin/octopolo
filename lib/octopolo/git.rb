@@ -5,6 +5,7 @@ module Octopolo
   class Git
     NO_BRANCH = "(no branch)"
     DEFAULT_DIRTY_MESSAGE = "Your Git index is not clean. Commit, stash, or otherwise clean up the index before continuing."
+    DIRTY_CONFIRM_MESSAGE = "Your Git index is not clean. Do you want to continue?"
     # we use date-based tags, so look for anything starting with a 4-digit year
     RELEASE_TAG_FILTER = /^\d{4}.*/
     RECENT_TAG_LIMIT = 9
@@ -109,7 +110,7 @@ module Octopolo
 
     # Public: Perform the block if the Git index is clean
     def self.if_clean(message=DEFAULT_DIRTY_MESSAGE)
-      if clean? || cli.ask_boolean(message + "\nDo you want to continue?")
+      if clean? || cli.ask_boolean(DIRTY_CONFIRM_MESSAGE)
         yield
       else
         alert_dirty_index message

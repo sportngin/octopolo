@@ -125,6 +125,8 @@ module Octopolo
     context ".if_clean" do
       let(:custom_message) { "Some other message" }
 
+      before { Git.cli = cli }
+
       it "performs the block if the git index is clean" do
         Git.should_receive(:clean?) { true }
         Math.should_receive(:log).with(1)
@@ -134,8 +136,19 @@ module Octopolo
         end
       end
 
-      it "does not perform the block if the git index is not clean" do
+      it "performs the block if the git index is not clean and user responds yes" do
         Git.should_receive(:clean?) { false }
+        cli.should_receive(:ask_boolean).with(Git::DIRTY_CONFIRM_MESSAGE) { true }
+        Math.should_receive(:log).with(1)
+
+        Git.if_clean do
+          Math.log 1
+        end
+      end
+
+      it "does not perform the block if the git index is not clean and user responds no" do
+        Git.should_receive(:clean?) { false }
+        cli.should_receive(:ask_boolean).with(Git::DIRTY_CONFIRM_MESSAGE) { false }
         Math.should_not_receive(:log)
         Git.should_receive(:alert_dirty_index).with(Git::DEFAULT_DIRTY_MESSAGE)
 
@@ -144,8 +157,9 @@ module Octopolo
         end
       end
 
-      it "prints a custom message if git index is not clean" do
+      it "prints a custom message if git index is not clean and user responds no" do
         Git.should_receive(:clean?) { false }
+        cli.should_receive(:ask_boolean).with(Git::DIRTY_CONFIRM_MESSAGE) { false }
         Math.should_not_receive(:log)
         Git.should_receive(:alert_dirty_index).with(custom_message)
 
