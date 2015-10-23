@@ -6,6 +6,8 @@ module Octopolo
   module GitHub
     class PullRequest < Issue
 
+      include CLIWrapper
+
       # Public: All closed pull requests for a given repo
       #
       # repo_name - Full name ("account/repo") of the repo in question
@@ -63,6 +65,17 @@ module Octopolo
 
       def commits
         @commits ||= Commit.for_pull_request self
+      end
+
+      def self.current
+        pulls = GitHub.pull_requests(repo_name, :head => Git.current_branch)
+        if pulls.length != 1
+          cli.say "Multiple pull requests found for branch #{Git.current_branch}" if pulls.length > 1
+          cli.say "No pull request found for branch #{Git.current_branch}" if pulls.length < 1
+          return nil
+        else
+          pulls.first
+        end
       end
 
     end
