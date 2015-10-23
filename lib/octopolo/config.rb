@@ -61,6 +61,15 @@ module Octopolo
       end
     end
 
+    def validations
+      case @validations
+      when Array, String then Array(@validations)
+      when NilClass then []
+      else
+        raise(InvalidAttributeSupplied, "Validations must be an array or string")
+      end
+    end
+
     def use_pivotal_tracker
       !!@use_pivotal_tracker
     end
