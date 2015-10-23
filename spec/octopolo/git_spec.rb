@@ -148,9 +148,10 @@ module Octopolo
 
       it "does not perform the block if the git index is not clean and user responds no" do
         Git.should_receive(:clean?) { false }
-        cli.should_receive(:ask_boolean).with(Git::DIRTY_CONFIRM_MESSAGE) { false }
+        cli.should_receive(:ask_boolean).with(Git::DIRTY_CONFIRM_MESSAGE) { false}
         Math.should_not_receive(:log)
         Git.should_receive(:alert_dirty_index).with(Git::DEFAULT_DIRTY_MESSAGE)
+
 
         Git.if_clean do
           Math.log 1
@@ -180,7 +181,7 @@ module Octopolo
         cli.should_receive(:say).with(" ")
         Git.should_receive(:perform).with("status")
 
-        Git.alert_dirty_index message
+        expect{Git.alert_dirty_index message}.to raise_error
       end
     end
 

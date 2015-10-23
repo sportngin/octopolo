@@ -123,6 +123,7 @@ module Octopolo
       cli.say message
       cli.say " "
       perform "status"
+      raise DirtyIndex
     end
 
     # Public: Merge the given remote branch into the current branch
@@ -277,5 +278,6 @@ module Octopolo
     CheckoutFailed = Class.new(StandardError)
     MergeFailed = Class.new(StandardError)
     NoBranchOfType = Class.new(StandardError)
+    DirtyIndex = Class.new(StandardError)
   end
 end
