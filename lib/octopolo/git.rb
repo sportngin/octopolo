@@ -109,7 +109,7 @@ module Octopolo
 
     # Public: Perform the block if the Git index is clean
     def self.if_clean(message=DEFAULT_DIRTY_MESSAGE)
-      if clean? || cli.ask_boolean(message + "\nDo you want to continue?") 
+      if clean? || cli.ask_boolean(message + "\nDo you want to continue?")
         yield
       else
         alert_dirty_index message
