@@ -6,7 +6,8 @@ module Octopolo
   module GitHub
     class PullRequest < Issue
 
-      include CLIWrapper
+      extend CLIWrapper
+      extend ConfigWrapper
 
       # Public: All closed pull requests for a given repo
       #
@@ -68,7 +69,7 @@ module Octopolo
       end
 
       def self.current
-        pulls = GitHub.pull_requests(repo_name, :head => Git.current_branch)
+        pulls = GitHub.pull_requests(config.github_repo, :head => Git.current_branch)
         if pulls.length != 1
           cli.say "Multiple pull requests found for branch #{Git.current_branch}" if pulls.length > 1
           cli.say "No pull request found for branch #{Git.current_branch}" if pulls.length < 1
@@ -76,6 +77,9 @@ module Octopolo
         else
           pulls.first
         end
+      rescue => e
+        cli.say "An error occurred while getting the current branch: #{e.message}"
+        return nil
       end
 
     end
