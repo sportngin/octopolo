@@ -69,10 +69,11 @@ module Octopolo
       end
 
       def self.current
-        pulls = GitHub.pull_requests(config.github_repo, :head => Git.current_branch)
+        current_branch = Git.current_branch
+        pulls = GitHub.pull_requests(config.github_repo, :head => current_branch)
         if pulls.length != 1
-          cli.say "Multiple pull requests found for branch #{Git.current_branch}" if pulls.length > 1
-          cli.say "No pull request found for branch #{Git.current_branch}" if pulls.length < 1
+          cli.say "Multiple pull requests found for branch #{current_branch}" if pulls.length > 1
+          cli.say "No pull request found for branch #{current_branch}" if pulls.length < 1
           return nil
         else
           pulls.first
