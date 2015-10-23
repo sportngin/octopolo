@@ -24,6 +24,7 @@ module Octopolo
 
       # Public: Perform the script
       def execute
+        self.pull_request_id ||= GitHub::PullRequest.current.try(:number)
         self.pull_request_id ||= cli.prompt("Pull Request ID: ")
         GitHub.connect do
           if config.deployable_label

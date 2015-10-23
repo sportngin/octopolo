@@ -23,6 +23,7 @@ module Octopolo
 
       def initialize(pull_request_id=nil)
         @pull_request_id = pull_request_id
+        @pull_request_id ||= GitHub::PullRequest.current.try(:number)
         @pull_request_id ||= cli.prompt("Pull Request ID: ")
       end
 
