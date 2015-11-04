@@ -10,7 +10,7 @@ module Octopolo
       let(:config) { stub(user_notifications: ['NickLaMuro'],
                           github_repo: 'grumpy_cat',
                           deployable_label: true) }
-      let(:pull_request) { stub(add_labels: true, remove_labels: true) }
+      let(:pull_request) { stub(add_labels: true, remove_labels: true, number: 7) }
       before do
         allow(subject).to receive(:cli) { cli }
         allow(subject).to receive(:config) { config }
@@ -33,10 +33,26 @@ module Octopolo
         context "without a PR ID passed in with the command" do
           subject { described_class.new }
 
-          it "prompts for a PR ID" do
-            cli.should_receive(:prompt)
-              .with("Pull Request ID: ")
-              .and_return("42")
+          context "with an existing PR for the current branch" do
+            before do
+              GitHub::PullRequest.should_receive(:current) { pull_request }
+            end
+
+            it "takes the pull requests ID from the current branch" do
+              PullRequestMerger.should_receive(:perform).with(Git::DEPLOYABLE_PREFIX, pull_request.number, :user_notifications => config.user_notifications)
+            end
+          end
+
+          context "without an existing PR for the current branch" do
+            before do
+              GitHub::PullRequest.should_receive(:current) { nil }
+            end
+
+            it "prompts for a PR ID" do
+              cli.should_receive(:prompt)
+                .with("Pull Request ID: ")
+                .and_return("42")
+            end
           end
         end
 

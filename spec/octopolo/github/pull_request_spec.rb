@@ -287,6 +287,50 @@ module Octopolo
         end
       end
 
+      context ".current" do
+        let(:branch_name) { "branch-name" }
+        let(:error_message) { "some error message" }
+        let(:pull) { PullRequest.new repo_name, pr_number }
+
+        before do
+          Octopolo.config.stub(:github_repo) { repo_name }
+        end
+
+        it "calls GitHub.pull_requests with the current repo/branch and return a single pull request" do
+          Git.should_receive(:current_branch) { branch_name }
+          GitHub.should_receive(:search_issues) { double(total_count: 1, items: [pull]) }
+          PullRequest.current.should == pull
+        end
+
+        it "returns nil when Git.current_branch fails" do
+          Git.should_receive(:current_branch) { raise error_message }
+          CLI.should_receive(:say).with("An error occurred while getting the current branch: #{error_message}")
+          PullRequest.current.should == nil
+        end
+
+        it "returns nil when GitHub.pull_requests fails" do
+          Git.should_receive(:current_branch) { branch_name }
+          GitHub.should_receive(:search_issues) { raise error_message }
+          CLI.should_receive(:say).with("An error occurred while getting the current branch: #{error_message}")
+          PullRequest.current.should == nil
+        end
+
+        it "returns nil when more than one PR exists" do
+          Git.should_receive(:current_branch) { branch_name }
+          GitHub.should_receive(:search_issues) { double(total_count: 2, items: [pull, pull]) }
+          CLI.should_receive(:say).with("Multiple pull requests found for branch #{branch_name}")
+          PullRequest.current.should == nil
+        end
+
+        it "returns nil when no PR exists" do
+          Git.should_receive(:current_branch) { branch_name }
+          GitHub.should_receive(:search_issues) { double(total_count: 0, items: []) }
+          CLI.should_receive(:say).with("No pull request found for branch #{branch_name}")
+          PullRequest.current.should == nil
+        end
+
+      end
+
       context "labeling" do
         let(:label1) { Label.new(name: "low-risk", color: "343434") }
         let(:label2) { Label.new(name: "high-risk", color: '565656') }
