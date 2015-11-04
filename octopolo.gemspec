@@ -16,7 +16,7 @@ Gem::Specification.new do |gem|
   gem.require_paths = ["lib"]
   gem.version       = Octopolo::VERSION
 
-  gem.add_dependency 'rake', '~> 10.4'
+  gem.add_dependency 'rake', '~> 10.1'
   gem.add_dependency 'gli', '~> 2.13'
   gem.add_dependency 'hashie', '~> 1.2'
   gem.add_dependency 'octokit', '~> 4.0.1'
