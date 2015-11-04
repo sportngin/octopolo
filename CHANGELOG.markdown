@@ -1,3 +1,12 @@
+#### v1.1.0
+* Auto pull request
+
+  > Scott Trenda, Brian Bergstrom: Chris Arcand: https://github.com/sportngin/octopolo/pull/70
+
+* issue64 - improve git if_clean check
+
+  > newzac: Scott Trenda, Brian Bergstrom: https://github.com/sportngin/octopolo/pull/69
+
 #### v1.0.2
 * Fix Rake Depenency Issues
 
