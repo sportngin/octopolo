@@ -21,9 +21,9 @@ module Octopolo
       let(:creator) { stub(:DatedBranchCreator) }
 
       it "instantiates a new creator and performs it" do
-        DatedBranchCreator.should_receive(:new).with(type) { creator }
+        DatedBranchCreator.should_receive(:new).with(type, true) { creator }
         creator.should_receive(:perform)
-        DatedBranchCreator.perform(type).should == creator
+        DatedBranchCreator.perform(type, true).should == creator
       end
     end
 
@@ -111,6 +111,21 @@ module Octopolo
           cli.should_receive(:ask_boolean).with(message) { false }
           cli.should_not_receive(:perform)
           subject.delete_old_branches
+        end
+
+        context "delete flag" do
+          before do
+            subject.stub(extra_branches: extras)
+            subject.should_delete_old_branches = true
+          end
+
+          it "deletes these branches non-interactively" do
+            cli.should_not_receive(:ask_boolean).with(message)
+            extras.each do |extra|
+              Git.should_receive(:delete_branch).with(extra)
+            end
+            subject.delete_old_branches
+          end
         end
       end
     end

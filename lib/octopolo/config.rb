@@ -81,6 +81,10 @@ module Octopolo
       @jira_url || raise(MissingRequiredAttribute, "Jira Url is required") if use_jira
     end
 
+    def semantic_versioning
+      @semantic_versioning || false
+    end
+
     # end defaults
 
     def self.parse

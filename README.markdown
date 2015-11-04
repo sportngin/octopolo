@@ -8,6 +8,10 @@ A set of Github workflow scripts.
 
 ### GitHub Octopolo
 
+#### Octopolo Installation
+
+`$ gem install octopolo`
+
 #### GitHub Setup
 
 Interactively set up your local machine for GitHub octopolo, including

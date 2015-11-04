@@ -8,6 +8,7 @@ module Octopolo
     #
     # command - A String containing the command to perform.
     # say_command - A Boolean determining whether to display the performed command to the screen. (default: true)
+    # ignore_non_zero - Ignore exception for non-zero exit status of command.
     #
     # Examples
     #
@@ -20,12 +21,13 @@ module Octopolo
     #   # => "Already up-to-date."
     #
     # Returns the output of the command as a String.
-    def self.perform(command, say_command = true)
+    def self.perform(command, say_command = true, ignore_non_zero=false)
       # display the command
       say command if say_command
       # and then perform it
       if Open3.respond_to?(:capture3)
         output, error, status = Open3.capture3(command)
+        raise "command=#{command}; exit_status=#{status.exitstatus}; stderr=#{error}" unless status.success? || ignore_non_zero
       else
         # Only necessary as long as we use 1.8.7, which doesn't have Open3.capture3
         output = `#{command}`
@@ -35,8 +37,6 @@ module Octopolo
       say output if say_command
       # return the output of the command
       output
-    rescue => e
-      say "Unable to perform '#{command}': #{e.message}"
     end
 
     # Public: Perform the command, but do not print out the command

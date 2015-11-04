@@ -1,6 +1,6 @@
 require_relative "scripts"
 require_relative "git"
-require_relative "github/pull_request"
+require_relative "github"
 require_relative "dated_branch_creator"
 
 module Octopolo
@@ -53,7 +53,7 @@ module Octopolo
       when GitHub::PullRequest::CommentFailed
         cli.say "Unable to write comment. Please navigate to #{pull_request.url} and add the comment, '#{comment_body}'"
       else
-        cli.say "An uknown error occured:  #{e.class.to_s}"
+        cli.say "An unknown error occurred: #{e.inspect}"
       end
       false
     end

@@ -1,6 +1,3 @@
-require_relative "../github"
-require_relative "user"
-
 module Octopolo
   module GitHub
     class Commit

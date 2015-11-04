@@ -11,7 +11,7 @@ module Octopolo
       before { Git.cli = cli }
 
       it "performs the given subcommand" do
-        cli.should_receive(:perform).with("git #{command}")
+        cli.should_receive(:perform).with("git #{command}", true, false)
         Git.perform command
       end
     end
@@ -77,6 +77,14 @@ module Octopolo
         Git.should_receive(:pull)
         Git.should_receive(:current_branch) { name }
         Git.check_out name
+      end
+
+      it "checks out the given branch name without after pull" do
+        Git.should_receive(:fetch)
+        Git.should_receive(:perform).with("checkout #{name}")
+        Git.should_not_receive(:pull)
+        Git.should_receive(:current_branch) { name }
+        Git.check_out(name, false)
       end
 
       it "raises an exception if the current branch is not the requested branch afterward" do
@@ -168,7 +176,7 @@ module Octopolo
       it "fetches the latest code and merges the given branch name" do
         Git.should_receive(:if_clean).and_yield
         Git.should_receive(:fetch)
-        Git.should_receive(:perform).with("merge --no-ff origin/#{branch_name}")
+        Git.should_receive(:perform).with("merge --no-ff origin/#{branch_name}", :ignore_non_zero => true)
         Git.should_receive(:clean?) { true }
         Git.should_receive(:push)
 
@@ -178,7 +186,7 @@ module Octopolo
       it "does not push and raises MergeFailed if the merge failed" do
         Git.should_receive(:if_clean).and_yield
         Git.should_receive(:fetch)
-        Git.should_receive(:perform).with("merge --no-ff origin/#{branch_name}")
+        Git.should_receive(:perform).with("merge --no-ff origin/#{branch_name}", :ignore_non_zero => true)
         Git.should_receive(:clean?) { false }
         Git.should_not_receive(:push)
 
@@ -323,6 +331,21 @@ module Octopolo
       end
     end
 
+    context ".semver_tags" do
+      let(:valid1) { "0.0.1" }
+      let(:valid2) { "v0.0.3" }
+      let(:invalid) { "foothing" }
+      let(:tags) { [valid1, invalid, valid2].join("\n") }
+
+      it "returns all the tags set as a sematic version" do
+        Git.should_receive(:perform_quietly).with("tag") { tags }
+        release_tags = Git.semver_tags
+        release_tags.should_not include invalid
+        release_tags.should include valid1
+        release_tags.should include valid2
+      end
+    end
+
     context ".new_branch(new_branch_name, source_branch_name)" do
       let(:new_branch_name) { "foo" }
       let(:source_branch_name) { "bar" }
@@ -330,7 +353,7 @@ module Octopolo
       it "creates and pushes a new branch from the source branch" do
         Git.should_receive(:fetch)
         Git.should_receive(:perform).with("branch --no-track #{new_branch_name} origin/#{source_branch_name}")
-        Git.should_receive(:check_out).with(new_branch_name)
+        Git.should_receive(:check_out).with(new_branch_name, false)
         Git.should_receive(:perform).with("push --set-upstream origin #{new_branch_name}")
 
         Git.new_branch(new_branch_name, source_branch_name)
@@ -411,7 +434,7 @@ module Octopolo
 
       it "leverages git-extra's delete-branch command" do
         Git.should_receive(:perform).with("push origin :#{branch_name}")
-        Git.should_receive(:perform).with("branch -D #{branch_name}")
+        Git.should_receive(:perform).with("branch -D #{branch_name}", :ignore_non_zero => true)
         Git.delete_branch branch_name
       end
     end

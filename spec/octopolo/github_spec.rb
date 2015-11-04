@@ -24,7 +24,7 @@ module Octopolo
       it "properly handles if the github authentication isn't configured" do
         user_config.should_receive(:github_user).and_raise(UserConfig::MissingGitHubAuth)
         Scripts::GithubAuth.should_not_receive(:invoke)
-        expect { GitHub.client }.to raise_error(GitHub::TryAgain, "No GitHub API token stored. Please run `bundle exec github-auth` to generate your token.")
+        expect { GitHub.client }.to raise_error(GitHub::TryAgain, "No GitHub API token stored. Please run `op github-auth` to generate your token.")
       end
     end
 
@@ -50,6 +50,14 @@ module Octopolo
         it "sends onto the client wrapper" do
           client.should_receive(:pull_request).with("a", "b") { data }
           result = GitHub.pull_request("a", "b")
+          result.should == data
+        end
+      end
+
+      context ".issue *args" do
+        it "sends onto the client wrapper" do
+          client.should_receive(:issue).with("a", "b") { data }
+          result = GitHub.issue("a", "b")
           result.should == data
         end
       end
@@ -93,6 +101,13 @@ module Octopolo
         it "sends the pull request to the API" do
           client.should_receive(:create_pull_request).with("repo", "destination_branch", "source_branch", "title", "body") { data }
           GitHub.create_pull_request("repo", "destination_branch", "source_branch", "title", "body").should == data
+        end
+      end
+
+      context ".create_issue" do
+        it "sends the issue to the API" do
+          client.should_receive(:create_issue).with("repo", "title", "body") { data }
+          GitHub.create_issue("repo", "title", "body").should == data
         end
       end
 

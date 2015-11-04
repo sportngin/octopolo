@@ -1,5 +1,5 @@
 require "spec_helper"
-require_relative "../../../lib/octopolo/github/label"
+require_relative "../../../lib/octopolo/github"
 
 module Octopolo
   module GitHub
@@ -34,13 +34,13 @@ module Octopolo
 
       context "#first_or_create" do
         it "finds the existing label and doesn't do anything" do
-          allow(Label).to receive(:all).and_return([label1,label2])
+          allow(Label).to receive(:all_from_repo).and_return([label1,label2])
           expect(GitHub).not_to receive(:add_label)
           Label.first_or_create(label1)
         end
 
         it "doesn't find a label and creates one" do
-          allow(Label).to receive(:all).and_return([label1,label2])
+          allow(Label).to receive(:all_from_repo).and_return([label1,label2])
           expect(GitHub).to receive(:add_label).with(config.github_repo, "medium-risk", "454545")
           Label.first_or_create(Label.new(name: "medium-risk", color: "454545"))
         end
@@ -57,7 +57,7 @@ module Octopolo
       end
 
 
-      context "#build_label_array" do 
+      context "#build_label_array" do
         it "returns an array of label when given a label" do
           allow(Label).to receive(:first_or_create)
           expect(Label.send(:build_label_array,label1)).to eq([label1])

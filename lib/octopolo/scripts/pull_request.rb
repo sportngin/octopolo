@@ -1,29 +1,24 @@
 require_relative "../scripts"
-require_relative "../github/pull_request"
+require_relative "../scripts/issue"
+require_relative "../github"
 require_relative "../pivotal/story_commenter"
 require_relative "../jira/story_commenter"
-require_relative "../github/label"
 
 module Octopolo
   module Scripts
-    class PullRequest
-      include CLIWrapper
-      include ConfigWrapper
-      include GitWrapper
-
-      attr_accessor :title
+    class PullRequest < Issue
       attr_accessor :pull_request
-      attr_accessor :pivotal_ids
-      attr_accessor :jira_ids
       attr_accessor :destination_branch
-      attr_accessor :label
 
-      def self.execute(destination_branch=nil)
-        new(destination_branch).execute
+      alias_method :issue, :pull_request
+
+      def self.execute(destination_branch=nil, options={})
+        new(destination_branch, options).execute
       end
 
-      def initialize(destination_branch=nil)
+      def initialize(destination_branch=nil, options={})
         @destination_branch = destination_branch || default_destination_branch
+        @options = options
       end
 
       def default_destination_branch
@@ -37,7 +32,7 @@ module Octopolo
           update_pivotal
           update_jira
           update_label
-          open_pull_request
+          open_in_browser
         end
       end
 
@@ -65,32 +60,6 @@ module Octopolo
       end
       private :alert_reserved_and_exit
 
-      # Private: Ask for a title for the pull request
-      def ask_title
-        self.title = cli.prompt "Title:"
-      end
-      private :ask_title
-
-      # Private: Ask for a label for the pull request
-      def ask_label
-        labels = Octopolo::GitHub::Label.all
-        response = cli.ask("Label:", Octopolo::GitHub::Label.get_names(labels).unshift("Don't know yet"))
-        self.label = Hash[labels.map{|l| [l.name,l]}][response]
-      end
-      private :ask_label
-
-      # Private: Ask for a Pivotal Tracker story IDs
-      def ask_pivotal_ids
-        self.pivotal_ids = cli.prompt("Pivotal Tracker story ID(s):").split(/[\s,]+/)
-      end
-      private :ask_pivotal_ids
-
-      # Private: Ask for a Pivotal Tracker story IDs
-      def ask_jira_ids
-        self.jira_ids = cli.prompt("Jira story ID(s):").split(/[\s,]+/)
-      end
-      private :ask_pivotal_ids
-
       # Private: Create the pull request
       #
       # Returns a GitHub::PullRequest object
@@ -109,35 +78,10 @@ module Octopolo
           source_branch: git.current_branch,
           pivotal_ids: pivotal_ids,
           jira_ids: jira_ids,
+          editor: options[:editor]
         }
       end
       private :pull_request_attributes
-
-      # Private: Handle the newly created pull request
-      def open_pull_request
-        cli.copy_to_clipboard pull_request.url
-        cli.open pull_request.url
-      end
-      private :open_pull_request
-
-      def update_pivotal
-        pivotal_ids.each do |story_id|
-          Pivotal::StoryCommenter.new(story_id, pull_request.url).perform
-        end if pivotal_ids
-      end
-      private :update_pivotal
-
-      def update_jira
-        jira_ids.each do |story_id|
-          Jira::StoryCommenter.new(story_id, pull_request.url).perform
-        end if jira_ids
-      end
-      private :update_jira
-
-      def update_label
-        pull_request.add_labels(label) if label 
-      end
-      private :update_label
 
     end
   end

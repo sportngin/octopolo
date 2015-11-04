@@ -18,6 +18,10 @@ module Octopolo
 
       # Public: Perform the script
       def execute
+        if (!self.pull_request_id)
+          current = GitHub::PullRequest.current
+          self.pull_request_id = current.number if current
+        end
         self.pull_request_id ||= cli.prompt("Pull Request ID: ")
         PullRequestMerger.perform Git::STAGING_PREFIX, Integer(pull_request_id)
       end

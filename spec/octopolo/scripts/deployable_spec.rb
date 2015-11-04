@@ -4,92 +4,100 @@ require "octopolo/scripts/deployable"
 module Octopolo
   module Scripts
     describe Deployable do
-      let(:cli) { stub(:Cli) }
-      let(:config) { stub(:user_notifications => ['NickLaMuro'], :github_repo => 'foo', :deployable_label => true) }
-      before { Deployable.any_instance.stub(:cli => cli, :config => config) }
+      subject { described_class.new 42 }
+
+      let(:cli) { stub(prompt: 42) }
+      let(:config) { stub(user_notifications: ['NickLaMuro'],
+                          github_repo: 'grumpy_cat',
+                          deployable_label: true) }
+      let(:pull_request) { stub(add_labels: true, remove_labels: true, number: 7) }
+      before do
+        allow(subject).to receive(:cli) { cli }
+        allow(subject).to receive(:config) { config }
+        allow(Octopolo::GitHub::PullRequest).to receive(:new) { pull_request }
+        allow(PullRequestMerger).to receive(:perform) { true }
+        allow(Octopolo::GitHub).to receive(:check_connection) { true }
+      end
 
       context "#execute" do
-        subject { Deployable.new 42}
-        it "calls merge_and_label" do
-          expect(subject).to receive(:merge_and_label)
+        after do
           subject.execute
         end
 
-        context "#merge_and_label" do
-          before do
-            allow(PullRequestMerger).to receive(:perform)
+        context "with a PR ID passed in with the command" do
+          it "doesn't prompt for a PR ID" do
+            cli.should_not_receive(:prompt)
           end
+        end
 
-          context "deployable_label is set to true" do
-            it "calls ensure_label_was_created" do
-              expect(subject).to receive(:ensure_label_was_created)
-              subject.execute
+        context "without a PR ID passed in with the command" do
+          subject { described_class.new }
+
+          context "with an existing PR for the current branch" do
+            before do
+              GitHub::PullRequest.should_receive(:current) { pull_request }
+            end
+
+            it "takes the pull requests ID from the current branch" do
+              PullRequestMerger.should_receive(:perform).with(Git::DEPLOYABLE_PREFIX, pull_request.number, :user_notifications => config.user_notifications)
             end
           end
 
-          context "deployable_label is set to false " do 
-            let(:config) { stub(:user_notifications => ['NickLaMuro'], :github_repo => 'foo', :deployable_label => false) }
-            it "skips add_to_pull when deployable_label is false" do
-              expect(subject).to_not receive(:ensure_label_was_created)
-              subject.execute
+          context "without an existing PR for the current branch" do
+            before do
+              GitHub::PullRequest.should_receive(:current) { nil }
             end
+
+            it "prompts for a PR ID" do
+              cli.should_receive(:prompt)
+                .with("Pull Request ID: ")
+                .and_return("42")
+            end
+          end
+        end
+
+        context "with labelling enabled" do
+          it "adds the deployable label" do
+            pull_request.should_receive(:add_labels)
+          end
+
+          context "when merge to deployable fails" do
+            before do
+              allow(PullRequestMerger).to receive(:perform) { false }
+            end
+
+            it "removes the deployable label" do
+              pull_request.should_receive(:remove_labels)
+            end
+          end
+
+          context "when the merge to deployable succeeds" do
+            it "doesn't remove the deployable label" do
+              pull_request.should_not_receive(:remove_labels)
+            end
+          end
+
+          context "with an invalid auth token" do
+            before do
+              Octopolo::GitHub.stub(:check_connection) { raise GitHub::BadCredentials, "Your stored credentials were rejected by GitHub. Run `op github-auth` to generate a new token." }
+            end
+
+            it "should give a helpful error message saying your token is invalid" do
+              expect(CLI).to receive(:say).with("Your stored credentials were rejected by GitHub. Run `op github-auth` to generate a new token.")
+            end
+          end
+        end
+
+        context "with labelling disabled" do
+          let(:config) { stub(user_notifications: ['NickLaMuro'],
+                              github_repo: 'grumpy_cat',
+                              deployable_label: false) }
+
+          it "doesn't add the deployable label" do
+            pull_request.should_not_receive(:add_labels)
           end
         end
       end
-
-      context "#ensure_label_was_created" do
-        subject { Deployable.new 42}
-        let(:pull_request) {Octopolo::GitHub::PullRequest.new('foo', subject.pull_request_id, nil)}
-        before do
-          allow_any_instance_of(Octopolo::GitHub::PullRequest).to receive(:add_labels)
-        end
-
-        context "with a PR passed in via the command args" do
-          it "delegates the work to PullRequestMerger" do
-            expect(PullRequestMerger).to receive(:perform).with(Git::DEPLOYABLE_PREFIX, 42, :user_notifications => ["NickLaMuro"]) {true}
-            subject.ensure_label_was_created
-          end
-        end
-
-        context "with no PR passed in from the command args" do
-          subject { Deployable.new }
-
-          context "with a PR passed in through the cli" do
-            before do
-              cli.should_receive(:prompt)
-                 .with("Pull Request ID: ")
-                 .and_return("42")
-            end
-
-            it "delegates the work to PullRequestMerger" do
-              expect(PullRequestMerger).to receive(:perform).with(Git::DEPLOYABLE_PREFIX, 42, :user_notifications => ["NickLaMuro"]) {true}
-              subject.execute
-            end
-          end
-
-          context "with no PR passed in from the cli" do
-            before do
-              cli.should_receive(:prompt)
-                 .with("Pull Request ID: ")
-                 .and_return("foo")
-            end
-
-            it "delegates the work to PullRequestMerger" do
-              expect{ subject.execute }.to raise_error(ArgumentError)
-            end
-          end
-        end
-
-        context "when it creates a label successfully" do
-
-          it "calls remove_label when pull_request_merge fails" do
-            allow(PullRequestMerger).to receive(:perform) {nil}
-            expect_any_instance_of(Octopolo::GitHub::PullRequest).to receive(:remove_labels)
-            subject.ensure_label_was_created
-          end
-        end
-      end
-      
     end
   end
 end
