@@ -298,7 +298,7 @@ module Octopolo
 
         it "calls GitHub.pull_requests with the current repo/branch and return a single pull request" do
           Git.should_receive(:current_branch) { branch_name }
-          GitHub.should_receive(:pull_requests).with(repo_name, :head => branch_name) { [pull] }
+          GitHub.should_receive(:search_issues).and_return(double(total_count: 1, items: [pull]))
           PullRequest.current.should == pull
         end
 
@@ -310,21 +310,21 @@ module Octopolo
 
         it "returns nil when GitHub.pull_requests fails" do
           Git.should_receive(:current_branch) { branch_name }
-          GitHub.should_receive(:pull_requests).with(repo_name, :head => branch_name) { raise error_message }
+          GitHub.should_receive(:search_issues) { raise error_message }
           CLI.should_receive(:say).with("An error occurred while getting the current branch: #{error_message}")
           PullRequest.current.should == nil
         end
 
         it "returns nil when more than one PR exists" do
           Git.should_receive(:current_branch) { branch_name }
-          GitHub.should_receive(:pull_requests).with(repo_name, :head => branch_name) { [pull, pull] }
+          GitHub.should_receive(:search_issues).and_return(double(total_count: 2, items: [pull, pull]))
           CLI.should_receive(:say).with("Multiple pull requests found for branch #{branch_name}")
           PullRequest.current.should == nil
         end
 
-        it "returns nil when more than one PR exists" do
+        it "returns nil when no PR exists" do
           Git.should_receive(:current_branch) { branch_name }
-          GitHub.should_receive(:pull_requests).with(repo_name, :head => branch_name) { [] }
+          GitHub.should_receive(:search_issues).and_return(double(total_count: 0, items: []))
           CLI.should_receive(:say).with("No pull request found for branch #{branch_name}")
           PullRequest.current.should == nil
         end
