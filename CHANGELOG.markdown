@@ -1,3 +1,8 @@
+#### v1.0.2
+* Fix Rake Depenency Issues
+
+  > newzac: Brian Bergstrom: https://github.com/sportngin/octopolo/pull/71
+
 #### v1.0.1
 #### v1.0.1
 #### v1.0.1
