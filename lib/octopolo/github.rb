@@ -113,6 +113,10 @@ module Octopolo
       client.add_labels_to_an_issue *args
     end
 
+    def self.search_issues *args
+      client.search_issues *args
+    end
+
 
     # now that you've set up your credentials, try again
     TryAgain = Class.new(StandardError)
