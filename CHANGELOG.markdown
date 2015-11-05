@@ -1,3 +1,8 @@
+#### v1.1.1
+* Refine depdencies
+
+  > Brian Bergstrom: Andy Fleener: https://github.com/sportngin/octopolo/pull/72
+
 #### v1.1.0
 * Auto pull request
 
