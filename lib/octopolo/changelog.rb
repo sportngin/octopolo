@@ -4,6 +4,10 @@ module Octopolo
   class Changelog
     attr_reader :filename
 
+    def self.open(&block)
+      new.open(&block)
+    end
+
     def initialize(filename="CHANGELOG.markdown")
       @filename = filename
     end

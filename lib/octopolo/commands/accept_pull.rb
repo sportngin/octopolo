@@ -3,6 +3,6 @@ desc 'Accept pull requests. Merges the given pull request into master and update
 command 'accept-pull' do |c|
   c.action do |global_options, options, args|
     require_relative '../scripts/accept_pull'
-    Octopolo::Scripts::AcceptPull.execute args.first
+    Octopolo::Scripts::AcceptPull.execute(args.uniq)
   end
 end
