@@ -18,7 +18,7 @@ module Octopolo
 
         if current
           cli.say "Opening Pull Request #{current.number}"
-          cli.open current.url
+          cli.open current.pull_request.html_url
         end
       end
     end
