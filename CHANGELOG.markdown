@@ -1,3 +1,8 @@
+#### v1.2.0
+* View PR in Browser
+
+  > David Peterson, Brian Bergstrom: https://github.com/sportngin/octopolo/pull/75
+
 #### v1.1.1
 * Refine depdencies
 
