@@ -6,8 +6,6 @@ module Octopolo
     class ViewPr
       include CLIWrapper
 
-      attr_accessor :pull_request_id
-
       def self.execute
         new.execute
       end
