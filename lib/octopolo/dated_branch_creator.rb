@@ -9,21 +9,25 @@ module Octopolo
     include GitWrapper
 
     attr_accessor :branch_type
+    attr_accessor :should_delete_old_branches
 
     # Public: Initialize a new instance of DatedBranchCreator
     #
     # branch_type - Name of the type of branch (e.g., staging or deployable)
-    def initialize(branch_type)
+    # should_delete_old_branches - Flag to delete old branches of the given type.
+    def initialize(branch_type, should_delete_old_branches=false)
       self.branch_type = branch_type
+      self.should_delete_old_branches = should_delete_old_branches
     end
 
     # Public: Create a new branch of the given type for today's date
     #
     # branch_type - Name of the type of branch (e.g., staging or deployable)
+    # should_delete_old_branches - Flag to delete old branches of the given type.
     #
     # Returns a DatedBranchCreator
-    def self.perform(branch_type)
-      new(branch_type).tap do |creator|
+    def self.perform(branch_type, should_delete_old_branches=false)
+      new(branch_type, should_delete_old_branches).tap do |creator|
         creator.perform
       end
     end
@@ -56,7 +60,10 @@ module Octopolo
 
     # Public: If necessary, and if user opts to, delete old branches of its type
     def delete_old_branches
-      if extra_branches.any? && cli.ask_boolean("Do you want to delete the old #{branch_type} branch(es)? (#{extra_branches.join(", ")})")
+      return unless extra_branches.any?
+      should_delete = should_delete_old_branches || cli.ask_boolean("Do you want to delete the old #{branch_type} branch(es)? (#{extra_branches.join(", ")})")
+
+      if should_delete
         extra_branches.each do |extra|
           Git.delete_branch(extra)
         end

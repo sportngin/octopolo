@@ -5,6 +5,7 @@ module Octopolo
   class Git
     NO_BRANCH = "(no branch)"
     DEFAULT_DIRTY_MESSAGE = "Your Git index is not clean. Commit, stash, or otherwise clean up the index before continuing."
+    DIRTY_CONFIRM_MESSAGE = "Your Git index is not clean. Do you want to continue?"
     # we use date-based tags, so look for anything starting with a 4-digit year
     RELEASE_TAG_FILTER = /^\d{4}.*/
     RECENT_TAG_LIMIT = 9
@@ -22,13 +23,16 @@ module Octopolo
     # Public: Perform the given Git subcommand
     #
     # subcommand - String containing the subcommand and its parameters
+    # options - Hash
+    #   ignore_non_zero - Ignore exception for non-zero exit status of command.
     #
     # Example:
     #
     #   > Git.perform "status"
     #   # => output of `git status`
-    def self.perform(subcommand)
-      cli.perform "git #{subcommand}"
+    def self.perform(subcommand, options={})
+      options[:ignore_non_zero] ||= false
+      cli.perform("git #{subcommand}", true, options[:ignore_non_zero])
     end
 
     # Public: Perform the given Git subcommand without displaying the output
@@ -67,10 +71,11 @@ module Octopolo
     # Public: Check out the given branch name
     #
     # branch_name - The name of the branch to check out
-    def self.check_out branch_name
+    # do_after_pull - Should a pull be done after checkout?
+    def self.check_out(branch_name, do_after_pull=true)
       fetch
       perform "checkout #{branch_name}"
-      pull
+      pull if do_after_pull
       unless current_branch == branch_name
         raise CheckoutFailed, "Failed to check out '#{branch_name}'"
       end
@@ -87,7 +92,7 @@ module Octopolo
     def self.new_branch(new_branch_name, source_branch_name)
       fetch
       perform("branch --no-track #{new_branch_name} origin/#{source_branch_name}")
-      check_out new_branch_name
+      check_out(new_branch_name, false)
       perform("push --set-upstream origin #{new_branch_name}")
     end
 
@@ -105,7 +110,7 @@ module Octopolo
 
     # Public: Perform the block if the Git index is clean
     def self.if_clean(message=DEFAULT_DIRTY_MESSAGE)
-      if clean?
+      if clean? || cli.ask_boolean(DIRTY_CONFIRM_MESSAGE)
         yield
       else
         alert_dirty_index message
@@ -118,13 +123,14 @@ module Octopolo
       cli.say message
       cli.say " "
       perform "status"
+      raise DirtyIndex
     end
 
     # Public: Merge the given remote branch into the current branch
     def self.merge(branch_name)
       Git.if_clean do
         Git.fetch
-        perform "merge --no-ff origin/#{branch_name}"
+        perform "merge --no-ff origin/#{branch_name}", :ignore_non_zero => true
         raise MergeFailed unless Git.clean?
         Git.push
       end
@@ -232,7 +238,7 @@ module Octopolo
     # branch_name - The name of the branch to delete
     def self.delete_branch(branch_name)
       perform "push origin :#{branch_name}"
-      perform "branch -D #{branch_name}"
+      perform "branch -D #{branch_name}", :ignore_non_zero => true
     end
 
     # Public: Branches which have been merged into the given branch
@@ -272,5 +278,6 @@ module Octopolo
     CheckoutFailed = Class.new(StandardError)
     MergeFailed = Class.new(StandardError)
     NoBranchOfType = Class.new(StandardError)
+    DirtyIndex = Class.new(StandardError)
   end
 end

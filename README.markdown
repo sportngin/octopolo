@@ -8,13 +8,17 @@ A set of Github workflow scripts.
 
 ### GitHub Octopolo
 
+#### Octopolo Installation
+
+`$ gem install octopolo`
+
 #### GitHub Setup
 
 Interactively set up your local machine for GitHub octopolo, including
 configuring your user-level setting and setting up a GitHub API token for our
 scripts to use.
 
-    octopolo-setup
+    octopolo setup
 
 
 #### Create New Branch

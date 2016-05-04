@@ -8,6 +8,7 @@ include GLI::App
 program_desc 'GitHub workflow scripts. From the Ngineers at Sport Ngin.'
 version Octopolo::VERSION
 
+autocomplete_commands false
 wrap_help_text :verbatim
 
 program_long_desc """

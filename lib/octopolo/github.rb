@@ -71,6 +71,14 @@ module Octopolo
       client.create_pull_request *args
     end
 
+    def self.issue *args
+      client.issue *args
+    end
+
+    def self.create_issue *args
+      client.create_issue *args
+    end
+
     def self.add_comment *args
       client.add_comment *args
     end
@@ -101,10 +109,13 @@ module Octopolo
       client.remove_label *args
     end
 
-    def self.add_labels_to_pull *args
+    def self.add_labels_to_issue *args
       client.add_labels_to_an_issue *args
     end
 
+    def self.search_issues *args
+      client.search_issues *args
+    end
 
 
     # now that you've set up your credentials, try again

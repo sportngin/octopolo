@@ -11,7 +11,7 @@ module Octopolo
       before { Git.cli = cli }
 
       it "performs the given subcommand" do
-        cli.should_receive(:perform).with("git #{command}")
+        cli.should_receive(:perform).with("git #{command}", true, false)
         Git.perform command
       end
     end
@@ -79,6 +79,14 @@ module Octopolo
         Git.check_out name
       end
 
+      it "checks out the given branch name without after pull" do
+        Git.should_receive(:fetch)
+        Git.should_receive(:perform).with("checkout #{name}")
+        Git.should_not_receive(:pull)
+        Git.should_receive(:current_branch) { name }
+        Git.check_out(name, false)
+      end
+
       it "raises an exception if the current branch is not the requested branch afterward" do
         Git.should_receive(:fetch)
         Git.should_receive(:perform)
@@ -117,6 +125,8 @@ module Octopolo
     context ".if_clean" do
       let(:custom_message) { "Some other message" }
 
+      before { Git.cli = cli }
+
       it "performs the block if the git index is clean" do
         Git.should_receive(:clean?) { true }
         Math.should_receive(:log).with(1)
@@ -126,18 +136,31 @@ module Octopolo
         end
       end
 
-      it "does not perform the block if the git index is not clean" do
+      it "performs the block if the git index is not clean and user responds yes" do
         Git.should_receive(:clean?) { false }
-        Math.should_not_receive(:log)
-        Git.should_receive(:alert_dirty_index).with(Git::DEFAULT_DIRTY_MESSAGE)
+        cli.should_receive(:ask_boolean).with(Git::DIRTY_CONFIRM_MESSAGE) { true }
+        Math.should_receive(:log).with(1)
 
         Git.if_clean do
           Math.log 1
         end
       end
 
-      it "prints a custom message if git index is not clean" do
+      it "does not perform the block if the git index is not clean and user responds no" do
         Git.should_receive(:clean?) { false }
+        cli.should_receive(:ask_boolean).with(Git::DIRTY_CONFIRM_MESSAGE) { false}
+        Math.should_not_receive(:log)
+        Git.should_receive(:alert_dirty_index).with(Git::DEFAULT_DIRTY_MESSAGE)
+
+
+        Git.if_clean do
+          Math.log 1
+        end
+      end
+
+      it "prints a custom message if git index is not clean and user responds no" do
+        Git.should_receive(:clean?) { false }
+        cli.should_receive(:ask_boolean).with(Git::DIRTY_CONFIRM_MESSAGE) { false }
         Math.should_not_receive(:log)
         Git.should_receive(:alert_dirty_index).with(custom_message)
 
@@ -158,7 +181,7 @@ module Octopolo
         cli.should_receive(:say).with(" ")
         Git.should_receive(:perform).with("status")
 
-        Git.alert_dirty_index message
+        expect{Git.alert_dirty_index message}.to raise_error
       end
     end
 
@@ -168,7 +191,7 @@ module Octopolo
       it "fetches the latest code and merges the given branch name" do
         Git.should_receive(:if_clean).and_yield
         Git.should_receive(:fetch)
-        Git.should_receive(:perform).with("merge --no-ff origin/#{branch_name}")
+        Git.should_receive(:perform).with("merge --no-ff origin/#{branch_name}", :ignore_non_zero => true)
         Git.should_receive(:clean?) { true }
         Git.should_receive(:push)
 
@@ -178,7 +201,7 @@ module Octopolo
       it "does not push and raises MergeFailed if the merge failed" do
         Git.should_receive(:if_clean).and_yield
         Git.should_receive(:fetch)
-        Git.should_receive(:perform).with("merge --no-ff origin/#{branch_name}")
+        Git.should_receive(:perform).with("merge --no-ff origin/#{branch_name}", :ignore_non_zero => true)
         Git.should_receive(:clean?) { false }
         Git.should_not_receive(:push)
 
@@ -345,7 +368,7 @@ module Octopolo
       it "creates and pushes a new branch from the source branch" do
         Git.should_receive(:fetch)
         Git.should_receive(:perform).with("branch --no-track #{new_branch_name} origin/#{source_branch_name}")
-        Git.should_receive(:check_out).with(new_branch_name)
+        Git.should_receive(:check_out).with(new_branch_name, false)
         Git.should_receive(:perform).with("push --set-upstream origin #{new_branch_name}")
 
         Git.new_branch(new_branch_name, source_branch_name)
@@ -426,7 +449,7 @@ module Octopolo
 
       it "leverages git-extra's delete-branch command" do
         Git.should_receive(:perform).with("push origin :#{branch_name}")
-        Git.should_receive(:perform).with("branch -D #{branch_name}")
+        Git.should_receive(:perform).with("branch -D #{branch_name}", :ignore_non_zero => true)
         Git.delete_branch branch_name
       end
     end
