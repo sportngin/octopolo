@@ -298,6 +298,7 @@ module Octopolo
 
         it "calls GitHub.pull_requests with the current repo/branch and return a single pull request" do
           Git.should_receive(:current_branch) { branch_name }
+          CLI.should_receive(:say).with("Pull request for current branch is number #{pr_number}")
           GitHub.should_receive(:search_issues) { double(total_count: 1, items: [pull]) }
           PullRequest.current.should == pull
         end
