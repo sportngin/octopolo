@@ -237,8 +237,8 @@ module Octopolo
 
       it "gives up if it can't find a config file" do
         File.stub(:exists?) { false }
-        Octopolo::CLI.should_receive(:say).with("Could not find .octopolo.yml or .automation.yml")
-        lambda { subject.octopolo_config_path }.should raise_error(SystemExit)
+        Octopolo::CLI.should_receive(:say).with("*** WARNING: Could not find .octopolo.yml or .automation.yml ***")
+        subject.octopolo_config_path
         Dir.chdir project_working_dir
       end
 
