@@ -153,9 +153,11 @@ module Octopolo
         Git.should_receive(:alert_dirty_index).with(Git::DEFAULT_DIRTY_MESSAGE)
 
 
-        Git.if_clean do
-          Math.log 1
-        end
+        expect do
+          Git.if_clean do
+            Math.log 1
+          end
+        end.to raise_error(SystemExit)
       end
 
       it "prints a custom message if git index is not clean and user responds no" do
@@ -164,9 +166,11 @@ module Octopolo
         Math.should_not_receive(:log)
         Git.should_receive(:alert_dirty_index).with(custom_message)
 
-        Git.if_clean custom_message do
-          Math.log 1
-        end
+        expect do
+          Git.if_clean custom_message do
+            Math.log 1
+          end
+        end.to raise_error(SystemExit)
       end
     end
 
