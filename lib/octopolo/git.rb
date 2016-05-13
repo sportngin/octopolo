@@ -114,6 +114,7 @@ module Octopolo
         yield
       else
         alert_dirty_index message
+        exit 1
       end
     end
 
