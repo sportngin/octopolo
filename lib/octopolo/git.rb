@@ -132,6 +132,14 @@ module Octopolo
       raise DirtyIndex
     end
 
+    def self.alert_reserved_branch(message)
+      cli.say " "
+      cli.say message
+      cli.say " "
+      perform "status"
+      raise ReservedBranch
+    end    
+
     # Public: Merge the given remote branch into the current branch
     def self.merge(branch_name)
       Git.if_clean do
@@ -285,5 +293,6 @@ module Octopolo
     MergeFailed = Class.new(StandardError)
     NoBranchOfType = Class.new(StandardError)
     DirtyIndex = Class.new(StandardError)
+    ReservedBranch = Class.new(StandardError)
   end
 end
