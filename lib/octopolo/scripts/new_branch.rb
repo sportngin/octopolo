@@ -6,6 +6,7 @@ module Octopolo
     class NewBranch
       include ConfigWrapper
       include GitWrapper
+      include CLIWrapper
 
       attr_accessor :new_branch_name
       attr_accessor :source_branch_name
@@ -22,13 +23,12 @@ module Octopolo
       # Public: Perform the script
       def execute
         raise ArgumentError unless new_branch_name
-        Git::RESERVED_BRANCH_PREFIXES.each do |reserved_branch_prefix|
-          if !new_branch_name.start_with?(reserved_branch_prefix) || cli.ask_boolean(Git::RESERVED_BRANCH_CONFIRM_MESSAGE)  
-            git.new_branch(new_branch_name, source_branch_name)
-          else
-            message = Git::RESERVED_BRANCH_MESSAGE
-            Git::alert_reserved_branch message
-          end
+        if !git.reserved_branch?(new_branch_name) || cli.ask_boolean(Git::RESERVED_BRANCH_CONFIRM_MESSAGE)
+          git.new_branch(new_branch_name, source_branch_name)
+        else
+          message = Git::RESERVED_BRANCH_MESSAGE
+          Git::alert_reserved_branch message
+          exit 1
         end
       end
 

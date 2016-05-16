@@ -7,7 +7,7 @@ module Octopolo
     DEFAULT_DIRTY_MESSAGE = "Your Git index is not clean. Commit, stash, or otherwise clean up the index before continuing."
     DIRTY_CONFIRM_MESSAGE = "Your Git index is not clean. Do you want to continue?"
     RESERVED_BRANCH_MESSAGE = "Please choose another name for your new branch."
-    RESERVED_BRANCH_CONFIRM_MESSAGE = "Your new branch may be missidentified as a reserved branch based on its name. Do you want to continue?"
+    RESERVED_BRANCH_CONFIRM_MESSAGE = "Your new branch may be misidentified as a reserved branch based on its name. Do you want to continue?"
     # we use date-based tags, so look for anything starting with a 4-digit year
     RELEASE_TAG_FILTER = /^\d{4}.*/
     RECENT_TAG_LIMIT = 9
@@ -69,8 +69,8 @@ module Octopolo
     # Public: Determine if current_branch is reserved
     #
     # Returnsa boolean value
-    def self.reserved_branch?
-      !(current_branch =~ /^(?:#{Git::STAGING_PREFIX}|#{Git::DEPLOYABLE_PREFIX}|#{Git::QAREADY_PREFIX})/).nil?
+    def self.reserved_branch?(branch=current_branch)
+      !(branch =~ /^(?:#{Git::RESERVED_BRANCH_PREFIXES.join('|')})/).nil?
     end
 
     # Public: Check out the given branch name
