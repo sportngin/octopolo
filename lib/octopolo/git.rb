@@ -135,7 +135,7 @@ module Octopolo
         Git.fetch
         perform "merge --no-ff origin/#{branch_name}", :ignore_non_zero => true
         unless Git.clean?
-          if RESOVLER_USED == nil && Octopolo.Config.merge_resolver
+          if @resolver_used.nil? && Octopolo.Config.merge_resolver
             %x(#{Octopolo.Config.merge_resolver})
             @resolver_used = true
             if Git.clean?

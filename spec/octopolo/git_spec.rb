@@ -197,6 +197,7 @@ module Octopolo
         Git.should_receive(:fetch)
         Git.should_receive(:perform).with("merge --no-ff origin/#{branch_name}", :ignore_non_zero => true)
         Git.should_receive(:clean?) { true }
+        Git.should_receive(:clean?) { true }
         Git.should_receive(:push)
 
         Git.merge branch_name

@@ -89,6 +89,7 @@ module Octopolo
 
         it "returns a string if it has a value" do
           Config.new.(merge_resolver: "/opt/resolver.sh").merge_resolver.should == "/opt/resolver.sh"
+          Config.new.(merge_resolver: "/opt/resolver.sh").merge_resolver.should == "/opt/resolver.sh"
         end
       end
 
