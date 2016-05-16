@@ -22,7 +22,15 @@ module Octopolo
       # Public: Perform the script
       def execute
         raise ArgumentError unless new_branch_name
-        git.new_branch(new_branch_name, source_branch_name)
+        RESERVED_BRANCH_PREFIXES.each do |reserved_branch_prefix|
+          if !new_branch_name.start_with?(reserved_branch_prefix) || cli.ask_boolean(RESERVED_BRANCH_CONFIRM_MESSAGE)  
+            git.new_branch(new_branch_name, source_branch_name)
+          else
+            message = RESERVED_BRANCH_MESSAGE
+            alert_reserved_branch message
+            exit 1
+          end
+        end
       end
 
       # Public: Provide a default value if none is given

@@ -6,6 +6,8 @@ module Octopolo
     NO_BRANCH = "(no branch)"
     DEFAULT_DIRTY_MESSAGE = "Your Git index is not clean. Commit, stash, or otherwise clean up the index before continuing."
     DIRTY_CONFIRM_MESSAGE = "Your Git index is not clean. Do you want to continue?"
+    RESERVED_BRANCH_MESSAGE = "Please choose another name for your new branch."
+    RESERVED_BRANCH_CONFIRM_MESSAGE = "Your new branch may be missidentified as a reserved branch based on its name. Do you want to continue?"
     # we use date-based tags, so look for anything starting with a 4-digit year
     RELEASE_TAG_FILTER = /^\d{4}.*/
     RECENT_TAG_LIMIT = 9
@@ -16,6 +18,9 @@ module Octopolo
     DEPLOYABLE_PREFIX = "deployable"
     STAGING_PREFIX = "staging"
     QAREADY_PREFIX = "qaready"
+
+    # To check if the new branch's name starts with one of these
+    RESERVED_BRANCH_PREFIXES = [ DEPLOYABLE_PREFIX, STAGING_PREFIX, QAREADY_PREFIX ]
 
     include CLIWrapper
     extend CLIWrapper # add class-level .cli and .cli= methods
