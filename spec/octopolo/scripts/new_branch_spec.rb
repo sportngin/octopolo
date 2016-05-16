@@ -13,7 +13,6 @@ module Octopolo
       subject { NewBranch }
 
       before do
-        allow(git).to receive(:cli) { cli }
         NewBranch.any_instance.stub(:config => config, :git => git, :cli => cli)
       end
 
@@ -31,8 +30,7 @@ module Octopolo
             allow(cli).to receive(:ask_boolean) { false }
             allow(cli).to receive(:say).with(anything)
             git.should_receive(:alert_reserved_branch)
-            git.should_receive(:new_branch).with(new_branch_name, "production")
-            subject.execute(new_branch_name)
+            expect { subject.execute(new_branch_name) }.to raise_error(SystemExit)
           end
 
           it "proceeds when confirmed" do

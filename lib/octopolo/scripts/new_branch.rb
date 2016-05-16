@@ -27,7 +27,7 @@ module Octopolo
           git.new_branch(new_branch_name, source_branch_name)
         else
           message = Git::RESERVED_BRANCH_MESSAGE
-          Git::alert_reserved_branch message
+          git.alert_reserved_branch message
           exit 1
         end
       end
