@@ -136,6 +136,7 @@ module Octopolo
         perform "merge --no-ff origin/#{branch_name}", :ignore_non_zero => true
         unless Git.clean?
           if @resolver_used.nil? && Octopolo.Config.merge_resolver
+            puts 'I did a thing!'
             %x(#{Octopolo.Config.merge_resolver})
             @resolver_used = true
             if Git.clean?
