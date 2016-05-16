@@ -13,6 +13,7 @@ module Octopolo
       subject { NewBranch }
 
       before do
+        allow(git).to receive(:cli) { cli }
         NewBranch.any_instance.stub(:config => config, :git => git, :cli => cli)
       end
 
@@ -23,16 +24,27 @@ module Octopolo
           end
         end
 
-        context "with a only new branch name given" do
-          it "delegates to Git.new_branch" do
+
+        context "with reserved new branch name" do
+          it "exits when aborted" do
             allow(git).to receive(:reserved_branch?) { true }
             allow(cli).to receive(:ask_boolean) { false }
-            git.should_receive(:new_branch).with(new_branch_name, "staging-test")
+            allow(cli).to receive(:say).with(anything)
+            git.should_receive(:alert_reserved_branch)
+            git.should_receive(:new_branch).with(new_branch_name, "production")
+            subject.execute(new_branch_name)
+          end
+
+          it "proceeds when confirmed" do
+            allow(git).to receive(:reserved_branch?) { true }
+            allow(cli).to receive(:ask_boolean) { true }
+            allow(cli).to receive(:say).with(anything)
+            git.should_receive(:new_branch).with(new_branch_name, "production")
             subject.execute(new_branch_name)
           end
         end
 
-        context "with a only new branch name given" do
+        context "with only new branch name given" do
           it "delegates to Git.new_branch" do
             allow(git).to receive(:reserved_branch?) { false }
             git.should_receive(:new_branch).with(new_branch_name, "production")
@@ -40,7 +52,7 @@ module Octopolo
           end
         end
 
-        context "with a only new branch name given" do
+        context "with new and source branch names given" do
           it "delegates to Git.new_branch" do
             allow(git).to receive(:reserved_branch?) { false }
             git.should_receive(:new_branch).with(new_branch_name, custom_source_branch)
