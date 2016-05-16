@@ -136,7 +136,10 @@ module Octopolo
       cli.say " "
       cli.say message
       cli.say " "
-      perform "status"
+      cli.say " "
+      cli.say "Here's the list of the reserved branch prefixes:"
+      cli.say RESERVED_BRANCH_PREFIXES.join(" ")
+      cli.say " "
       raise ReservedBranch
     end    
 
