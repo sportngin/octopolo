@@ -196,8 +196,7 @@ module Octopolo
         Git.should_receive(:if_clean).and_yield
         Git.should_receive(:fetch)
         Git.should_receive(:perform).with("merge --no-ff origin/#{branch_name}", :ignore_non_zero => true)
-        Git.should_receive(:clean?) { true }
-        Git.should_receive(:clean?) { true }
+        Git.should_receive(:clean?).twice { true }
         Git.should_receive(:push)
 
         Git.merge branch_name
@@ -207,8 +206,7 @@ module Octopolo
         Git.should_receive(:if_clean).and_yield
         Git.should_receive(:fetch)
         Git.should_receive(:perform).with("merge --no-ff origin/#{branch_name}", :ignore_non_zero => true)
-        Git.should_receive(:clean?) { false }
-        Git.should_receive(:clean?) { false }
+        Git.should_receive(:clean?).twice { false }
         Git.should_not_receive(:push)
 
         expect { Git.merge branch_name }.to raise_error(Git::MergeFailed)
