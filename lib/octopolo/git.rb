@@ -6,6 +6,8 @@ module Octopolo
     NO_BRANCH = "(no branch)"
     DEFAULT_DIRTY_MESSAGE = "Your Git index is not clean. Commit, stash, or otherwise clean up the index before continuing."
     DIRTY_CONFIRM_MESSAGE = "Your Git index is not clean. Do you want to continue?"
+    RESERVED_BRANCH_MESSAGE = "Please choose another name for your new branch."
+    RESERVED_BRANCH_CONFIRM_MESSAGE = "Your new branch may be misidentified as a reserved branch based on its name. Do you want to continue?"
     # we use date-based tags, so look for anything starting with a 4-digit year
     RELEASE_TAG_FILTER = /^\d{4}.*/
     RECENT_TAG_LIMIT = 9
@@ -16,6 +18,9 @@ module Octopolo
     DEPLOYABLE_PREFIX = "deployable"
     STAGING_PREFIX = "staging"
     QAREADY_PREFIX = "qaready"
+
+    # To check if the new branch's name starts with one of these
+    RESERVED_BRANCH_PREFIXES = [ DEPLOYABLE_PREFIX, STAGING_PREFIX, QAREADY_PREFIX ]
 
     include CLIWrapper
     extend CLIWrapper # add class-level .cli and .cli= methods
@@ -64,8 +69,8 @@ module Octopolo
     # Public: Determine if current_branch is reserved
     #
     # Returnsa boolean value
-    def self.reserved_branch?
-      !(current_branch =~ /^(?:#{Git::STAGING_PREFIX}|#{Git::DEPLOYABLE_PREFIX}|#{Git::QAREADY_PREFIX})/).nil?
+    def self.reserved_branch?(branch=current_branch)
+      !(branch =~ /^(?:#{Git::RESERVED_BRANCH_PREFIXES.join('|')})/).nil?
     end
 
     # Public: Check out the given branch name
@@ -126,6 +131,16 @@ module Octopolo
       perform "status"
       raise DirtyIndex
     end
+
+    def self.alert_reserved_branch(message)
+      cli.say " "
+      cli.say message
+      cli.say " "
+      cli.say "Here's the list of the reserved branch prefixes:"
+      cli.say RESERVED_BRANCH_PREFIXES.join(" ")
+      cli.say " "
+      raise ReservedBranch
+    end    
 
     # Public: Merge the given remote branch into the current branch
     def self.merge(branch_name)
@@ -280,5 +295,6 @@ module Octopolo
     MergeFailed = Class.new(StandardError)
     NoBranchOfType = Class.new(StandardError)
     DirtyIndex = Class.new(StandardError)
+    ReservedBranch = Class.new(StandardError)
   end
 end
