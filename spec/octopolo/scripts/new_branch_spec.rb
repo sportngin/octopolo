@@ -24,6 +24,7 @@ module Octopolo
 
         context "with a only new branch name given" do
           it "delegates to Git.new_branch" do
+            allow(git).to receive(:reserved_branch?) { false }
             git.should_receive(:new_branch).with(new_branch_name, "production")
             subject.execute(new_branch_name)
           end
@@ -31,6 +32,7 @@ module Octopolo
 
         context "with a only new branch name given" do
           it "delegates to Git.new_branch" do
+            allow(git).to receive(:reserved_branch?) { false }
             git.should_receive(:new_branch).with(new_branch_name, custom_source_branch)
             subject.execute(new_branch_name, custom_source_branch)
           end
