@@ -82,6 +82,16 @@ module Octopolo
         end
       end
 
+      context "#merge_resolver" do
+        it "is nil by default" do
+          Config.new.merge_resolver.should == nil
+        end
+
+        it "returns a string if it has a value" do
+          Config.new.(merge_resolver: "/opt/resolver.sh").merge_resolver.should == "/opt/resolver.sh"
+        end
+      end
+
       context "#user_notifications" do
         it "is nil by default" do
           Config.new.user_notifications.should == nil

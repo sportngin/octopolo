@@ -17,7 +17,7 @@ module Octopolo
     STAGING_PREFIX = "staging"
     QAREADY_PREFIX = "qaready"
 
-    RESOVLER_USED = nil
+    @resolver_used = nil
 
     include CLIWrapper
     extend CLIWrapper # add class-level .cli and .cli= methods
@@ -137,7 +137,7 @@ module Octopolo
         unless Git.clean?
           if RESOVLER_USED == nil && Octopolo.Config.merge_resolver
             %x(#{Octopolo.Config.merge_resolver})
-            RESOLVER_USED = true
+            @resolver_used = true
             if Git.clean?
               merge(branch_name)
             end

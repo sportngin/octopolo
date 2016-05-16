@@ -21,7 +21,6 @@ module Octopolo
       self.branch_type = branch_type
       self.pull_request_id = pull_request_id
       self.options = options
-      @merge_resolver = Octopolo.Config.merge_resolver
     end
 
     # Public: Create a new branch of the given type for today's date
@@ -48,13 +47,7 @@ module Octopolo
       when GitHub::PullRequest::NotFound
         cli.say "Unable to find pull request #{pull_request_id}. Please retry with a valid ID."
       when Git::MergeFailed
-        if @merge_resolver
-          %x(#{Octopolo.Config.merge_resolver})
-          @merge_resolver = nil
-          perform
-        else
-          cli.say "Merge failed. Please identify the source of this merge conflict resolve this conflict in your pull request's branch. NOTE: Merge conflicts resolved in the #{branch_type} branch are NOT used when deploying."
-        end
+        cli.say "Merge failed. Please identify the source of this merge conflict resolve this conflict in your pull request's branch. NOTE: Merge conflicts resolved in the #{branch_type} branch are NOT used when deploying."
       when Git::CheckoutFailed
         cli.say "Checkout of #{branch_to_merge_into} failed. Please contact Infrastructure to determine the cause."
       when GitHub::PullRequest::CommentFailed
