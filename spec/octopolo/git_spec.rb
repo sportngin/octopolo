@@ -125,6 +125,8 @@ module Octopolo
     context ".if_clean" do
       let(:custom_message) { "Some other message" }
 
+      before { Git.cli = cli }
+
       it "performs the block if the git index is clean" do
         Git.should_receive(:clean?) { true }
         Math.should_receive(:log).with(1)
@@ -134,24 +136,41 @@ module Octopolo
         end
       end
 
-      it "does not perform the block if the git index is not clean" do
+      it "performs the block if the git index is not clean and user responds yes" do
         Git.should_receive(:clean?) { false }
-        Math.should_not_receive(:log)
-        Git.should_receive(:alert_dirty_index).with(Git::DEFAULT_DIRTY_MESSAGE)
+        cli.should_receive(:ask_boolean).with(Git::DIRTY_CONFIRM_MESSAGE) { true }
+        Math.should_receive(:log).with(1)
 
         Git.if_clean do
           Math.log 1
         end
       end
 
-      it "prints a custom message if git index is not clean" do
+      it "does not perform the block if the git index is not clean and user responds no" do
         Git.should_receive(:clean?) { false }
+        cli.should_receive(:ask_boolean).with(Git::DIRTY_CONFIRM_MESSAGE) { false}
+        Math.should_not_receive(:log)
+        Git.should_receive(:alert_dirty_index).with(Git::DEFAULT_DIRTY_MESSAGE)
+
+
+        expect do
+          Git.if_clean do
+            Math.log 1
+          end
+        end.to raise_error(SystemExit)
+      end
+
+      it "prints a custom message if git index is not clean and user responds no" do
+        Git.should_receive(:clean?) { false }
+        cli.should_receive(:ask_boolean).with(Git::DIRTY_CONFIRM_MESSAGE) { false }
         Math.should_not_receive(:log)
         Git.should_receive(:alert_dirty_index).with(custom_message)
 
-        Git.if_clean custom_message do
-          Math.log 1
-        end
+        expect do
+          Git.if_clean custom_message do
+            Math.log 1
+          end
+        end.to raise_error(SystemExit)
       end
     end
 
@@ -166,7 +185,7 @@ module Octopolo
         cli.should_receive(:say).with(" ")
         Git.should_receive(:perform).with("status")
 
-        Git.alert_dirty_index message
+        expect{Git.alert_dirty_index message}.to raise_error
       end
     end
 
@@ -177,6 +196,7 @@ module Octopolo
         Git.should_receive(:if_clean).and_yield
         Git.should_receive(:fetch)
         Git.should_receive(:perform).with("merge --no-ff origin/#{branch_name}", :ignore_non_zero => true)
+        Git.should_receive(:clean?) { true }
         Git.should_receive(:clean?) { true }
         Git.should_receive(:push)
 

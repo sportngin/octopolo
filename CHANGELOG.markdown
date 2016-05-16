@@ -1,3 +1,28 @@
+#### v1.2.1
+#### v1.2.0
+* View PR in Browser
+
+  > David Peterson, Brian Bergstrom: https://github.com/sportngin/octopolo/pull/75
+
+#### v1.1.1
+* Refine depdencies
+
+  > Brian Bergstrom: Andy Fleener: https://github.com/sportngin/octopolo/pull/72
+
+#### v1.1.0
+* Auto pull request
+
+  > Scott Trenda, Brian Bergstrom: Chris Arcand: https://github.com/sportngin/octopolo/pull/70
+
+* issue64 - improve git if_clean check
+
+  > newzac: Scott Trenda, Brian Bergstrom: https://github.com/sportngin/octopolo/pull/69
+
+#### v1.0.2
+* Fix Rake Depenency Issues
+
+  > newzac: Brian Bergstrom: https://github.com/sportngin/octopolo/pull/71
+
 #### v1.0.1
 #### v1.0.1
 #### v1.0.1

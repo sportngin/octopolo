@@ -5,6 +5,7 @@ module Octopolo
   class Git
     NO_BRANCH = "(no branch)"
     DEFAULT_DIRTY_MESSAGE = "Your Git index is not clean. Commit, stash, or otherwise clean up the index before continuing."
+    DIRTY_CONFIRM_MESSAGE = "Your Git index is not clean. Do you want to continue?"
     # we use date-based tags, so look for anything starting with a 4-digit year
     RELEASE_TAG_FILTER = /^\d{4}.*/
     RECENT_TAG_LIMIT = 9
@@ -15,6 +16,8 @@ module Octopolo
     DEPLOYABLE_PREFIX = "deployable"
     STAGING_PREFIX = "staging"
     QAREADY_PREFIX = "qaready"
+
+    @resolver_used = nil
 
     include CLIWrapper
     extend CLIWrapper # add class-level .cli and .cli= methods
@@ -109,10 +112,11 @@ module Octopolo
 
     # Public: Perform the block if the Git index is clean
     def self.if_clean(message=DEFAULT_DIRTY_MESSAGE)
-      if clean?
+      if clean? || cli.ask_boolean(DIRTY_CONFIRM_MESSAGE)
         yield
       else
         alert_dirty_index message
+        exit 1
       end
     end
 
@@ -122,6 +126,7 @@ module Octopolo
       cli.say message
       cli.say " "
       perform "status"
+      raise DirtyIndex
     end
 
     # Public: Merge the given remote branch into the current branch
@@ -129,6 +134,16 @@ module Octopolo
       Git.if_clean do
         Git.fetch
         perform "merge --no-ff origin/#{branch_name}", :ignore_non_zero => true
+        unless Git.clean?
+          if @resolver_used.nil? && Octopolo.Config.merge_resolver
+            puts 'I did a thing!'
+            %x(#{Octopolo.Config.merge_resolver})
+            @resolver_used = true
+            if Git.clean?
+              merge(branch_name)
+            end
+          end
+        end
         raise MergeFailed unless Git.clean?
         Git.push
       end
@@ -276,5 +291,6 @@ module Octopolo
     CheckoutFailed = Class.new(StandardError)
     MergeFailed = Class.new(StandardError)
     NoBranchOfType = Class.new(StandardError)
+    DirtyIndex = Class.new(StandardError)
   end
 end

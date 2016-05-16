@@ -82,6 +82,17 @@ module Octopolo
         end
       end
 
+      context "#merge_resolver" do
+        it "is nil by default" do
+          Config.new.merge_resolver.should == nil
+        end
+
+        it "returns a string if it has a value" do
+          Config.new.(merge_resolver: "/opt/resolver.sh").merge_resolver.should == "/opt/resolver.sh"
+          Config.new.(merge_resolver: "/opt/resolver.sh").merge_resolver.should == "/opt/resolver.sh"
+        end
+      end
+
       context "#user_notifications" do
         it "is nil by default" do
           Config.new.user_notifications.should == nil
@@ -237,8 +248,8 @@ module Octopolo
 
       it "gives up if it can't find a config file" do
         File.stub(:exists?) { false }
-        Octopolo::CLI.should_receive(:say).with("Could not find .octopolo.yml or .automation.yml")
-        lambda { subject.octopolo_config_path }.should raise_error(SystemExit)
+        Octopolo::CLI.should_receive(:say).with("*** WARNING: Could not find .octopolo.yml or .automation.yml ***")
+        subject.octopolo_config_path
         Dir.chdir project_working_dir
       end
 

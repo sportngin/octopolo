@@ -44,6 +44,10 @@ module Octopolo
       @github_repo || raise(MissingRequiredAttribute, "GitHub Repo is required")
     end
 
+    def merge_resolver
+      @merge_resolver || nil
+    end
+
     def user_notifications
       if [NilClass, Array, String].include?(@user_notifications.class)
         Array(@user_notifications) if @user_notifications
@@ -88,11 +92,13 @@ module Octopolo
     # end defaults
 
     def self.parse
-      new(attributes_from_file)
+      new(attributes_from_file || {})
     end
 
     def self.attributes_from_file
-      YAML.load_file(octopolo_config_path)
+      if path = octopolo_config_path
+        YAML.load_file(path)
+      end
     end
 
     def self.octopolo_config_path
@@ -104,8 +110,7 @@ module Octopolo
         if old_dir != Dir.pwd
           octopolo_config_path
         else
-          Octopolo::CLI.say "Could not find #{FILE_NAMES.join(' or ')}"
-          exit
+          Octopolo::CLI.say "*** WARNING: Could not find #{FILE_NAMES.join(' or ')} ***"
         end
       end
     end
