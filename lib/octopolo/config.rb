@@ -44,6 +44,10 @@ module Octopolo
       @github_repo || raise(MissingRequiredAttribute, "GitHub Repo is required")
     end
 
+    def merge_resolver
+      @merge_resolver 
+    end
+
     def user_notifications
       if [NilClass, Array, String].include?(@user_notifications.class)
         Array(@user_notifications) if @user_notifications

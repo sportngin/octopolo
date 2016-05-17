@@ -17,6 +17,8 @@ module Octopolo
     STAGING_PREFIX = "staging"
     QAREADY_PREFIX = "qaready"
 
+    @resolver_used = nil
+
     include CLIWrapper
     extend CLIWrapper # add class-level .cli and .cli= methods
 
@@ -132,6 +134,15 @@ module Octopolo
       Git.if_clean do
         Git.fetch
         perform "merge --no-ff origin/#{branch_name}", :ignore_non_zero => true
+        unless Git.clean?
+          if @resolver_used.nil? && Octopolo.config.merge_resolver
+            %x(#{Octopolo.config.merge_resolver})
+            @resolver_used = true
+            if Git.clean?
+              merge(branch_name)
+            end
+          end
+        end
         raise MergeFailed unless Git.clean?
         Git.push
       end
