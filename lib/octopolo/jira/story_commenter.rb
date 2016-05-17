@@ -17,19 +17,16 @@ module Octopolo
         begin
           self.issue =  Jiralicious::Issue.find issue_id
         rescue => e
-           puts e.message
-           puts "Invalid Jira Story ID" 
+           puts "Error: Invalid Jira Issue #{issue_id}" 
         end
-        
-          self.comment = comment
+        self.comment = comment
       end
 
       def perform
         begin
           issue.comments.add(comment)
         rescue => e
-          puts e.message
-          puts "Error commenting on Jira Story" 
+          puts "Error: Failed to comment on Jira Issue #{issue_id}" 
         end
       end
     end
