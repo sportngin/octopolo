@@ -14,12 +14,23 @@ module Octopolo
           jira_config.password = config.jira_password
           jira_config.uri = config.jira_url
         end
-        self.issue =  Jiralicious::Issue.find issue_id
-        self.comment = comment
+        begin
+          self.issue =  Jiralicious::Issue.find issue_id
+        rescue => e
+           puts e.message
+           puts "Invalid Jira Story ID" 
+        end
+        
+          self.comment = comment
       end
 
       def perform
-        issue.comments.add(comment)
+        begin
+          issue.comments.add(comment)
+        rescue => e
+          puts e.message
+          puts "Error commenting on Jira Story" 
+        end
       end
     end
   end
