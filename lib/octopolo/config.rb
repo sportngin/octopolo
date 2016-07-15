@@ -102,6 +102,7 @@ module Octopolo
     end
 
     def self.octopolo_config_path
+      @project_dir ||= Dir.pwd
       if filepath = FILE_NAMES.detect {|filename| File.exists?(filename)}
         File.join(Dir.pwd, filepath)
       else
@@ -110,8 +111,8 @@ module Octopolo
         if old_dir != Dir.pwd
           octopolo_config_path
         else
-          Octopolo::CLI.say "*** Generating .octopolo.yml file... ***"
-          File.new(".octopolo.yml", "w+")
+          Dir.chdir(@project_dir)
+          return
         end
       end
     end
