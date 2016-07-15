@@ -62,7 +62,7 @@ module Octopolo
         end
       end
 
-      context "#deployable_label" do 
+      context "#deployable_label" do
         it "is true by default" do
           expect(Config.new.deployable_label).to eq(true)
         end
@@ -73,8 +73,8 @@ module Octopolo
       end
 
       context "#github_repo" do
-        it "raises an exception if not given" do
-          expect { Config.new.github_repo }.to raise_error(Config::MissingRequiredAttribute)
+        it "finds repo when not given" do
+          Config.any_instance.github_repo.stub(:find_repo) { 'foo/ngin-bar' }
         end
 
         it "returns the specified value otherwise" do
