@@ -110,7 +110,8 @@ module Octopolo
         if old_dir != Dir.pwd
           octopolo_config_path
         else
-          Octopolo::CLI.say "*** WARNING: Could not find #{FILE_NAMES.join(' or ')} ***"
+          Octopolo::CLI.say "*** Generating .octopolo.yml file... ***"
+          File.new(".octopolo.yml", "w+")
         end
       end
     end
