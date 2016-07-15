@@ -245,13 +245,6 @@ module Octopolo
       subject { Config }
       before { project_working_dir }
 
-      it "gives up if it can't find a config file" do
-        File.stub(:exists?) { false }
-        Octopolo::CLI.should_receive(:say).with("*** WARNING: Could not find .octopolo.yml or .automation.yml ***")
-        subject.octopolo_config_path
-        Dir.chdir project_working_dir
-      end
-
       context "with a .octopolo.yml file" do
         before do
           FileUtils.cp "spec/support/sample_octopolo.yml", "spec/support/.octopolo.yml"
