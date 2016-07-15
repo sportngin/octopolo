@@ -41,11 +41,11 @@ module Octopolo
     end
 
     def github_repo
-      @github_repo || raise(MissingRequiredAttribute, "GitHub Repo is required")
+      @github_repo || /(?<=:)\S+(?=\.)/.match(Octopolo::CLI.perform "git config --get remote.origin.url") || raise(MissingRequiredAttribute, "GitHub Repo is required")
     end
 
     def merge_resolver
-      @merge_resolver 
+      @merge_resolver
     end
 
     def user_notifications
