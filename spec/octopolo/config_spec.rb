@@ -74,7 +74,7 @@ module Octopolo
 
       context "#github_repo" do
         it "finds repo when not given" do
-          Config.any_instance.github_repo.stub(:find_repo) { 'foo/ngin-bar' }
+          Config.any_instance.stub(:find_repo) { 'foo/ngin-bar' }
         end
 
         it "returns the specified value otherwise" do
