@@ -32,7 +32,7 @@ module Octopolo
           update_pivotal
           update_jira
           update_label
-          update_jira_labels
+          update_github_labels_from_jira
           open_in_browser
         end
       end
@@ -84,14 +84,14 @@ module Octopolo
       end
       private :pull_request_attributes
 
-      def update_jira_labels
+      def update_github_labels_from_jira
         matching_labels = []
         Octopolo::GitHub::Label.all.each do |github_label|
           matching_labels << github_label if jira_issue_labels.include?(github_label.name)
         end
         issue.add_labels(matching_labels)
       end
-      protected :update_jira_labels
+      protected :update_github_labels_from_jira
 
       def jira_issue_labels
         @labels ||= jira_issues.map(&:labels).flatten

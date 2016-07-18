@@ -45,6 +45,7 @@ module Octopolo
           expect(subject).to receive(:update_pivotal)
           expect(subject).to receive(:update_jira)
           expect(subject).to receive(:update_label)
+          expect(subject).to receive(:update_github_labels_from_jira)
           expect(subject).to receive(:open_in_browser)
 
           subject.execute
