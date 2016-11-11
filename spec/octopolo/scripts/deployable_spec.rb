@@ -10,7 +10,11 @@ module Octopolo
       let(:config) { stub(user_notifications: ['NickLaMuro'],
                           github_repo: 'grumpy_cat',
                           deployable_label: true) }
-      let(:pull_request) { stub(add_labels: true, remove_labels: true, number: 7) }
+      let(:pull_request) { stub(add_labels: true,
+                                remove_labels: true,
+                                number: 7,
+                                mergeable?: true,
+                                status_checks_passed?: true) }
       before do
         allow(subject).to receive(:cli) { cli }
         allow(subject).to receive(:config) { config }
@@ -68,6 +72,26 @@ module Octopolo
 
             it "removes the deployable label" do
               pull_request.should_receive(:remove_labels)
+            end
+          end
+
+          context "when pr is not mergeable" do
+            before do
+              pull_request.stub(mergeable?: false)
+            end
+
+            it "does not add the labels" do
+              pull_request.should_not_receive(:add_labels)
+            end
+          end
+
+          context "when pr has not passed status checks" do
+            before do
+              pull_request.stub(status_checks_passed?: false)
+            end
+
+            it "does not add the labels" do
+              pull_request.should_not_receive(:add_labels)
             end
           end
 

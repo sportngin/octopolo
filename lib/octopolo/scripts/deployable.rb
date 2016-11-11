@@ -33,7 +33,7 @@ module Octopolo
           if config.deployable_label
             with_labelling do
               merge
-            end
+            end if deployable?
           else
             merge
           end
@@ -46,13 +46,22 @@ module Octopolo
       private :merge
 
       def with_labelling(&block)
-        pull_request = Octopolo::GitHub::PullRequest.new(config.github_repo, @pull_request_id)
         pull_request.add_labels(Deployable.deployable_label)
         unless yield
           pull_request.remove_labels(Deployable.deployable_label)
         end
       end
       private :with_labelling
+
+      def deployable?
+        pull_request.mergeable? && pull_request.status_checks_passed?
+      end
+      private :deployable?
+
+      def pull_request
+        @pull_request ||= Octopolo::GitHub::PullRequest.new(config.github_repo, @pull_request_id)
+      end
+      private :pull_request
     end
   end
 end

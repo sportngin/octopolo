@@ -117,6 +117,10 @@ module Octopolo
       client.search_issues *args
     end
 
+    def self.status *args
+      client.status *args
+    end
+
 
     # now that you've set up your credentials, try again
     TryAgain = Class.new(StandardError)
