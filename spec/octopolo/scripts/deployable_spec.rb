@@ -105,20 +105,24 @@ module Octopolo
         context "when pr is not mergeable" do
           before do
             pull_request.stub(mergeable?: false)
+            allow(subject).to receive(:exit!)
           end
 
           it "prints out an error and exits" do
             expect(CLI).to receive(:say).with("Pull request status checks have not passed. Cannot be marked deployable.")
+            expect(subject).to receive(:exit!)
           end
         end
 
         context "when pr has not passed status checks" do
           before do
             pull_request.stub(status_checks_passed?: false)
+            allow(subject).to receive(:exit!)
           end
 
           it "prints out an error and exits" do
             expect(CLI).to receive(:say).with("Pull request status checks have not passed. Cannot be marked deployable.")
+            expect(subject).to receive(:exit!)
           end
         end
 
