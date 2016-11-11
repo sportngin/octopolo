@@ -13,13 +13,14 @@ module Octopolo
 
       attr_accessor :pull_request_id
 
-      def self.execute(pull_request_id)
+      def self.execute(pull_request_id, options)
         pull_request_id ||= Integer(cli.prompt "Pull Request ID: ")
-        new(pull_request_id).execute
+        new(pull_request_id, options).execute
       end
 
-      def initialize(pull_request_id)
+      def initialize(pull_request_id, options={})
         @pull_request_id = pull_request_id
+        @ignore_status_checks = options[:'ignore-status-checks']
       end
 
       # Public: Perform the script
@@ -36,10 +37,16 @@ module Octopolo
       def merge pull_request
         Git.fetch
         if pull_request.mergeable?
-          cli.perform "git merge --no-ff origin/#{pull_request.branch} -m \"Merge pull request ##{pull_request_id} from origin/#{pull_request.branch}\""
+          if pull_request.status_checks_passed? || @ignore_status_checks
+            cli.perform "git merge --no-ff origin/#{pull_request.branch} -m \"Merge pull request ##{pull_request_id} from origin/#{pull_request.branch}\""
+          else
+            cli.say 'Status checks have not passed on this pull request.'
+            exit!
+          end
         else
           cli.say "There is a merge conflict with this branch and #{config.deploy_branch}."
           cli.say "Please update this branch with #{config.deploy_branch} or perform the merge manually and fix any conflicts"
+          exit!
         end
       end
 
