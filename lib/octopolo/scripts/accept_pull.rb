@@ -20,7 +20,7 @@ module Octopolo
 
       def initialize(pull_request_id, options={})
         @pull_request_id = pull_request_id
-        @ignore_status_checks = options[:'ignore-status-checks']
+        @ignore_status_checks = options['ignore-status-checks']
       end
 
       # Public: Perform the script

@@ -10,16 +10,17 @@ module Octopolo
 
       attr_accessor :pull_request_id
 
-      def self.execute(pull_request_id=nil)
-        new(pull_request_id).execute
+      def self.execute(pull_request_id=nil, options={})
+        new(pull_request_id, options).execute
       end
 
       def self.deployable_label
         Octopolo::GitHub::Label.new(name: "deployable", color: "428BCA")
       end
 
-      def initialize(pull_request_id=nil)
+      def initialize(pull_request_id=nil, options={})
         @pull_request_id = pull_request_id
+        @ignore_status_checks = options['ignore-status-checks']
       end
 
       # Public: Perform the script
@@ -30,7 +31,7 @@ module Octopolo
         end
         self.pull_request_id ||= cli.prompt("Pull Request ID: ")
         GitHub.connect do
-          unless deployable?
+          unless deployable? || @ignore_status_checks
             CLI.say 'Pull request status checks have not passed. Cannot be marked deployable.'
             exit!
           end
