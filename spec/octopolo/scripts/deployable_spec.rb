@@ -75,26 +75,6 @@ module Octopolo
             end
           end
 
-          context "when pr is not mergeable" do
-            before do
-              pull_request.stub(mergeable?: false)
-            end
-
-            it "does not add the labels" do
-              pull_request.should_not_receive(:add_labels)
-            end
-          end
-
-          context "when pr has not passed status checks" do
-            before do
-              pull_request.stub(status_checks_passed?: false)
-            end
-
-            it "does not add the labels" do
-              pull_request.should_not_receive(:add_labels)
-            end
-          end
-
           context "when the merge to deployable succeeds" do
             it "doesn't remove the deployable label" do
               pull_request.should_not_receive(:remove_labels)
@@ -121,6 +101,27 @@ module Octopolo
             pull_request.should_not_receive(:add_labels)
           end
         end
+
+        context "when pr is not mergeable" do
+          before do
+            pull_request.stub(mergeable?: false)
+          end
+
+          it "prints out an error and exits" do
+            expect(CLI).to receive(:say).with("Pull request status checks have not passed. Cannot be marked deployable.")
+          end
+        end
+
+        context "when pr has not passed status checks" do
+          before do
+            pull_request.stub(status_checks_passed?: false)
+          end
+
+          it "prints out an error and exits" do
+            expect(CLI).to receive(:say).with("Pull request status checks have not passed. Cannot be marked deployable.")
+          end
+        end
+
       end
     end
   end

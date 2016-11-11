@@ -30,10 +30,14 @@ module Octopolo
         end
         self.pull_request_id ||= cli.prompt("Pull Request ID: ")
         GitHub.connect do
+          unless deployable?
+            CLI.say 'Pull request status checks have not passed. Cannot be marked deployable.'
+            exit!
+          end
           if config.deployable_label
             with_labelling do
               merge
-            end if deployable?
+            end
           else
             merge
           end
