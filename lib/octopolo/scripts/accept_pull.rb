@@ -20,7 +20,7 @@ module Octopolo
 
       def initialize(pull_request_id, options={})
         @pull_request_id = pull_request_id
-        @ignore_status_checks = options['ignore-status-checks']
+        @force = options[:force]
       end
 
       # Public: Perform the script
@@ -37,7 +37,7 @@ module Octopolo
       def merge pull_request
         Git.fetch
         if pull_request.mergeable?
-          if pull_request.status_checks_passed? || @ignore_status_checks
+          if pull_request.status_checks_passed? || @force
             cli.perform "git merge --no-ff origin/#{pull_request.branch} -m \"Merge pull request ##{pull_request_id} from origin/#{pull_request.branch}\""
           else
             cli.say 'Status checks have not passed on this pull request.'

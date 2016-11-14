@@ -20,7 +20,7 @@ module Octopolo
 
       def initialize(pull_request_id=nil, options={})
         @pull_request_id = pull_request_id
-        @ignore_status_checks = options['ignore-status-checks']
+        @force = options[:force]
       end
 
       # Public: Perform the script
@@ -31,7 +31,7 @@ module Octopolo
         end
         self.pull_request_id ||= cli.prompt("Pull Request ID: ")
         GitHub.connect do
-          unless deployable? || @ignore_status_checks
+          unless deployable? || @force
             CLI.say 'Pull request status checks have not passed. Cannot be marked deployable.'
             exit!
           end

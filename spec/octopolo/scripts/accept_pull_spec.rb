@@ -91,6 +91,18 @@ module Octopolo
             subject.merge pull_request
           end
         end
+
+        context "when failed status checks should be ignored" do
+          subject { described_class.new(pull_request_id, force: true) }
+          before { pull_request.stub(mergeable?: true, status_checks_passed?: false) }
+
+          it "fetches and merges the request's branch" do
+            Git.should_receive(:fetch)
+            cli.should_receive(:perform).with "git merge --no-ff origin/#{pull_request.branch} -m \"Merge pull request ##{pull_request_id} from origin/#{pull_request.branch}\""
+
+            subject.merge pull_request
+          end
+        end
       end
     end
   end

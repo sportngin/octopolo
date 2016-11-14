@@ -126,8 +126,8 @@ module Octopolo
           end
         end
 
-        context "when pr has not passed status checks but should be ignored" do
-          subject { described_class.new(42, 'ignore-status-checks' => true) }
+        context "when failed status checks should be ignored" do
+          subject { described_class.new(42, force: true) }
           before { pull_request.stub(status_checks_passed?: false) }
 
           it "adds the deployable label" do
