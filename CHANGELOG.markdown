@@ -1,3 +1,8 @@
+#### v1.4.0
+* Check PR status before marking deployable/accept-pull
+
+  > Arvind Menon: Brian Bergstrom, Chris Arcand: https://github.com/sportngin/octopolo/pull/107
+
 #### v1.3.0
 * IS-4641-spring-cleaning-jira-bomb
 
