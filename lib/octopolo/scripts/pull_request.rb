@@ -32,6 +32,7 @@ module Octopolo
           update_pivotal
           update_jira
           update_label
+          update_jira_labels
           open_in_browser
         end
       end
@@ -82,6 +83,27 @@ module Octopolo
         }
       end
       private :pull_request_attributes
+
+      def update_jira_labels
+        matching_labels = []
+        Octopolo::GitHub::Label.all.each do |github_label|
+          matching_labels << github_label if jira_issue_labels.include?(github_label.name)
+        end
+        issue.add_labels(matching_labels)
+      end
+      protected :update_jira_labels
+
+      def jira_issue_labels
+        @labels ||= jira_issues.map(&:labels).flatten
+      end
+      protected :jira_issue_labels
+
+      def jira_issues
+        jira_ids.each_with_object([]) do |id, issues|
+          issues << Jiralicious::Issue.find(id)
+        end
+      end
+      protected :jira_issues
 
     end
   end
