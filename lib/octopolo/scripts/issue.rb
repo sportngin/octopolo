@@ -135,6 +135,22 @@ module Octopolo
       end
       protected :update_label
 
+      def match_labels
+        jira_issue_labels.each do |label|
+          issue.add_labels(label) if Octopolo::Github::Label.all.map(&:name).include?(label)
+        end
+      end
+
+      def jira_issue_labels
+        @labels ||= jira_issues.map(&:labels).flatten
+      end
+
+      def jira_issues
+        jira_ids.each_with_object([]) do |id, issues|
+          issues << Jiralicious::Issue.find(id)
+        end
+      end
+
     end
   end
 end
