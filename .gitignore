@@ -17,6 +17,7 @@ tmp
 log/
 .idea
 .DS_Store
+*.swp
 
 # YARD artifacts
 .yardoc
