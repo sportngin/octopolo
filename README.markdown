@@ -61,3 +61,4 @@ Select from recent release tags and generate a link to the GitHub compare view.
 
 [build_status]: https://travis-ci.org/sportngin/octopolo
 [build_status_image]: https://travis-ci.org/sportngin/octopolo.svg?branch=master
+
