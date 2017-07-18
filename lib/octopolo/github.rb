@@ -121,6 +121,9 @@ module Octopolo
       client.status *args
     end
 
+    def self.team_member? team
+      client.team_member? team, user_config.github_user
+    end
 
     # now that you've set up your credentials, try again
     TryAgain = Class.new(StandardError)
