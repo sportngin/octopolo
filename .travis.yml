@@ -5,6 +5,6 @@ branches:
 language: ruby
 rvm:
   - 2.0
-  - 2.1
-  - 2.2
-script: bundle exec rspec
+script: bundle
+before_install:
+- gem uninstall bundler && gem install bundler
