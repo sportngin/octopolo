@@ -124,7 +124,7 @@ module Octopolo
     def self.team_member? team
       client.team_member? team, user_config.github_user
     end
-    
+
     # now that you've set up your credentials, try again
     TryAgain = Class.new(StandardError)
     # the credentials you've entered are bad
