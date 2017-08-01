@@ -1,3 +1,8 @@
+#### v1.5.0
+* Github team_member? method
+
+  > Lance Holsten: Unknown User: https://github.com/sportngin/octopolo/pull/113
+
 #### v1.4.0
 * Check PR status before marking deployable/accept-pull
 
