@@ -179,6 +179,28 @@ module Octopolo
           end
         end
       end
+
+      context ".team_member? team" do
+        let(:valid_team) { 2396228 }
+        let(:invalid_team) { 2396227 }
+        let(:user_config) { stub(:user_config, github_user: "foo", github_token: "bar") }
+
+        before { GitHub.stub(user_config: user_config) }
+
+        context "when valid team member" do
+          it "returns true" do
+            client.should_receive(:team_member?).with(valid_team, user_config.github_user) { true }
+            GitHub.team_member?(valid_team).should == true
+          end
+        end
+
+        context "when not a valid team member" do
+          it "returns false" do
+            client.should_receive(:team_member?).with(invalid_team, user_config.github_user) { false }
+            GitHub.team_member?(invalid_team).should == false
+          end
+        end
+      end
     end
   end
 end
