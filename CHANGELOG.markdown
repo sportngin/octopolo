@@ -1,3 +1,8 @@
+#### v1.5.1
+* Fix Ruby 2.0 compatiblity
+
+  > Brian Bergstrom: Unknown User: https://github.com/sportngin/octopolo/pull/114
+
 #### v1.5.0
 * Github team_member? method
 
