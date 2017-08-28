@@ -19,6 +19,7 @@ Gem::Specification.new do |gem|
   gem.add_dependency 'gli', '~> 2.13'
   gem.add_dependency 'hashie', '~> 1.2'
   gem.add_dependency 'octokit', '~> 4.0'
+  gem.add_dependency 'public_suffix', '~> 2.0' # Lock down to 2.x for Ruby 2.0 compatibility.
   gem.add_dependency 'highline', '~> 1.6'
   gem.add_dependency 'pivotal-tracker', '~> 0.5'
   gem.add_dependency 'jiralicious', '~> 0.4'
