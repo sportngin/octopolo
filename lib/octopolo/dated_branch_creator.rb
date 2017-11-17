@@ -1,5 +1,6 @@
 require_relative "git"
 require_relative "scripts/new_branch"
+require_relative "deployed_branch_merger"
 require "date"
 
 module Octopolo
@@ -8,33 +9,34 @@ module Octopolo
     include CLIWrapper
     include GitWrapper
 
-    attr_accessor :branch_type
-    attr_accessor :should_delete_old_branches
+    attr_accessor :branch_type, :should_delete_old_branches, :should_remerge_branches
 
     # Public: Initialize a new instance of DatedBranchCreator
     #
     # branch_type - Name of the type of branch (e.g., staging or deployable)
     # should_delete_old_branches - Flag to delete old branches of the given type.
-    def initialize(branch_type, should_delete_old_branches=false)
+    # should_remerge_branches - Flag to merge branches that have been deployed to the branch.
+    def initialize(branch_type, should_delete_old_branches = false, should_remerge_branches = false)
       self.branch_type = branch_type
       self.should_delete_old_branches = should_delete_old_branches
+      self.should_remerge_branches = should_remerge_branches
     end
 
     # Public: Create a new branch of the given type for today's date
     #
     # branch_type - Name of the type of branch (e.g., staging or deployable)
     # should_delete_old_branches - Flag to delete old branches of the given type.
+    # should_remerge_branches - Flag to merge branches that have been deployed to the branch.
     #
     # Returns a DatedBranchCreator
-    def self.perform(branch_type, should_delete_old_branches=false)
-      new(branch_type, should_delete_old_branches).tap do |creator|
-        creator.perform
-      end
+    def self.perform(branch_type, should_delete_old_branches = false, should_remerge_branches = false)
+      new(branch_type, should_delete_old_branches, should_remerge_branches).tap(&:perform)
     end
 
     # Public: Create the branch and handle related processing
     def perform
       create_branch
+      remerge_branches
       delete_old_branches
     end
 
@@ -56,6 +58,10 @@ module Octopolo
       else
         raise InvalidBranchType, "'#{branch_type}' is not a valid branch type"
       end
+    end
+
+    def remerge_branches
+      Octopolo::DeployedBranchMerger.new(branch_type, should_remerge_branches).merge
     end
 
     # Public: If necessary, and if user opts to, delete old branches of its type
