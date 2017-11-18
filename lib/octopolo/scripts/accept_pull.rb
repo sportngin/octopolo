@@ -38,7 +38,7 @@ module Octopolo
         Git.fetch
         if pull_request.mergeable?
           if pull_request.status_checks_passed? || @force
-            cli.perform "git merge --no-ff origin/#{pull_request.branch} -m \"Merge pull request ##{pull_request_id} from origin/#{pull_request.branch}\""
+            cli.perform "OVERCOMMIT_DISABLE=1 git merge --no-ff origin/#{pull_request.branch} -m \"Merge pull request ##{pull_request_id} from origin/#{pull_request.branch}\""
           else
             cli.say 'Status checks have not passed on this pull request.'
             exit!
