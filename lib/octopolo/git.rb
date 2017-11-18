@@ -39,7 +39,7 @@ module Octopolo
     #   # => output of `git status`
     def self.perform(subcommand, options={})
       options[:ignore_non_zero] ||= false
-      cli.perform("git #{subcommand}", true, options[:ignore_non_zero])
+      cli.perform("OVERCOMMIT_DISABLE=1 git #{subcommand}", true, options[:ignore_non_zero])
     end
 
     # Public: Perform the given Git subcommand without displaying the output
@@ -51,7 +51,7 @@ module Octopolo
     #   > Git.perform_quietly "status"
     #   # => no output
     def self.perform_quietly(subcommand)
-      cli.perform_quietly "git #{subcommand}"
+      cli.perform_quietly "OVERCOMMIT_DISABLE=1 git #{subcommand}"
     end
 
     # Public: The name of the currently check-out branch
@@ -142,7 +142,7 @@ module Octopolo
       cli.say RESERVED_BRANCH_PREFIXES.join(" ")
       cli.say " "
       raise ReservedBranch
-    end    
+    end
 
     # Public: Merge the given remote branch into the current branch
     def self.merge(branch_name)
