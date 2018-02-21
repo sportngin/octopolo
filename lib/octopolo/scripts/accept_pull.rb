@@ -40,7 +40,7 @@ module Octopolo
           if pull_request.status_checks_passed? || @force
             cli.perform "git merge --no-ff origin/#{pull_request.branch} -m \"Merge pull request ##{pull_request_id} from origin/#{pull_request.branch}\""
           else
-            cli.say 'Status checks have not passed on this pull request.'
+            cli.say 'Previous action not completed. Status checks have not passed on this pull request.'
             exit!
           end
         else
@@ -71,4 +71,3 @@ module Octopolo
     end
   end
 end
-

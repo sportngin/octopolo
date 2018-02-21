@@ -86,7 +86,7 @@ module Octopolo
             cli.stub(:say)
             cli.should_not_receive(:perform).with "git merge --no-ff origin/#{pull_request.branch} -m \"Merge pull request ##{pull_request_id} from origin/#{pull_request.branch}\""
 
-            cli.should_receive(:say).with 'Status checks have not passed on this pull request.'
+            cli.should_receive(:say).with 'Previous action not completed. Status checks have not passed on this pull request.'
             expect(subject).to receive(:exit!)
             subject.merge pull_request
           end
