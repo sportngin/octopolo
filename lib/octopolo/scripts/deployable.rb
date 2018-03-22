@@ -40,6 +40,11 @@ module Octopolo
           end
 
           merge_results = merge
+          if merge_results == true
+            puts "\n\n\n\nRESPONSE WAS TRUE\n\n\n\n"
+          else
+            puts "\n\n\n\nRESPONSE WAS FALSE\n\n\n\n"
+          end
           with_labelling if config.deployable_label && merge_results
 
           # if config.deployable_label
@@ -53,13 +58,7 @@ module Octopolo
       end
 
       def merge
-        r = PullRequestMerger.perform Git::DEPLOYABLE_PREFIX, Integer(@pull_request_id), :user_notifications => config.user_notifications
-        if r == true
-          puts "\n\n\n\nRESPONSE WAS TRUE\n\n\n\n"
-        else
-          puts "\n\n\n\nRESPONSE WAS FALSE\n\n\n\n"
-        end
-        return r
+        PullRequestMerger.perform Git::DEPLOYABLE_PREFIX, Integer(@pull_request_id), :user_notifications => config.user_notifications
       end
       private :merge
 
