@@ -49,13 +49,20 @@ module Octopolo
       end
 
       def merge
-        PullRequestMerger.perform Git::DEPLOYABLE_PREFIX, Integer(@pull_request_id), :user_notifications => config.user_notifications
+        r = PullRequestMerger.perform Git::DEPLOYABLE_PREFIX, Integer(@pull_request_id), :user_notifications => config.user_notifications
+        if r == true
+          puts "\n\n\n\nRESPONSE WAS TRUE\n\n\n\n"
+        else
+          puts "\n\n\n\nRESPONSE WAS FALSE\n\n\n\n"
+        end
+        return r
       end
       private :merge
 
       def with_labelling(&block)
         pull_request.add_labels(Deployable.deployable_label)
         unless yield
+          sleep 5
           pull_request.remove_labels(Deployable.deployable_label)
         end
       end
