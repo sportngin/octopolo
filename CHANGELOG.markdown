@@ -1,3 +1,51 @@
+#### v1.5.1
+* Fix Ruby 2.0 compatiblity
+
+  > Brian Bergstrom: Unknown User: https://github.com/sportngin/octopolo/pull/114
+
+#### v1.5.0
+* Github team_member? method
+
+  > Lance Holsten: Unknown User: https://github.com/sportngin/octopolo/pull/113
+
+#### v1.4.0
+* Check PR status before marking deployable/accept-pull
+
+  > Arvind Menon: Brian Bergstrom, Chris Arcand: https://github.com/sportngin/octopolo/pull/107
+
+#### v1.3.0
+* IS-4641-spring-cleaning-jira-bomb
+
+  > newzac: Zach Serre, Carl Allen: https://github.com/sportngin/octopolo/pull/84
+
+* Spring Cleaning IS-4644 Enable use of auto-merging resolver
+
+  > newzac: Carl Allen, Andy Fleener: https://github.com/sportngin/octopolo/pull/83
+
+* Reserved branch warning
+
+  > Mykola, Brian Bergstrom: Matt Krieger: https://github.com/sportngin/octopolo/pull/82
+
+* Exit with a status code of 1. Could also use abort, I guess
+
+  > AJ Stuyvenberg: Brian Bergstrom: https://github.com/sportngin/octopolo/pull/81
+
+* Don't raise on missing config file
+
+  > Chris Arcand: Andy Fleener, Pete Anderson: https://github.com/sportngin/octopolo/pull/80
+
+* Remove unwanted CLI output from tests
+
+  > Chris Arcand: : https://github.com/sportngin/octopolo/pull/79
+
+* Use an rbenv/chruby compatible ruby-version
+
+  > Chris Arcand: Andy Fleener: https://github.com/sportngin/octopolo/pull/78
+
+* Remove and ignore .DS_Store
+
+  > Chris Arcand: : https://github.com/sportngin/octopolo/pull/77
+
 #### v1.2.1
 #### v1.2.0
 * View PR in Browser
