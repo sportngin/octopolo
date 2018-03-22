@@ -62,6 +62,7 @@ module Octopolo
       def with_labelling(&block)
         pull_request.add_labels(Deployable.deployable_label)
         unless yield
+          puts "\n\n\nExecuting the code in the yield"
           sleep 5
           pull_request.remove_labels(Deployable.deployable_label)
         end
