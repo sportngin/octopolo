@@ -40,8 +40,9 @@ module Octopolo
           end
 
           merge_results = merge
-          if merge_results == true
+          if merge_results
             puts "\n\n\n\nRESPONSE WAS TRUE\n\n\n\n"
+            puts "merge results: #{merge_results}"
           else
             puts "\n\n\n\nRESPONSE WAS FALSE\n\n\n\n"
           end
