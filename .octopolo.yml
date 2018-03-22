@@ -1,0 +1,3 @@
+deploy_branch: master
+semantic_versioning: true
+github_repo: sportngin/octopolo
