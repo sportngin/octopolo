@@ -59,7 +59,7 @@ module Octopolo
       end
 
       def merge
-        PullRequestMerger.perform Git::DEPLOYABLE_PREFIX, Integer(@pull_request_id), :user_notifications => config.user_notifications
+        PullRequestMerger.new(Git::DEPLOYABLE_PREFIX, Integer(@pull_request_id), :user_notifications => config.user_notifications).perform
       end
       private :merge
 
