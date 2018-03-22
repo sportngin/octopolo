@@ -35,13 +35,9 @@ module Octopolo
             CLI.say 'Pull request status checks have not passed. Cannot be marked deployable.'
             exit!
           end
-          if config.deployable_label
-            with_labelling do
-              merge
-            end
-          else
-            merge
-          end
+
+          merge_result = merge
+          add_deployable_label if config.deployable_label && merge_result
         end
       end
 
@@ -50,13 +46,10 @@ module Octopolo
       end
       private :merge
 
-      def with_labelling(&block)
+      def add_deployable_label
         pull_request.add_labels(Deployable.deployable_label)
-        unless yield
-          pull_request.remove_labels(Deployable.deployable_label)
-        end
       end
-      private :with_labelling
+      private :add_deployable_label
 
       def deployable?
         pull_request.mergeable? && pull_request.status_checks_passed?
