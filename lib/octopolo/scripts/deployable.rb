@@ -11,7 +11,7 @@ module Octopolo
       attr_accessor :pull_request_id
 
       def self.execute(pull_request_id=nil, options={})
-        new(pull_request_id, options).execute
+        new(pull_request_id, options).execute_plan_yes
       end
 
       def self.deployable_label
