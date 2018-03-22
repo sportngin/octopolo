@@ -11,6 +11,9 @@ module Octopolo
       attr_accessor :pull_request_id
 
       def self.execute(pull_request_id=nil, options={})
+          # testing shit
+          # more testing
+
         new(pull_request_id, options).execute
       end
 
@@ -35,26 +38,40 @@ module Octopolo
             CLI.say 'Pull request status checks have not passed. Cannot be marked deployable.'
             exit!
           end
-          if config.deployable_label
-            with_labelling do
-              merge
-            end
+
+          merge_results = merge
+          if merge_results
+            puts "\n\n\n\nRESPONSE WAS TRUE\n\n\n\n"
+            puts "merge results: #{merge_results}"
           else
-            merge
+            puts "\n\n\n\nRESPONSE WAS FALSE\n\n\n\n"
           end
+          with_labelling if config.deployable_label && merge_results
+
+          # if config.deployable_label
+          #   with_labelling do
+          #     merge
+          #   end
+          # else
+          #   merge
+          # end
         end
       end
 
       def merge
-        PullRequestMerger.perform Git::DEPLOYABLE_PREFIX, Integer(@pull_request_id), :user_notifications => config.user_notifications
+        PullRequestMerger.new(Git::DEPLOYABLE_PREFIX, Integer(@pull_request_id), :user_notifications => config.user_notifications).perform
       end
       private :merge
 
-      def with_labelling(&block)
+      def with_labelling #(&block)
+        puts "\n\n\n\nAdding a label\n\n\n\n"
         pull_request.add_labels(Deployable.deployable_label)
-        unless yield
-          pull_request.remove_labels(Deployable.deployable_label)
-        end
+        
+        # unless yield
+        #   puts "\n\n\nExecuting the code in the yield"
+        #   sleep 5
+        #   pull_request.remove_labels(Deployable.deployable_label)
+        # end
       end
       private :with_labelling
 
