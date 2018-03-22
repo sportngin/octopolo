@@ -11,7 +11,10 @@ module Octopolo
       attr_accessor :pull_request_id
 
       def self.execute(pull_request_id=nil, options={})
-        new(pull_request_id, options).execute_plan_no
+          # testing shit
+          # more testing
+
+        new(pull_request_id, options).execute
       end
 
       def self.deployable_label
