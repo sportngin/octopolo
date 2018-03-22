@@ -42,20 +42,19 @@ module Octopolo
         merge_pull_request
         comment_about_merge
       end
-    rescue GitHub::PullRequest::NotFound
-      cli.say "Unable to find pull request #{pull_request_id}. Please retry with a valid ID."
-      false
-    rescue Git::MergeFailed
-      cli.say "Merge failed. Please identify the source of this merge conflict resolve this conflict in your pull request's branch. NOTE: Merge conflicts resolved in the #{branch_type} branch are NOT used when deploying."
-      false
-    rescue Git::CheckoutFailed
-      cli.say "Checkout of #{branch_to_merge_into} failed. Please contact Infrastructure to determine the cause."
-      false
-    rescue GitHub::PullRequest::CommentFailed
-      cli.say "Unable to write comment. Please navigate to #{pull_request.url} and add the comment, '#{comment_body}'"
-      false
     rescue => e
-      cli.say "An unknown error occurred: #{e.inspect}"
+      case e
+      when GitHub::PullRequest::NotFound
+        cli.say "Unable to find pull request #{pull_request_id}. Please retry with a valid ID."
+      when Git::MergeFailed
+        cli.say "Merge failed. Please identify the source of this merge conflict resolve this conflict in your pull request's branch. NOTE: Merge conflicts resolved in the #{branch_type} branch are NOT used when deploying."
+      when Git::CheckoutFailed
+        cli.say "Checkout of #{branch_to_merge_into} failed. Please contact Infrastructure to determine the cause."
+      when GitHub::PullRequest::CommentFailed
+        cli.say "Unable to write comment. Please navigate to #{pull_request.url} and add the comment, '#{comment_body}'"
+      else
+        cli.say "An unknown error occurred: #{e.inspect}"
+      end
       false
     end
 
