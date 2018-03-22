@@ -64,7 +64,9 @@ module Octopolo
       private :merge
 
       def with_labelling #(&block)
+        puts "\n\n\n\nAdding a label\n\n\n\n"
         pull_request.add_labels(Deployable.deployable_label)
+        
         # unless yield
         #   puts "\n\n\nExecuting the code in the yield"
         #   sleep 5
