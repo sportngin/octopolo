@@ -26,6 +26,7 @@ Gem::Specification.new do |gem|
   gem.add_dependency 'semantic', '~> 1.3'
 
   gem.add_development_dependency 'rake', '~> 10.1'
+  gem.add_development_dependency 'bundler', '~> 1.16'
   gem.add_development_dependency 'rspec', '~> 2.99'
   gem.add_development_dependency 'guard', '~> 2.6'
   gem.add_development_dependency 'guard-rspec', '~> 4.3'

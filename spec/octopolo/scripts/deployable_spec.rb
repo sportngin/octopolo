@@ -19,7 +19,7 @@ module Octopolo
         allow(subject).to receive(:cli) { cli }
         allow(subject).to receive(:config) { config }
         allow(Octopolo::GitHub::PullRequest).to receive(:new) { pull_request }
-        allow(PullRequestMerger).to receive(:perform) { true }
+        allow_any_instance_of(PullRequestMerger).to receive(:perform) { true }
         allow(Octopolo::GitHub).to receive(:check_connection) { true }
       end
 
@@ -43,7 +43,7 @@ module Octopolo
             end
 
             it "takes the pull requests ID from the current branch" do
-              PullRequestMerger.should_receive(:perform).with(Git::DEPLOYABLE_PREFIX, pull_request.number, :user_notifications => config.user_notifications)
+              expect_any_instance_of(PullRequestMerger).to receive(:perform)
             end
           end
 
@@ -67,17 +67,17 @@ module Octopolo
 
           context "when merge to deployable fails" do
             before do
-              allow(PullRequestMerger).to receive(:perform) { false }
+              allow_any_instance_of(PullRequestMerger).to receive(:perform) { false }
             end
 
-            it "removes the deployable label" do
-              pull_request.should_receive(:remove_labels)
+            it "does not add any labels" do
+              pull_request.should_not_receive(:add_labels)
             end
           end
 
           context "when the merge to deployable succeeds" do
-            it "doesn't remove the deployable label" do
-              pull_request.should_not_receive(:remove_labels)
+            it "adds a label" do
+              pull_request.should_receive(:add_labels)
             end
           end
 
@@ -134,7 +134,6 @@ module Octopolo
             pull_request.should_receive(:add_labels)
           end
         end
-
       end
     end
   end

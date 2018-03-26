@@ -9,4 +9,4 @@ rvm:
   - 2.2
 script: bundle exec rspec
 before_install:
-- gem uninstall bundler && gem install bundler
+- gem install bundler
