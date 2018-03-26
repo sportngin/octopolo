@@ -1,3 +1,8 @@
+#### v1.5.2
+* Fix merging into deployable
+
+  > Emma Sax: Unknown User: https://github.com/sportngin/octopolo/pull/120
+
 #### v1.5.1
 * Fix Ruby 2.0 compatiblity
 
