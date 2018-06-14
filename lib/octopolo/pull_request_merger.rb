@@ -147,6 +147,10 @@ module Octopolo
       # TODO: change log link to check for private/public repository
       puts "To view #{build.state} log, visit: https://travis-ci.org/#{repo_name}/builds/#{build.id}"
 
+      # to write the entire log to stdout:
+      # job  = build.jobs.first
+      # puts job.log.body
+
       return build.state
     end
 
