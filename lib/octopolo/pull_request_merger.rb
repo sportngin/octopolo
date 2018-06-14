@@ -1,3 +1,5 @@
+require "travis"
+require "travis/pro"
 require_relative "scripts"
 require_relative "git"
 require_relative "github"
@@ -37,13 +39,21 @@ module Octopolo
 
     # Public: Create the branch and handle related processing
     def perform
-      git.if_clean do
-        check_out_branch
-        merge_pull_request
-        comment_about_merge
-      end
+      # git.if_clean do
+        # check_out_branch
+        # merge_pull_request
+        # comment_about_merge
+        if @options[:follow_travis]
+          travis_state = follow_travis
+
+          if %w[errored failed unsuccessful].include?(travis_state)
+            cli.say "Your Travis build has not finished successfully. Your stage-up is cancelled."
+          end
+        end
+      # end
     rescue => e
       case e
+      # TODO: potentially add message for if Travis fails
       when GitHub::PullRequest::NotFound
         cli.say "Unable to find pull request #{pull_request_id}. Please retry with a valid ID."
       when Git::MergeFailed
@@ -74,6 +84,70 @@ module Octopolo
     # Public: Comment that the pull request was merged into the branch
     def comment_about_merge
       pull_request.write_comment comment_body
+    end
+
+    def get_travis_build(repo)
+      repo.last_build
+    end
+
+    def follow_travis
+      repo_name = "emmasax1/LearningComputerScience"
+
+      # TODO: check if private/public repo. If private, use PRO, if not, don't use PRO
+
+      # if private repo
+        # Travis::Pro.access_token = @options[:travis_token]
+        # user = Travis::Pro::User.current
+        # repo = Travis::Pro::Repository.find(repo_name)
+      # else
+        Travis.access_token = @options[:travis_token]
+        user = Travis::User.current
+        repo = Travis::Repository.find(repo_name)
+      # end
+
+      build = get_travis_build(repo)
+      existing_build_number = build.number
+      new_build_number = build.number
+
+      if build.finished?
+        puts "Waiting for a new Travis build..."
+
+        while existing_build_number == new_build_number
+          print "."
+          sleep(3)
+          repo.reload
+          build = get_travis_build(repo)
+          new_build_number = build.number
+        end
+
+        existing_build_number = new_build_number
+      end
+
+      if build.created? && !build.running?
+        puts "\nTravis build ##{build.number}: #{build.state}"
+        until build.running?
+          print "."
+          sleep(3)
+          repo.reload
+          build = get_travis_build(repo)
+        end
+      end
+
+      puts "\nTravis build ##{build.number}: #{build.state}"
+
+      while build.running?
+        print "."
+        sleep(3)
+        repo.reload
+        build = get_travis_build(repo)
+      end
+
+      puts "\nTravis build ##{build.number}: #{build.state}"
+
+      # TODO: change log link to check for private/public repository
+      puts "To view #{build.state} log, visit: https://travis-ci.org/#{repo_name}/builds/#{build.id}"
+
+      return build.state
     end
 
     # Public: The content of the comment to post when merged

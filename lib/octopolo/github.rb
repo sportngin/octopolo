@@ -51,6 +51,11 @@ module Octopolo
       raise BadCredentials, "Your stored credentials were rejected by GitHub. Run `op github-auth` to generate a new token."
     end
 
+    # TODO: this needs fixing, probably won't work right now
+    def self.private_repo?(repo, options)
+      client.repository(repo, options).private
+    end
+
     def self.pull_request *args
       client.pull_request *args
     end

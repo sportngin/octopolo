@@ -43,6 +43,7 @@ module Octopolo
       def execute
         if should_create_branch?
           update_changelog
+          # TODO: add place to watch travis log
           tag_release
         else
           raise Octopolo::WrongBranch.new("Must perform this script from the deploy branch (#{config.deploy_branch})")
