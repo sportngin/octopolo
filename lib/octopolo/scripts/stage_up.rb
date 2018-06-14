@@ -6,14 +6,15 @@ module Octopolo
     class StageUp
       include CLIWrapper
 
-      attr_accessor :pull_request_id
+      attr_accessor :pull_request_id, :options
 
-      def self.execute(pull_request_id=nil)
-        new(pull_request_id).execute
+      def self.execute(pull_request_id=nil, options)
+        new(pull_request_id, options).execute
       end
 
-      def initialize(pull_request_id=nil)
+      def initialize(pull_request_id=nil, options={})
         @pull_request_id = pull_request_id
+        @options = options
       end
 
       # Public: Perform the script
