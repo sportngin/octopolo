@@ -17,6 +17,8 @@ module Octopolo
       attr_accessor :pivotal_ids
       attr_accessor :jira_ids
       attr_accessor :label
+      attr_accessor :ops_approval_required
+      attr_accessor :ui_approval_required
       attr_accessor :options
 
       def self.execute(options={})
@@ -68,6 +70,20 @@ module Octopolo
       end
       protected :ask_label
 
+      # Protected: Ask if this issue needs Ops approval
+      def ask_ops_approval(item)
+        response = cli.ask("Does this #{item} require Operations approval?", ["Yes", "No"])
+        self.ops_approval_required = true if response == 1
+      end
+      protected :ask_ops_approval
+
+      # Protected: Ask if this issue needs UI approval
+      def ask_ui_approval(item)
+        response = cli.ask("Does this #{item} require UI approval?", ["Yes", "No"])
+        self.ui_approval_required = true if response == 1
+      end
+      protected :ask_ui_approval
+
       # Protected: Ask for a Pivotal Tracker story IDs
       def ask_pivotal_ids
         self.pivotal_ids = cli.prompt("Pivotal Tracker story ID(s):").split(/[\s,]+/)
@@ -116,6 +132,10 @@ module Octopolo
         Octopolo::GitHub::Label.all
       end
 
+      def new_label
+        Octopolo::GitHub::Label.new({name: name, color: color})
+      end
+
       def update_pivotal
         pivotal_ids.each do |story_id|
           Pivotal::StoryCommenter.new(story_id, issue.url).perform
@@ -132,6 +152,8 @@ module Octopolo
 
       def update_label
         issue.add_labels(label) if label
+        issue.add_labels(new_label()) if ops_approval_required
+        issue.add_labels(new_label()) if ui_approval_required
       end
       protected :update_label
 
