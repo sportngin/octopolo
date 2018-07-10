@@ -41,9 +41,7 @@ module Octopolo
         alert_reserved_and_exit if git.reserved_branch?
         announce
         ask_title
-        ask_label
-        ask_ops_approval("pull request")
-        ask_ux_approval("pull request")
+        ask_labels("pull request")
         ask_pivotal_ids if config.use_pivotal_tracker
         ask_jira_ids if config.use_jira
       end
@@ -51,7 +49,7 @@ module Octopolo
 
       # Private: Announce to the user the branches the pull request will reference
       def announce
-        cli.say "Preparing a pull request for #{config.github_repo}/#{git.current_branch} to #{config.github_repo}/#{destination_branch}."
+        cli.say "Using local version...\nPreparing a pull request for #{config.github_repo}/#{git.current_branch} to #{config.github_repo}/#{destination_branch}."
       end
       private :announce
 

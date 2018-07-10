@@ -19,15 +19,12 @@ module Octopolo
       attr_accessor :labels
       attr_accessor :options
 
-      OPTIONAL_REQUIREMENTS = {ops_required: "ops-required", ux_required: "ux-required"}
-
       def self.execute(options={})
         new(options).execute
       end
 
       def initialize(options={})
         @options = options
-        @labels = []
       end
 
       def execute
@@ -45,9 +42,7 @@ module Octopolo
       def ask_questionaire
         announce
         ask_title
-        ask_label
-        ask_ops_approval("issue")
-        ask_ux_approval("issue")
+        ask_labels("issue")
         ask_pivotal_ids if config.use_pivotal_tracker
         ask_jira_ids if config.use_jira
       end
@@ -66,26 +61,16 @@ module Octopolo
       protected :ask_title
 
       # Protected: Ask for a label for the issue
-      def ask_label
+      def ask_labels(item)
         choices = Octopolo::GitHub::Label.get_names(label_choices).concat(["None"])
-        response = cli.ask(label_prompt, choices)
-        self.labels << label_hash[response]
-      end
-      protected :ask_label
+        label_names = cli.ask_multiple_answers(label_prompt(item), choices)
 
-      # Protected: Ask if this issue needs Ops approval
-      def ask_ops_approval(item)
-        response = cli.ask("Does this #{item} require Operations approval?", ["Yes", "No"])
-        self.labels << label_hash[OPTIONAL_REQUIREMENTS[ops_required]] if response == "Yes"
+        self.labels = []
+        label_names.each do |ln|
+          self.labels << label_hash[ln]
+        end
       end
-      protected :ask_ops_approval
-
-      # Protected: Ask if this issue needs UX approval
-      def ask_ux_approval(item)
-        response = cli.ask("Does this #{item} require UX approval?", ["Yes", "No"])
-        self.labels << label_hash[OPTIONAL_REQUIREMENTS[ux_required]] if response == "Yes"
-      end
-      protected :ask_ux_approval
+      protected :ask_labels
 
       # Protected: Ask for a Pivotal Tracker story IDs
       def ask_pivotal_ids
@@ -127,8 +112,8 @@ module Octopolo
       end
       protected :open_in_browser
 
-      def label_prompt
-        'Label:'
+      def label_prompt(item)
+        "Are there any labels you wish to add to this #{item}:"
       end
 
       def label_choices

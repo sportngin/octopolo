@@ -112,28 +112,67 @@ module Octopolo
       end
     end
 
-    def self.ask(question, choices, skip_asking = false)
+    def self.ask(question, choices)
       return choices.first if choices.size == 1
 
-      unless skip_asking
-        say question
-        choices.each_with_index do |choice, i|
-          say "#{i+1}) #{choice}"
-        end
-      end
+      give_question_options(question, choices)
 
       selection = nil
+
       while not choices.include?(selection)
         selection = prompt
         break if choices.include?(selection)
         # if entering a 1-based index value
-        selection_index = selection.to_i - 1
-        selection = choices[selection_index] if selection_index >= 0
+        selection = gather_selection_from_index(selection, choices)
         break if choices.include?(selection)
         say "Not a valid choice."
       end
 
       selection
+    end
+
+    def self.ask_multiple_answers(question, choices)
+      return choices.first if choices.size == 1
+
+      give_question_options(question, choices)
+
+      selection = nil
+      finalized_selections = []
+      selections = []
+
+      selection = prompt
+      selections_split = selection.split(",")
+      selections_split.each do |s|
+        selections << s.strip
+      end
+
+      selections.each do |selection|
+        if choices.include?(selection)
+          finalized_selections << selection
+        else # if entering a 1-based index value
+          selection = gather_selection_from_index(selection, choices)
+          
+          if choices.include?(selection)
+            finalized_selections << selection
+          else
+            say "Not a valid choice."
+          end
+        end
+      end
+
+      finalized_selections
+    end
+
+    def self.give_question_options(question, choices)
+      say question
+      choices.each_with_index do |choice, i|
+        say "#{i+1}) #{choice}"
+      end
+    end
+
+    def self.gather_selection_from_index(selection, choices)
+      selection_index = selection.to_i - 1
+      choices[selection_index] if selection_index >= 0
     end
 
     # Public: Ask a yes or no question
