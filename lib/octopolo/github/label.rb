@@ -38,7 +38,6 @@ module Octopolo
       # label - a label object
       def self.first_or_create(label)
         unless all_from_repo.include?(label)
-          # cli.add_label("sportngin/terraform-bi", label.name, label.color)
           GitHub.add_label(config.github_repo, label.name, label.color)
         end
       end
@@ -57,7 +56,6 @@ module Octopolo
       #
       # returns - an array of labels
       def self.all_from_repo
-        # cli.labels("sportngin/terraform-bi").map{ |label_hash| new(label_hash) }
         GitHub.labels(config.github_repo).map{ |label_hash| new(label_hash) }
       end
       private_class_method :all_from_repo

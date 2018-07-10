@@ -61,14 +61,17 @@ module Octopolo
       protected :ask_title
 
       # Protected: Ask for a label for the issue
-      def ask_labels(item)
+      def ask_labels(item="pull request")
         choices = Octopolo::GitHub::Label.get_names(label_choices).concat(["None"])
-        label_names = cli.ask_multiple_answers(label_prompt(item), choices)
+        label_names = cli.ask_multiple_answers(label_prompt(item), choices) || []
 
         self.labels = []
+
         label_names.each do |ln|
           self.labels << label_hash[ln]
         end
+
+        self.labels
       end
       protected :ask_labels
 
@@ -113,7 +116,7 @@ module Octopolo
       protected :open_in_browser
 
       def label_prompt(item)
-        "Are there any labels you wish to add to this #{item}:"
+        "Are there any labels you wish to add to this #{item}?"
       end
 
       def label_choices
@@ -139,7 +142,7 @@ module Octopolo
       protected :update_jira
 
       def update_label
-        issue.add_labels(labels)
+        issue.add_labels(labels) unless labels.nil?
       end
       protected :update_label
 

@@ -49,7 +49,7 @@ module Octopolo
 
       # Private: Announce to the user the branches the pull request will reference
       def announce
-        cli.say "Using local version...\nPreparing a pull request for #{config.github_repo}/#{git.current_branch} to #{config.github_repo}/#{destination_branch}."
+        cli.say "Preparing a pull request for #{config.github_repo}/#{git.current_branch} to #{config.github_repo}/#{destination_branch}."
       end
       private :announce
 
