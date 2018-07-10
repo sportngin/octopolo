@@ -43,7 +43,7 @@ module Octopolo
         ask_title
         ask_label
         ask_ops_approval("pull request")
-        ask_ui_approval("pull request")
+        ask_ux_approval("pull request")
         ask_pivotal_ids if config.use_pivotal_tracker
         ask_jira_ids if config.use_jira
       end
