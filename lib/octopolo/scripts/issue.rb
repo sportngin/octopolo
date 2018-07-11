@@ -67,7 +67,9 @@ module Octopolo
 
         label_questions.each do |question|
           label_name = question.run_based_on_type
-          self.labels << label_hash[label_name] if label_hash[label_name]
+          if label_name.is_a? String
+            self.labels << label_hash[label_name] if label_hash[label_name]
+          end
         end
 
         self.labels

@@ -140,8 +140,8 @@ module Octopolo
     # Returns a Boolean
     def self.ask_boolean(question)
       answer = prompt("#{question} (y/n)")
-      # basically accept anything that starts with Y as a yes answer
-      answer =~ /^y/i
+      # Return true if the answer starts with "Y" or "y"; else return false
+      !!(answer =~ /^y/i)
     end
 
     def self.prompt(prompt_text="> ")
