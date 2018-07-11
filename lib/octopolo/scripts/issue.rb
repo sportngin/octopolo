@@ -4,6 +4,7 @@ require_relative "../github/issue"
 require_relative "../github/issue_creator"
 require_relative "../pivotal/story_commenter"
 require_relative "../jira/story_commenter"
+require_relative "../question"
 
 module Octopolo
   module Scripts
@@ -33,7 +34,7 @@ module Octopolo
           create_issue
           update_pivotal
           update_jira
-          update_label
+          update_labels
           open_in_browser
         end
       end
@@ -42,7 +43,7 @@ module Octopolo
       def ask_questionaire
         announce
         ask_title
-        ask_labels("issue")
+        ask_labels
         ask_pivotal_ids if config.use_pivotal_tracker
         ask_jira_ids if config.use_jira
       end
@@ -56,19 +57,17 @@ module Octopolo
 
       # Protected: Ask for a title for the issue
       def ask_title
-        self.title = cli.prompt "Title:"
+        self.title = Octopolo::Question.new(prompt: "Title:").prompt
       end
       protected :ask_title
 
       # Protected: Ask for a label for the issue
-      def ask_labels(item="pull request")
-        choices = Octopolo::GitHub::Label.get_names(label_choices).concat(["None"])
-        label_names = cli.ask_multiple_answers(label_prompt(item), choices) || []
-
+      def ask_labels
         self.labels = []
 
-        label_names.each do |ln|
-          self.labels << label_hash[ln]
+        label_questions.each do |question|
+          label_name = question.run_based_on_type
+          self.labels << label_hash[label_name] if label_hash[label_name]
         end
 
         self.labels
@@ -77,13 +76,15 @@ module Octopolo
 
       # Protected: Ask for a Pivotal Tracker story IDs
       def ask_pivotal_ids
-        self.pivotal_ids = cli.prompt("Pivotal Tracker story ID(s):").split(/[\s,]+/)
+        response = Octopolo::Question.new(prompt: "Pivotal Tracker story ID(s):").prompt
+        self.pivotal_ids = response.split(/[\s,]+/)
       end
       protected :ask_pivotal_ids
 
-      # Protected: Ask for a Pivotal Tracker story IDs
+      # Protected: Ask for a Jira Tracker story IDs
       def ask_jira_ids
-        self.jira_ids = cli.prompt("Jira story ID(s):").split(/[\s,]+/)
+        response = Octopolo::Question.new(prompt: "Jira story ID(s):").prompt
+        self.jira_ids = response.split(/[\s,]+/)
       end
       protected :ask_pivotal_ids
 
@@ -115,8 +116,22 @@ module Octopolo
       end
       protected :open_in_browser
 
-      def label_prompt(item)
-        "Are there any labels you wish to add to this #{item}?"
+      def label_questions
+        [
+          Octopolo::Question.new(
+            prompt: label_prompt,
+            type: :ask,
+            choices: generate_generic_label_choices
+          )
+        ]
+      end
+
+      def label_prompt
+        "Labels:"
+      end
+
+      def generate_generic_label_choices
+        Octopolo::GitHub::Label.get_names(label_choices).concat(["None"])
       end
 
       def label_choices
@@ -141,10 +156,10 @@ module Octopolo
       end
       protected :update_jira
 
-      def update_label
+      def update_labels
         issue.add_labels(labels) unless labels.nil?
       end
-      protected :update_label
+      protected :update_labels
 
     end
   end

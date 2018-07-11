@@ -112,67 +112,25 @@ module Octopolo
       end
     end
 
-    def self.ask(question, choices)
+    def self.ask(question, choices, skip_asking = false)
       return choices.first if choices.size == 1
-
-      give_question_options(question, choices)
+      
+      say question
+      choices.each_with_index do |choice, i|
+        say "#{i+1}) #{choice}"
+      end
 
       selection = nil
-
       while not choices.include?(selection)
         selection = prompt
-        break if choices.include?(selection)
-        # if entering a 1-based index value
-        selection = gather_selection_from_index(selection, choices)
+        break if choices.include?(selection) # passed in the value of the choice
+        selection_index = selection.to_i - 1 # passed in a 1-based index of the choice
+        selection = choices[selection_index] if selection_index >= 0 # gather the value of the choice
         break if choices.include?(selection)
         say "Not a valid choice."
       end
 
       selection
-    end
-
-    def self.ask_multiple_answers(question, choices)
-      return choices.first if choices.size == 1
-
-      give_question_options(question, choices)
-
-      selection = nil
-      finalized_selections = []
-      selections = []
-
-      selection = prompt
-      selections_split = selection.split(",")
-      selections_split.each do |s|
-        selections << s.strip
-      end
-
-      selections.each do |selection|
-        if choices.include?(selection)
-          finalized_selections << selection
-        else # if entering a 1-based index value
-          selection = gather_selection_from_index(selection, choices)
-          
-          if choices.include?(selection)
-            finalized_selections << selection
-          else
-            say "Not a valid choice."
-          end
-        end
-      end
-
-      finalized_selections
-    end
-
-    def self.give_question_options(question, choices)
-      say question
-      choices.each_with_index do |choice, i|
-        say "#{i+1}) #{choice}"
-      end
-    end
-
-    def self.gather_selection_from_index(selection, choices)
-      selection_index = selection.to_i - 1
-      choices[selection_index] if selection_index >= 0
     end
 
     # Public: Ask a yes or no question
@@ -186,7 +144,7 @@ module Octopolo
       answer =~ /^y/i
     end
 
-    def self.prompt prompt_text="> "
+    def self.prompt(prompt_text="> ")
       highline.ask prompt_text do |conf|
         conf.readline = true
       end.to_s
@@ -202,7 +160,7 @@ module Octopolo
     #   plan = CLI.prompt_multiline "QA Plan:"
     #
     # Returns a String containing the value the user entered
-    def self.prompt_multiline prompt_text
+    def self.prompt_multiline(prompt_text)
       highline.ask(prompt_text) do |conf|
         # accept text until the first blank line (instead of stopping at the
         # first newline), to allow multiple lines of input
@@ -216,7 +174,7 @@ module Octopolo
     # prompt_text - The text to display before the prompt; e.g., "Password: "
     #
     # Returns a String containing the value the user entered
-    def self.prompt_secret prompt_text
+    def self.prompt_secret(prompt_text)
       highline.ask(prompt_text) do |conf|
         # do not display the text input
         conf.echo = false

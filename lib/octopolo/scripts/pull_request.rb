@@ -31,7 +31,7 @@ module Octopolo
           create_pull_request
           update_pivotal
           update_jira
-          update_label
+          update_labels
           open_in_browser
         end
       end
@@ -41,7 +41,7 @@ module Octopolo
         alert_reserved_and_exit if git.reserved_branch?
         announce
         ask_title
-        ask_labels("pull request")
+        ask_labels
         ask_pivotal_ids if config.use_pivotal_tracker
         ask_jira_ids if config.use_jira
       end

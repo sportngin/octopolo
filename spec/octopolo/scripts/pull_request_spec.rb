@@ -44,7 +44,7 @@ module Octopolo
           expect(subject).to receive(:create_pull_request)
           expect(subject).to receive(:update_pivotal)
           expect(subject).to receive(:update_jira)
-          expect(subject).to receive(:update_label)
+          expect(subject).to receive(:update_labels)
           expect(subject).to receive(:open_in_browser)
 
           subject.execute
@@ -121,7 +121,7 @@ module Octopolo
 
         it "asks for and capture a label" do
           allow(Octopolo::GitHub::Label).to receive(:all) {[label1,label2]}
-          expect(cli).to receive(:ask_multiple_answers).with("Are there any labels you wish to add to this pull request?", choices)
+          expect(cli).to receive(:ask).with("Labels:", choices)
           subject.send(:ask_labels)
         end
 
@@ -233,23 +233,23 @@ module Octopolo
         end
       end
 
-      context "#update_label" do
+      context "#update_labels" do
         before do
           subject.labels = ["high-risk"]
           subject.pull_request = stub()
         end
-        it "calls update_label with proper arguments" do
+        it "calls update_labels with proper arguments" do
           expect(subject.pull_request).to receive(:add_labels).with(['high-risk'])
-          subject.send(:update_label)
+          subject.send(:update_labels)
         end
 
         context "doesn't know yet label" do
           before do
             subject.labels = nil
           end
-          it "doesn't call update_label when label is don't know yet" do
+          it "doesn't call update_labels when label is don't know yet" do
             expect(subject.pull_request).to_not receive(:add_labels)
-            subject.send(:update_label)
+            subject.send(:update_labels)
           end
         end
 
