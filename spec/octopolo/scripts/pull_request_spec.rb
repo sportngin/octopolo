@@ -25,6 +25,10 @@ module Octopolo
           :config => config,
           :git => git
         })
+
+        Octopolo::Question.any_instance.stub({
+          :cli => cli
+        })
       end
 
       context "#new" do
@@ -117,18 +121,18 @@ module Octopolo
       context "#ask_labels" do
         let(:label1) {Octopolo::GitHub::Label.new(name: "low-risk", color: '151515')}
         let(:label2) {Octopolo::GitHub::Label.new(name: "high-risk", color: '151515')}
-        let(:choices) {["low-risk","high-risk","None"]}
+        let(:choices) {["low-risk","high-risk"]}
 
         it "asks for and capture a label" do
           allow(Octopolo::GitHub::Label).to receive(:all) {[label1,label2]}
-          expect(cli).to receive(:ask).with("Labels:", choices)
+          expect(cli).to receive(:ask).with("Label:", choices.concat(["None"]))
           subject.send(:ask_labels)
         end
 
         it "asks for a label" do
           allow(Octopolo::GitHub::Label).to receive(:all) {[label1,label2]}
           allow(Octopolo::GitHub::Label).to receive(:get_names) {choices}
-          allow(cli).to receive(:ask_multiple_answers) {["low-risk"]}
+          allow(cli).to receive(:ask) {"low-risk"}
           expect(subject.send(:ask_labels)).to eq([label1])
         end
       end
