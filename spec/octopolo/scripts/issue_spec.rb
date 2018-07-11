@@ -93,7 +93,7 @@ module Octopolo
 
         it "asks for and capture a label" do
           allow(Octopolo::GitHub::Label).to receive(:all) {[label1,label2]}
-          expect(cli).to receive(:ask).with("Labels:", choices)
+          expect(cli).to receive(:ask).with("Label:", choices)
           subject.send(:ask_labels)
         end
 

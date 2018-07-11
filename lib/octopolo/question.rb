@@ -35,7 +35,7 @@ module Octopolo
 
     def ask_boolean
       response = cli.ask_boolean(@prompt)
-      
+
       if response && @add_label_based_on_boolean
         @add_label_based_on_boolean[:label_name]
       else
@@ -53,10 +53,6 @@ module Octopolo
 
     def prompt_secret
       cli.prompt_secret(@prompt)
-    end
-
-    def find_label_name
-
     end
   end
 end

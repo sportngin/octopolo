@@ -127,7 +127,7 @@ module Octopolo
       end
 
       def label_prompt
-        "Labels:"
+        "Label:"
       end
 
       def generate_generic_label_choices
