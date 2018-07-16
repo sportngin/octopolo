@@ -1,6 +1,8 @@
 module Octopolo
   class Question
     include CLIWrapper
+    include ConfigWrapper
+    include GitWrapper
 
     attr_accessor :prompt, :type, :choices, :add_label_based_on_boolean
 
