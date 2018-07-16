@@ -5,6 +5,8 @@ module Octopolo
     attr_accessor :prompt, :type, :choices, :add_label_based_on_boolean
 
     def initialize(options)
+      # TODO: remove this puts statement
+      puts "Verifying I'm running new version of Octopolo."
       self.prompt = options[:prompt]
       self.type = options[:type] || nil
       self.choices = options[:choices] || nil
