@@ -25,6 +25,10 @@ module Octopolo
           :config => config,
           :git => git
         })
+
+        Octopolo::Question.any_instance.stub({
+          :cli => cli
+        })
       end
 
       context "#new" do
@@ -44,7 +48,7 @@ module Octopolo
           expect(subject).to receive(:create_pull_request)
           expect(subject).to receive(:update_pivotal)
           expect(subject).to receive(:update_jira)
-          expect(subject).to receive(:update_label)
+          expect(subject).to receive(:update_labels)
           expect(subject).to receive(:open_in_browser)
 
           subject.execute
@@ -62,7 +66,7 @@ module Octopolo
           expect(subject).to receive(:ask_title)
           expect(subject).to receive(:ask_pivotal_ids)
           expect(subject).to receive(:ask_jira_ids)
-          expect(subject).to receive(:ask_label)
+          expect(subject).to receive(:ask_labels)
 
           subject.send(:ask_questionaire)
         end
@@ -73,7 +77,7 @@ module Octopolo
             subject.stub(:ask_title)
             subject.stub(:ask_pivotal_ids)
             subject.stub(:ask_jira_ids)
-            subject.stub(:ask_label)
+            subject.stub(:ask_labels)
           end
           it "exits when branch name is reserved" do
             subject.git.stub(:reserved_branch?).and_return true
@@ -114,22 +118,22 @@ module Octopolo
         end
       end
 
-      context "#ask_label" do
+      context "#ask_labels" do
         let(:label1) {Octopolo::GitHub::Label.new(name: "low-risk", color: '151515')}
         let(:label2) {Octopolo::GitHub::Label.new(name: "high-risk", color: '151515')}
-        let(:choices) {["low-risk","high-risk","None"]}
+        let(:choices) {["low-risk","high-risk"]}
 
         it "asks for and capture a label" do
           allow(Octopolo::GitHub::Label).to receive(:all) {[label1,label2]}
-          expect(cli).to receive(:ask).with("Label:", choices)
-          subject.send(:ask_label)
+          expect(cli).to receive(:ask).with("Label:", choices.concat(["None"]))
+          subject.send(:ask_labels)
         end
 
         it "asks for a label" do
           allow(Octopolo::GitHub::Label).to receive(:all) {[label1,label2]}
           allow(Octopolo::GitHub::Label).to receive(:get_names) {choices}
           allow(cli).to receive(:ask) {"low-risk"}
-          expect(subject.send(:ask_label)).to eq(label1)
+          expect(subject.send(:ask_labels)).to eq([label1])
         end
       end
 
@@ -233,23 +237,23 @@ module Octopolo
         end
       end
 
-      context "#update_label" do
+      context "#update_labels" do
         before do
-          subject.label = "high-risk"
+          subject.labels = ["high-risk"]
           subject.pull_request = stub()
         end
-        it "calls update_label with proper arguments" do
-          expect(subject.pull_request).to receive(:add_labels).with('high-risk')
-          subject.send(:update_label)
+        it "calls update_labels with proper arguments" do
+          expect(subject.pull_request).to receive(:add_labels).with(['high-risk'])
+          subject.send(:update_labels)
         end
 
         context "doesn't know yet label" do
           before do
-            subject.label = nil
+            subject.labels = nil
           end
-          it "doesn't call update_label when label is don't know yet" do
+          it "doesn't call update_labels when label is don't know yet" do
             expect(subject.pull_request).to_not receive(:add_labels)
-            subject.send(:update_label)
+            subject.send(:update_labels)
           end
         end
 
