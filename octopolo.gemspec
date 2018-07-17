@@ -30,5 +30,6 @@ Gem::Specification.new do |gem|
   gem.add_development_dependency 'rspec', '~> 2.99'
   gem.add_development_dependency 'guard', '~> 2.6'
   gem.add_development_dependency 'guard-rspec', '~> 4.3'
+  gem.add_development_dependency 'hitimes', '~> 1.2.6'
   gem.add_development_dependency 'octopolo-plugin-example', '~> 0'
 end
