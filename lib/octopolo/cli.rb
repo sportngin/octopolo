@@ -112,7 +112,7 @@ module Octopolo
       end
     end
 
-    def self.ask(question, choices, skip_asking = false)
+    def self.ask(question, choices)
       return choices.first if choices.size == 1
       
       say question
