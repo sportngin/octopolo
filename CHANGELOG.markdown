@@ -1,3 +1,8 @@
+#### v1.6.0
+* Octopolo asks label-related questions as an array of objects
+
+  > Emma Sax: production-status-check[bot]: https://github.com/sportngin/octopolo/pull/123
+
 #### v1.5.3
 #### v1.5.2
 * Fix merging into deployable
