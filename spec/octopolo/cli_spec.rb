@@ -135,16 +135,6 @@ module Octopolo
         subject.ask(question, choices)
       end
 
-      it "skips printing the question and choices if told not to (useful to avoid cluttering spec output)" do
-        subject.should_receive(:say).with(question).never
-        subject.should_receive(:say).with("1) sandwich").never
-        subject.should_receive(:say).with("2) carrots").never
-        subject.should_receive(:say).with("3) cake").never
-        subject.should_receive(:prompt).and_return(valid_string_answer) # only specifying return value to prevent infinite loop
-
-        subject.ask(question, choices, true)
-      end
-
       it "simply returns the value if given only one choice" do
         subject.should_receive(:say).never
         subject.should_receive(:prompt).never
@@ -155,38 +145,42 @@ module Octopolo
       context "when answering with the string value" do
         it "returns the user's selection, if in the available choices" do
           subject.should_receive(:prompt).and_return(valid_string_answer)
-          subject.ask(question, choices, true).should == valid_string_answer
+          subject.ask(question, choices).should == valid_string_answer
         end
 
         it "asks again if given a string other than one of the choices" do
           subject.should_receive(:prompt).and_return(invalid_string_answer)
+          allow(subject).to receive(:say)
           subject.should_receive(:say).with("Not a valid choice.")
           subject.should_receive(:prompt).and_return(valid_string_answer)
 
-          subject.ask(question, choices, true).should == valid_string_answer
+          subject.ask(question, choices).should == valid_string_answer
         end
       end
 
       context "when answering with the numeric value" do
         it "returns the user's selection, if in the available choices" do
           subject.should_receive(:prompt).and_return(valid_numeric_answer)
-          subject.ask(question, choices, true).should == valid_string_answer
+          allow(subject).to receive(:say)
+          subject.ask(question, choices).should == valid_string_answer
         end
 
         it "asks again if given a answer 0 or less" do
           subject.should_receive(:prompt).and_return(invalid_low_numeric_answer)
           subject.should_receive(:say).with("Not a valid choice.")
+          allow(subject).to receive(:say)
           subject.should_receive(:prompt).and_return(valid_numeric_answer)
 
-          subject.ask(question, choices, true).should == valid_string_answer
+          subject.ask(question, choices).should == valid_string_answer
         end
 
         it "asks again if given a answer greater than the list of choices" do
           subject.should_receive(:prompt).and_return(invalid_high_numeric_answer)
           subject.should_receive(:say).with("Not a valid choice.")
+          allow(subject).to receive(:say)
           subject.should_receive(:prompt).and_return(valid_numeric_answer)
 
-          subject.ask(question, choices, true).should == valid_string_answer
+          subject.ask(question, choices).should == valid_string_answer
         end
       end
     end
