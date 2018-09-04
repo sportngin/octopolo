@@ -1,5 +1,6 @@
 require "yaml"
 require "octokit"
+require "pry"
 
 module Octopolo
   module GitHub
@@ -56,10 +57,20 @@ module Octopolo
       #
       # returns - an array of labels
       def self.all_from_repo
-        GitHub.labels(config.github_repo).map{ |label_hash| new(label_hash) }
+        all_labels = []
+        result = 1
+        counter = 1
+
+        while result > 0
+          labels = GitHub.labels(config.github_repo, page: counter)
+          all_labels.concat(labels)
+          result = labels.count
+          counter += 1
+        end
+
+        all_labels.map{ |label_hash| new(label_hash) }
       end
       private_class_method :all_from_repo
-
     end
   end
 end
