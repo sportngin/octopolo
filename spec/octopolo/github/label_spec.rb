@@ -16,8 +16,7 @@ module Octopolo
 
       before do
         subject.config = config 
-        allow(GitHub).to receive(:labels).with(config.github_repo, page: 1).and_return(labels_hash)
-        allow(GitHub).to receive(:labels).with(config.github_repo, page: 2).and_return([])
+        allow(GitHub).to receive(:labels).and_return(labels_hash)
       end
 
       context "#initialize" do
@@ -84,33 +83,8 @@ module Octopolo
       end
 
       describe "#all_from_repo" do
-        context "when there is only one page of labels" do
-          it "should go through the paginated list of repos" do
-            expect(Label.send(:all_from_repo)).to eq([label1, label2])
-          end
-        end
-
-        context "when there are multiple pages of labels" do
-          let(:label_hash_3) { {name: "low-risk", url: "github.com", color: "343434"} }
-          let(:label_hash_4) { {name: "high-risk", url: "github.com", color: "565656"} }
-          let(:label_hash_5) { {name: "low-risk", url: "github.com", color: "343434"} }
-          let(:label_hash_6) { {name: "high-risk", url: "github.com", color: "565656"} }
-          let(:labels_hash_2) { [label_hash_3,label_hash_4] }
-          let(:labels_hash_3) { [label_hash_5,label_hash_6] }
-          let(:label3) { Label.new(name: "low-risk", color: "343434") }
-          let(:label4) { Label.new(name: "high-risk", color: '565656') }
-          let(:label5) { Label.new(name: "low-risk", color: "343434") }
-          let(:label6) { Label.new(name: "high-risk", color: '565656') }
-
-          before do
-            allow(GitHub).to receive(:labels).with(config.github_repo, page: 2).and_return(labels_hash_2)
-            allow(GitHub).to receive(:labels).with(config.github_repo, page: 3).and_return(labels_hash_3)
-            allow(GitHub).to receive(:labels).with(config.github_repo, page: 4).and_return([])
-          end
-
-          it "should go through multiple pages of repos" do
-            expect(Label.send(:all_from_repo)).to eq([label1, label2, label3, label4, label5, label6])
-          end
+        it "should list all repos" do
+          expect(Label.send(:all_from_repo)).to eq([label1, label2])
         end
       end
     end
