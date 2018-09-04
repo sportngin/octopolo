@@ -1,6 +1,5 @@
 require "yaml"
 require "octokit"
-require "pry"
 
 module Octopolo
   module GitHub
