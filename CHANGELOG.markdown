@@ -1,5 +1,4 @@
-#### v1.6.2
-#### v1.6.1
+#### v1.7.2
 * Fix pagination issue
 
   > Emma Sax: production-status-check[bot]: https://github.com/sportngin/octopolo/pull/130
