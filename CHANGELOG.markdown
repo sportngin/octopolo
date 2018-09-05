@@ -1,3 +1,4 @@
+#### v1.6.2
 #### v1.6.1
 * Fix pagination issue
 
