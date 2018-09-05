@@ -15,7 +15,8 @@ module Octopolo
       subject { Label }
 
       before do
-        subject.config = config
+        subject.config = config 
+        allow(GitHub).to receive(:labels).and_return(labels_hash)
       end
 
       context "#initialize" do
@@ -27,20 +28,17 @@ module Octopolo
 
       context "#all_labels" do
         it "gets and returns all labels belonging to a repository" do
-          allow(GitHub).to receive(:labels).and_return(labels_hash)
           expect(Label.all).to eq([label1,label2])
         end
       end
 
       context "#first_or_create" do
         it "finds the existing label and doesn't do anything" do
-          allow(Label).to receive(:all_from_repo).and_return([label1,label2])
           expect(GitHub).not_to receive(:add_label)
           Label.first_or_create(label1)
         end
 
         it "doesn't find a label and creates one" do
-          allow(Label).to receive(:all_from_repo).and_return([label1,label2])
           expect(GitHub).to receive(:add_label).with(config.github_repo, "medium-risk", "454545")
           Label.first_or_create(Label.new(name: "medium-risk", color: "454545"))
         end
@@ -55,7 +53,6 @@ module Octopolo
           expect(label1 == label2).to eq(false)
         end
       end
-
 
       context "#build_label_array" do
         it "returns an array of label when given a label" do
@@ -82,6 +79,12 @@ module Octopolo
       context "#get_names" do
         it "returns a list of names when given an array of labels" do
           expect(Label.get_names([label1,label2])).to eq(["low-risk","high-risk"])
+        end
+      end
+
+      describe "#all_from_repo" do
+        it "should list all repos" do
+          expect(Label.send(:all_from_repo)).to eq([label1, label2])
         end
       end
     end
