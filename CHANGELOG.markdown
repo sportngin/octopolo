@@ -1,3 +1,8 @@
+#### v1.8.0
+* Fail on PR merge errors
+
+  > Scott Trenda: production-status-check[bot]: https://github.com/sportngin/octopolo/pull/131
+
 #### v1.7.2
 * Fix pagination issue
 
