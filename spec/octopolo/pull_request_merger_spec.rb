@@ -65,14 +65,14 @@ module Octopolo
           git.should_receive(:if_clean).and_raise(GitHub::PullRequest::NotFound)
           cli.should_receive(:say).with("Unable to find pull request #{pull_request_id}. Please retry with a valid ID.")
 
-          subject.perform
+          expect { subject.perform }.to raise_error
         end
 
         it "properly handles a failed merge" do
           git.should_receive(:if_clean).and_raise(Git::MergeFailed)
           cli.should_receive(:say).with("Merge failed. Please identify the source of this merge conflict resolve this conflict in your pull request's branch. NOTE: Merge conflicts resolved in the deployable branch are NOT used when deploying.")
 
-          subject.perform
+          expect { subject.perform }.to raise_error
         end
 
         it "properly handles a failed checkout of branch" do
@@ -80,14 +80,15 @@ module Octopolo
           git.should_receive(:latest_branch_for).with("deployable").and_return("deployable")
           cli.should_receive(:say).with("Checkout of #{git.deployable_branch} failed. Please contact Infrastructure to determine the cause.")
 
-          subject.perform
+          expect { subject.perform }.to raise_error
         end
 
         it "properly handles a failed comment" do
           git.should_receive(:if_clean).and_raise(GitHub::PullRequest::CommentFailed)
           git.should_receive(:latest_branch_for).with("deployable").and_return("deployable")
           cli.should_receive(:say).with("Unable to write comment. Please navigate to #{pull_request.url} and add the comment, '#{subject.comment_body}'")
-          subject.perform
+
+          expect { subject.perform }.to raise_error
         end
       end
 

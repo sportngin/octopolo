@@ -55,7 +55,7 @@ module Octopolo
       else
         cli.say "An unknown error occurred: #{e.inspect}"
       end
-      false
+      raise
     end
 
    # Public: Check out the branch
