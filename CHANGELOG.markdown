@@ -1,3 +1,8 @@
+#### v1.8.1
+* Update Ruby Versions for CI
+
+  > Brian Bergstrom: production-status-check[bot]: https://github.com/sportngin/octopolo/pull/132
+
 #### v1.8.0
 * Fail on PR merge errors
 
