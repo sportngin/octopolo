@@ -24,6 +24,7 @@ Gem::Specification.new do |gem|
   gem.add_dependency 'pivotal-tracker', '~> 0.5'
   gem.add_dependency 'jiralicious', '~> 0.4'
   gem.add_dependency 'semantic', '~> 1.3'
+  gem.add_dependency 'nokogiri-happymapper', '~> 0.6.0'
 
   gem.add_development_dependency 'rake', '~> 10.1'
   gem.add_development_dependency 'bundler', '~> 1.16'
