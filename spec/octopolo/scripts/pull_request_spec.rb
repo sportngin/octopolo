@@ -13,7 +13,8 @@ module Octopolo
         })
       end
       let(:cli) { stub(:cli) }
-      let(:git) { stub(:Git, current_branch: "bug-123-something", reserved_branch?: false) }
+      let(:current_branch) { "bug-123-something" }
+      let(:git) { stub(:Git, current_branch: current_branch, reserved_branch?: false) }
       let(:pull_request_url) { "http://github.com/tstmedia/octopolo/pull/0" }
       let(:pull_request) { stub(:pull_request) }
 
@@ -94,6 +95,37 @@ module Octopolo
 
             subject.send(:ask_questionaire)
           end
+        end
+      end
+
+      context "#expedite" do
+        subject { PullRequest.new(nil, { expedite: true }) }
+
+        context 'good format' do
+          let(:current_branch) { 'abc-123_so_fast'}
+
+          it 'likes the issue-123_blah branch format' do
+            subject.send(:infer_questionaire)
+            expect(subject.jira_ids).to eq(['ABC-123'])
+            expect(subject.title).to eq('ABC-123 so fast')
+          end
+        end
+
+        context 'bad branch format' do
+          let(:current_branch) { 'not_enough'}
+
+          it 'does not like other branch format' do
+            subject.git.stub(:reserved_branch?).and_return false
+            cli.should_receive(:say)
+            expect { subject.send(:infer_questionaire) }.to raise_error(SystemExit)
+          end
+        end
+
+        it 'does not process reserved' do
+          subject.git.stub(:reserved_branch?).and_return true
+          subject.should_receive(:alert_reserved_and_exit).and_call_original
+          cli.should_receive(:say)
+          expect { subject.send(:infer_questionaire) }.to raise_error(SystemExit)
         end
       end
 

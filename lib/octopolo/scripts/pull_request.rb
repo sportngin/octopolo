@@ -27,7 +27,13 @@ module Octopolo
 
       def execute
         GitHub.connect do
-          ask_questionaire
+
+          if options[:expedite]
+            infer_questionaire
+          else
+            ask_questionaire
+          end
+
           create_pull_request
           update_pivotal
           update_jira
@@ -46,6 +52,27 @@ module Octopolo
         ask_jira_ids if config.use_jira
       end
       private :ask_questionaire
+
+      def infer_questionaire
+        alert_reserved_and_exit if git.reserved_branch?
+        check_branch_format
+        branch_arr = git.current_branch.split('_')
+        issue = branch_arr[0].upcase
+        descr = branch_arr[1..-1].join(' ')
+
+        self.title = "#{issue} #{descr}"
+        self.pivotal_ids = [issue] if config.use_pivotal_tracker
+        self.jira_ids = [issue] if config.use_jira
+      end
+      private :infer_questionaire
+
+      def check_branch_format
+        return if /.*-\d+_.*/ =~ git.current_branch
+
+        cli.say "Branch must match format like 'iss-123_describe_branch' to expedite"
+        exit 1
+      end
+      private :check_branch_format
 
       # Private: Announce to the user the branches the pull request will reference
       def announce
