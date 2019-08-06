@@ -26,7 +26,7 @@ module Octopolo
         begin
           issue.comments.add(comment)
         rescue => e
-          puts "Error: Failed to comment on Jira Issue #{issue_id}" 
+          puts "Error: Failed to comment on Jira Issue. \nException: #{e}"
         end
       end
     end
