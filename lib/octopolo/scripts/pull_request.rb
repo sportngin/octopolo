@@ -58,14 +58,16 @@ module Octopolo
         check_branch_format
         branch_arr = git.current_branch.split('_')
         issue = branch_arr[0].upcase
-        descr = branch_arr[1..-1].join(' ')
-        title = "#{issue} #{descr}"
+        if issue.include?('-')
+          descr = branch_arr[1..-1].join(' ')
+        else
+          issue = "#{issue}-#{branch_arr[1]}"
+          descr = branch_arr[2..-1].join(' ')
+        end
 
-        self.title = title.include?('-') ? title : title.sub(' ', '-')
-        full_issue = self.title.split(' ').first
-
-        self.pivotal_ids = [full_issue] if config.use_pivotal_tracker
-        self.jira_ids = [full_issue] if config.use_jira
+        self.title = "#{issue} #{descr.capitalize}"
+        self.pivotal_ids = [issue] if config.use_pivotal_tracker
+        self.jira_ids = [issue] if config.use_jira
       end
       private :infer_questionnaire
 
