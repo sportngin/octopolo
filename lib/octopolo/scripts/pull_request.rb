@@ -59,15 +59,16 @@ module Octopolo
         branch_arr = git.current_branch.split('_')
         issue = branch_arr[0].upcase
         descr = branch_arr[1..-1].join(' ')
+        title = "#{issue} #{descr}"
 
-        self.title = "#{issue} #{descr}"
+        self.title = title.include?('-') ? title : title.sub(' ', '-')
         self.pivotal_ids = [issue] if config.use_pivotal_tracker
         self.jira_ids = [issue] if config.use_jira
       end
       private :infer_questionnaire
 
       def check_branch_format
-        return if /.*-\d+_.*/ =~ git.current_branch
+        return if (/.*-\d+_.*/ =~ git.current_branch || /.*_\d+_.*/ =~ git.current_branch )
 
         cli.say "Branch must match format like 'iss-123_describe_branch' to expedite"
         exit 1
