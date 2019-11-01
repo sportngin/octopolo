@@ -107,7 +107,7 @@ module Octopolo
           it 'likes the issue-123_blah branch format' do
             subject.send(:infer_questionnaire)
             expect(subject.jira_ids).to eq(['ABC-123'])
-            expect(subject.title).to eq('ABC-123 so fast')
+            expect(subject.title).to eq('ABC-123 So fast')
           end
         end
 
@@ -117,7 +117,7 @@ module Octopolo
           it 'likes the issue-123_blah branch format' do
             subject.send(:infer_questionnaire)
             expect(subject.jira_ids).to eq(['ABC-123'])
-            expect(subject.title).to eq('ABC-123 so fast')
+            expect(subject.title).to eq('ABC-123 So fast')
           end
         end
 
