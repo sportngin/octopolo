@@ -45,7 +45,7 @@ module Octopolo
       context "#execute" do
         it "if connected to GitHub, asks some questions, creates the pull request, and opens it" do
           GitHub.should_receive(:connect).and_yield
-          expect(subject).to receive(:ask_questionaire)
+          expect(subject).to receive(:ask_questionnaire)
           expect(subject).to receive(:create_pull_request)
           expect(subject).to receive(:update_pivotal)
           expect(subject).to receive(:update_jira)
@@ -61,7 +61,7 @@ module Octopolo
         end
       end
 
-      context "#ask_questionaire" do
+      context "#ask_questionnaire" do
         it "asks appropriate questions to create a pull request" do
           expect(subject).to receive(:announce)
           expect(subject).to receive(:ask_title)
@@ -69,7 +69,7 @@ module Octopolo
           expect(subject).to receive(:ask_jira_ids)
           expect(subject).to receive(:ask_labels)
 
-          subject.send(:ask_questionaire)
+          subject.send(:ask_questionnaire)
         end
 
         context "when checking for staging branch" do
@@ -85,7 +85,7 @@ module Octopolo
 
             subject.should_receive(:alert_reserved_and_exit)
 
-            subject.send(:ask_questionaire)
+            subject.send(:ask_questionnaire)
           end
 
           it "should not ask if the branch is not staging" do
@@ -93,7 +93,7 @@ module Octopolo
 
             subject.should_not_receive(:alert_reserved_and_exit)
 
-            subject.send(:ask_questionaire)
+            subject.send(:ask_questionnaire)
           end
         end
       end
@@ -105,7 +105,7 @@ module Octopolo
           let(:current_branch) { 'abc-123_so_fast'}
 
           it 'likes the issue-123_blah branch format' do
-            subject.send(:infer_questionaire)
+            subject.send(:infer_questionnaire)
             expect(subject.jira_ids).to eq(['ABC-123'])
             expect(subject.title).to eq('ABC-123 so fast')
           end
@@ -115,7 +115,7 @@ module Octopolo
           let(:current_branch) { 'abc_123_so_fast'}
 
           it 'likes the issue-123_blah branch format' do
-            subject.send(:infer_questionaire)
+            subject.send(:infer_questionnaire)
             expect(subject.jira_ids).to eq(['ABC-123'])
             expect(subject.title).to eq('ABC-123 so fast')
           end
@@ -127,7 +127,7 @@ module Octopolo
           it 'does not like other branch format' do
             subject.git.stub(:reserved_branch?).and_return false
             cli.should_receive(:say)
-            expect { subject.send(:infer_questionaire) }.to raise_error(SystemExit)
+            expect { subject.send(:infer_questionnaire) }.to raise_error(SystemExit)
           end
         end
 
@@ -135,7 +135,7 @@ module Octopolo
           subject.git.stub(:reserved_branch?).and_return true
           subject.should_receive(:alert_reserved_and_exit).and_call_original
           cli.should_receive(:say)
-          expect { subject.send(:infer_questionaire) }.to raise_error(SystemExit)
+          expect { subject.send(:infer_questionnaire) }.to raise_error(SystemExit)
         end
       end
 
