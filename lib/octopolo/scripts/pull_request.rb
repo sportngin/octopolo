@@ -29,9 +29,9 @@ module Octopolo
         GitHub.connect do
 
           if options[:expedite]
-            infer_questionaire
+            infer_questionnaire
           else
-            ask_questionaire
+            ask_questionnaire
           end
 
           create_pull_request
@@ -43,7 +43,7 @@ module Octopolo
       end
 
       # Private: Ask questions to create a pull request
-      def ask_questionaire
+      def ask_questionnaire
         alert_reserved_and_exit if git.reserved_branch?
         announce
         ask_title
@@ -51,9 +51,9 @@ module Octopolo
         ask_pivotal_ids if config.use_pivotal_tracker
         ask_jira_ids if config.use_jira
       end
-      private :ask_questionaire
+      private :ask_questionnaire
 
-      def infer_questionaire
+      def infer_questionnaire
         alert_reserved_and_exit if git.reserved_branch?
         check_branch_format
         branch_arr = git.current_branch.split('_')
@@ -64,7 +64,7 @@ module Octopolo
         self.pivotal_ids = [issue] if config.use_pivotal_tracker
         self.jira_ids = [issue] if config.use_jira
       end
-      private :infer_questionaire
+      private :infer_questionnaire
 
       def check_branch_format
         return if /.*-\d+_.*/ =~ git.current_branch
