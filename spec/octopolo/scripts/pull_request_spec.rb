@@ -101,8 +101,18 @@ module Octopolo
       context "#expedite" do
         subject { PullRequest.new(nil, { expedite: true }) }
 
-        context 'good format' do
+        context 'good format 1' do
           let(:current_branch) { 'abc-123_so_fast'}
+
+          it 'likes the issue-123_blah branch format' do
+            subject.send(:infer_questionaire)
+            expect(subject.jira_ids).to eq(['ABC-123'])
+            expect(subject.title).to eq('ABC-123 so fast')
+          end
+        end
+
+        context 'good format 2' do
+          let(:current_branch) { 'abc_123_so_fast'}
 
           it 'likes the issue-123_blah branch format' do
             subject.send(:infer_questionaire)

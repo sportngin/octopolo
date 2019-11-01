@@ -62,8 +62,10 @@ module Octopolo
         title = "#{issue} #{descr}"
 
         self.title = title.include?('-') ? title : title.sub(' ', '-')
-        self.pivotal_ids = [issue] if config.use_pivotal_tracker
-        self.jira_ids = [issue] if config.use_jira
+        full_issue = self.title.split(' ').first
+
+        self.pivotal_ids = [full_issue] if config.use_pivotal_tracker
+        self.jira_ids = [full_issue] if config.use_jira
       end
       private :infer_questionnaire
 
