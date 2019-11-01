@@ -72,7 +72,7 @@ module Octopolo
       private :infer_questionnaire
 
       def check_branch_format
-        return if (/.*-\d+_.*/ =~ git.current_branch || /.*_\d+_.*/ =~ git.current_branch)
+        return if (/[a-zA-Z]+-\d+_.*/ =~ git.current_branch || /[a-zA-Z]+_\d+_.*/ =~ git.current_branch)
 
         cli.say "Branch must match format like 'iss-123_describe_branch' or 'iss_123_describe_branch' to expedite"
         exit 1
