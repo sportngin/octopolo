@@ -1,3 +1,8 @@
+#### v1.11.1
+* Make expedite's branch form more flexible
+
+  > Emma Sax: production-status-check[bot]: https://github.com/sportngin/octopolo/pull/135
+
 #### v1.11.0
 #### v1.10.0
 #### v1.9.1
