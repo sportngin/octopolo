@@ -9,7 +9,6 @@ module Octopolo
         stub(:config, {
           deploy_branch: "production",
           github_repo: "tstmedia/foo",
-          use_pivotal_tracker: true,
           use_jira: true
         })
       end
@@ -43,7 +42,6 @@ module Octopolo
           GitHub.should_receive(:connect).and_yield
           expect(subject).to receive(:ask_questionaire)
           expect(subject).to receive(:create_issue)
-          expect(subject).to receive(:update_pivotal)
           expect(subject).to receive(:update_jira)
           expect(subject).to receive(:update_labels)
           expect(subject).to receive(:open_in_browser)
@@ -61,7 +59,6 @@ module Octopolo
         it "asks appropriate questions to create a issue" do
           expect(subject).to receive(:announce)
           expect(subject).to receive(:ask_title)
-          expect(subject).to receive(:ask_pivotal_ids)
           expect(subject).to receive(:ask_jira_ids)
           expect(subject).to receive(:ask_labels)
 
@@ -105,29 +102,6 @@ module Octopolo
         end
       end
 
-      context "#ask_pivotal_ids" do
-        let(:ids_with_whitespace) { "123 456" }
-        let(:ids_with_commas) { "234, 567" }
-
-        it "asks for and captures IDs for related pivotal tasks" do
-          cli.should_receive(:prompt).with("Pivotal Tracker story ID(s):") { ids_with_whitespace }
-          subject.send(:ask_pivotal_ids)
-          expect(subject.pivotal_ids).to eq(%w(123 456))
-        end
-
-        it "asks for and captures IDs with commas" do
-          cli.should_receive(:prompt).with("Pivotal Tracker story ID(s):") { ids_with_commas }
-          subject.send(:ask_pivotal_ids)
-          expect(subject.pivotal_ids).to eq(%w(234 567))
-        end
-
-        it "sets to an empty array if not provided an ansswer" do
-          cli.should_receive(:prompt).with("Pivotal Tracker story ID(s):") { "" }
-          subject.send(:ask_pivotal_ids)
-          expect(subject.pivotal_ids).to eq([])
-        end
-      end
-
       context "#create_issue" do
         let(:attributes) { stub(:hash) }
 
@@ -145,13 +119,11 @@ module Octopolo
       context "#issue_attributes" do
         before do
           subject.title = "title"
-          subject.pivotal_ids = %w(123)
         end
 
         it "combines the anssers with a handful of deault values" do
           subject.send(:issue_attributes).should == {
             title: subject.title,
-            pivotal_ids: subject.pivotal_ids,
             jira_ids: subject.jira_ids,
             editor: nil
           }
@@ -166,35 +138,6 @@ module Octopolo
         it "returns the labels plus 'None'" do
           allow(Octopolo::GitHub::Label).to receive(:all) { github_labels }
           expect(subject.send(:label_choices)).to eq github_labels
-        end
-      end
-
-      context "#update_pivotal" do
-        before do
-          subject.pivotal_ids = %w(123 234)
-          subject.issue = stub(url: "test")
-        end
-        let(:story_commenter) { stub(perform: true) }
-
-        it "creates a story commenter for each pivotal_id" do
-          Pivotal::StoryCommenter.should_receive(:new).with("123", "test") { story_commenter }
-          Pivotal::StoryCommenter.should_receive(:new).with("234", "test") { story_commenter }
-          subject.send(:update_pivotal)
-        end
-
-      end
-
-      context "#update_jira" do
-        before do
-          subject.jira_ids = %w(123 234)
-          subject.issue = stub(url: "test")
-        end
-        let(:story_commenter) { stub(perform: true) }
-
-        it "creates a story commenter for each pivotal_id" do
-          Jira::StoryCommenter.should_receive(:new).with("123", "test") { story_commenter }
-          Jira::StoryCommenter.should_receive(:new).with("234", "test") { story_commenter }
-          subject.send(:update_jira)
         end
       end
 

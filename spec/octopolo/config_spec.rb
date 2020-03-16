@@ -126,17 +126,7 @@ module Octopolo
         end
 
         it "returns the specified plugins as an array" do
-          Config.new(plugins: ["op-templates", "op-pivotal"]).plugins.should == ["op-templates", "op-pivotal"]
-        end
-      end
-
-      context "#use_pivotal_tracker" do
-        it "defaults to false" do
-          expect(Config.new.use_pivotal_tracker).to be_false
-        end
-
-        it "forces a truthy value to be true" do
-          expect(Config.new(use_pivotal_tracker: "true").use_pivotal_tracker).to be_true
+          Config.new(plugins: ["op-templates"]).plugins.should == ["op-templates"]
         end
       end
 

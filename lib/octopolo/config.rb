@@ -65,10 +65,6 @@ module Octopolo
       end
     end
 
-    def use_pivotal_tracker
-      !!@use_pivotal_tracker
-    end
-
     def use_jira
       !!@use_jira
     end

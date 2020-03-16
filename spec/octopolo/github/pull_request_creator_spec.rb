@@ -11,7 +11,6 @@ module Octopolo
       let(:source_branch) { "cool-feature" }
       let(:title) { "title" }
       let(:body) { "body" }
-      let(:pivotal_ids) { %w(123 456) }
       let(:jira_ids) { %w(123 456) }
       let(:jira_url) { "https://example-jira.com" }
 
@@ -125,30 +124,16 @@ module Octopolo
         end
       end
 
-      context "#pivotal_ids" do
-        it "fetches from the options" do
-          creator.options[:pivotal_ids] = pivotal_ids
-          creator.pivotal_ids.should == pivotal_ids
-        end
-
-        it "defaults to an empty array if it's missing" do
-          creator.options[:pivotal_ids] = nil
-          creator.pivotal_ids.should == []
-        end
-      end
-
       context "#body_locals" do
         let(:urls) { %w(link1 link2) }
 
         before do
           creator.stub({
-            pivotal_ids: pivotal_ids,
             jira_ids: jira_ids,
             jira_url: jira_url,
           })
         end
         it "includes the necessary keys to render the template" do
-          creator.body_locals[:pivotal_ids].should == creator.pivotal_ids
           creator.body_locals[:jira_ids].should == creator.jira_ids
           creator.body_locals[:jira_url].should == creator.jira_url
         end

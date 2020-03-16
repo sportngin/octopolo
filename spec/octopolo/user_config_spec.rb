@@ -161,20 +161,5 @@ module Octopolo
         expect { config.github_token }.to raise_error(UserConfig::MissingGitHubAuth)
       end
     end
-
-    context "#pivotal_token" do
-      let(:config) { UserConfig.new }
-      let(:token) { "token" }
-
-      it "returns the configured Pivotal Tracker token" do
-        config.pivotal_token = token
-        config.pivotal_token.should == token
-      end
-
-      it "raises MissingPivotalAuth if missing" do
-        config.pivotal_token = nil
-        expect { config.pivotal_token }.to raise_error(UserConfig::MissingPivotalAuth)
-      end
-    end
   end
 end

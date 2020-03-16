@@ -5,7 +5,6 @@ module Octopolo
     attr_accessor :github_token
     attr_accessor :full_name
     attr_accessor :editor
-    attr_accessor :pivotal_token
     attr_accessor :attributes # keep the whole hash
 
     # Public: Initialize a new UserConfig instance
@@ -105,16 +104,7 @@ module Octopolo
       @github_token || raise(MissingGitHubAuth)
     end
 
-    # Public: The Pivotal Tracker token
-    #
-    # If none is stored, prompt them to generate it.
-    #
-    # Returns a String or raises MissingPivotalAuth
-    def pivotal_token
-      @pivotal_token || raise(MissingPivotalAuth)
-    end
-
+    # Public: The 
     MissingGitHubAuth = Class.new(StandardError)
-    MissingPivotalAuth = Class.new(StandardError)
   end
 end
