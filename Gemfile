@@ -1,5 +1,5 @@
 source 'https://rubygems.org'
 
-gem 'guard', '~>2.5.0'
+gem 'guard', '~>2.16.0'
 gemspec
 

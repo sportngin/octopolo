@@ -27,7 +27,7 @@ Gem::Specification.new do |gem|
   gem.add_development_dependency 'rake', '~> 13.0.1'
   gem.add_development_dependency 'bundler', '~> 1.17'
   gem.add_development_dependency 'rspec', '~> 3.9.0'
-  gem.add_development_dependency 'guard', '~> 2.16.1'
+  gem.add_development_dependency 'guard', '~> 2.16.0'
   gem.add_development_dependency 'guard-rspec', '~> 4.7.3'
   gem.add_development_dependency 'hitimes', '~> 2.0.0'
   gem.add_development_dependency 'octopolo-plugin-example', '~> 0'
