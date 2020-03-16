@@ -1,4 +1,4 @@
-require 'jiralicious'
+require 'jira-ruby'
 
 module Octopolo
   module Jira
@@ -9,13 +9,16 @@ module Octopolo
       attr_accessor :comment
 
       def initialize(issue_id, comment)
-        Jiralicious.configure do |jira_config|
-          jira_config.username = config.jira_user
-          jira_config.password = config.jira_password
-          jira_config.uri = config.jira_url
-        end
+        options = {
+          :username     => config.jira_user,
+          :password     => config.jira_password,
+          :site         => config.jira_url,
+          :context_path => '',
+          :auth_type    => :basic
+        }
         begin
-          self.issue =  Jiralicious::Issue.find issue_id
+          client = JIRA::Client.new(options)
+          self.issue = client.Issue.find(issue_id)
         rescue => e
            puts "Error: Invalid Jira Issue #{issue_id}" 
         end
@@ -24,7 +27,8 @@ module Octopolo
 
       def perform
         begin
-          issue.comments.add(comment)
+          comment = self.issue.comments.build
+          comment.save!(:body => "#{self.comment}")
         rescue => e
           puts "Error: Failed to comment on Jira Issue. \nException: #{e}"
         end

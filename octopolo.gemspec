@@ -21,7 +21,7 @@ Gem::Specification.new do |gem|
   gem.add_dependency 'octokit', '~> 4.17.0'
   gem.add_dependency 'public_suffix', '~> 4.0.3'
   gem.add_dependency 'highline', '~> 2.0.3'
-  gem.add_dependency 'jiralicious', '~> 0.5'
+  gem.add_dependency 'jira-ruby', '~> 2.0.0'
   gem.add_dependency 'semantic', '~> 1.6.1'
 
   gem.add_development_dependency 'rake', '~> 13.0.1'
