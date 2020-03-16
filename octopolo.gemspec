@@ -23,7 +23,6 @@ Gem::Specification.new do |gem|
   gem.add_dependency 'highline', '~> 2.0.3'
   gem.add_dependency 'jiralicious', '~> 0.5'
   gem.add_dependency 'semantic', '~> 1.6.1'
-  gem.add_dependency 'nokogiri-happymapper', '~> 0.8.1'
 
   gem.add_development_dependency 'rake', '~> 13.0.1'
   gem.add_development_dependency 'bundler', '~> 1.17'
