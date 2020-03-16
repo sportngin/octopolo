@@ -196,7 +196,7 @@ module Octopolo
       context "#pull_request_attributes" do
         before do
           subject.title = "title"
-          subject.destination_branch = "some-branch",
+          subject.destination_branch = "some-branch"
         end
 
         it "combines the anssers with a handful of deault values" do
