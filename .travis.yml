@@ -8,7 +8,5 @@ rvm:
   - 2.4
   - 2.5
   - 2.6
+  - 2.7
 script: bundle exec rspec
-before_install:
-  - gem uninstall -v '>= 2' -i $(rvm gemdir)@global -ax bundler || true
-  - gem install bundler -v '< 2'
