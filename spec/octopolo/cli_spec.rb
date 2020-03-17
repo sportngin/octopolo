@@ -13,43 +13,43 @@ module Octopolo
       let(:status_error) { double("status", "success?" => nil, :exitstatus => 1) }
 
       it "passes the given command to the shell" do
-        subject.should_receive(:say).with(command)
-        Open3.should_receive(:capture3).with(command).and_return([result, nil, status_success])
-        subject.should_receive(:say).with(result)
-        subject.perform(command).should == result
+        expect(subject).to receive(:say).with(command)
+        expect(Open3).to receive(:capture3).with(command).and_return([result, nil, status_success])
+        expect(subject).to receive(:say).with(result)
+        expect(subject.perform(command)).to eq(result)
       end
 
       it "uses Kernel#` if Open3 has no capture3 method (e.g., Ruby 1.8.7)" do
-        subject.should_receive(:say).with(command)
+        expect(subject).to receive(:say).with(command)
         # simulating ruby 1.8.7 not having an Open3.capture3 method
-        Open3.should_receive(:respond_to?).with(:capture3).and_return(false)
-        subject.should_receive(:`).with(command).and_return(result)
-        subject.should_receive(:say).with(result)
-        subject.perform(command).should == result
+        expect(Open3).to receive(:respond_to?).with(:capture3).and_return(false)
+        expect(subject).to receive(:`).with(command).and_return(result)
+        expect(subject).to receive(:say).with(result)
+        expect(subject.perform(command)).to eq(result)
       end
 
       it "should raise exception" do
-        subject.should_receive(:say).with(command)
-        Open3.should_receive(:capture3).with(command).and_raise(exception_message)
+        expect(subject).to receive(:say).with(command)
+        expect(Open3).to receive(:capture3).with(command).and_raise(exception_message)
         expect { subject.perform(command) }.to raise_error(RuntimeError, exception_message)
       end
 
       it "should raise errors from command" do
-        subject.should_receive(:say).with(command)
-        Open3.should_receive(:capture3).with(command).and_return([result, "kaboom", status_error])
+        expect(subject).to receive(:say).with(command)
+        expect(Open3).to receive(:capture3).with(command).and_return([result, "kaboom", status_error])
         expect { subject.perform(command) }
             .to raise_error(RuntimeError, "command=#{command}; exit_status=1; stderr=kaboom")
       end
 
       it "should ignore non zero return from command" do
-        subject.should_receive(:say).with(command)
-        Open3.should_receive(:capture3).with(command).and_return([result, "kaboom", status_error])
-        subject.should_receive(:say).with(result)
+        expect(subject).to receive(:say).with(command)
+        expect(Open3).to receive(:capture3).with(command).and_return([result, "kaboom", status_error])
+        expect(subject).to receive(:say).with(result)
         expect { subject.perform(command, true, true) }.to_not raise_error
       end
 
       it "should not speak the command if told not to" do
-        subject.should_receive(:say).with(command).never
+        expect(subject).to receive(:say).with(command).never
         subject.perform(command, false)
       end
     end
@@ -58,7 +58,7 @@ module Octopolo
       let(:command) { "ls" }
 
       it "performs the command without displaying itself" do
-        subject.should_receive(:perform).with(command, false)
+        expect(subject).to receive(:perform).with(command, false)
         subject.perform_quietly(command)
       end
     end
@@ -67,8 +67,8 @@ module Octopolo
       let(:command) { "ls" }
 
       it "should use the 'exec' command to replace the Ruby process with the command" do
-        subject.should_receive(:say).with(command)
-        subject.should_receive(:exec).with(command)
+        expect(subject).to receive(:say).with(command)
+        expect(subject).to receive(:exec).with(command)
         subject.perform_and_exit(command)
       end
     end
@@ -77,24 +77,24 @@ module Octopolo
       let(:message) { "asdf" }
 
       it "displays the given message" do
-        subject.should_receive(:puts).with(message)
+        expect(subject).to receive(:puts).with(message)
         subject.say message
       end
 
       it "does nothing if the message is nil" do
-        subject.should_receive(:puts).never
+        expect(subject).to receive(:puts).never
         subject.say nil
       end
 
       it "does nothing if the message is an empty string" do
-        subject.should_receive(:puts).never
+        expect(subject).to receive(:puts).never
         subject.say ""
       end
     end
 
     context ".spacer_line" do
       it "displays a blank space" do
-        subject.should_receive(:say).with(" ")
+        expect(subject).to receive(:say).with(" ")
         subject.spacer_line
       end
     end
@@ -104,9 +104,9 @@ module Octopolo
       let(:command) { "ls" }
 
       it "changes the script to the given directory" do
-        subject.should_receive(:say).with("Performing in #{dir}:")
-        Dir.should_receive(:chdir).with(dir).and_yield
-        subject.should_receive(:perform).with(command)
+        expect(subject).to receive(:say).with("Performing in #{dir}:")
+        expect(Dir).to receive(:chdir).with(dir).and_yield
+        expect(subject).to receive(:perform).with(command)
 
         subject.perform_in(dir) do
           subject.perform(command)
@@ -126,61 +126,61 @@ module Octopolo
       let(:invalid_high_numeric_answer) { choices.size + 2 }
 
       it "provides the given list of choices for the given question" do
-        subject.should_receive(:say).with(question)
-        subject.should_receive(:say).with("1) sandwich")
-        subject.should_receive(:say).with("2) carrots")
-        subject.should_receive(:say).with("3) cake")
-        subject.should_receive(:prompt).and_return(valid_string_answer) # only specifying return value to prevent infinite loop
+        expect(subject).to receive(:say).with(question)
+        expect(subject).to receive(:say).with("1) sandwich")
+        expect(subject).to receive(:say).with("2) carrots")
+        expect(subject).to receive(:say).with("3) cake")
+        expect(subject).to receive(:prompt).and_return(valid_string_answer) # only specifying return value to prevent infinite loop
 
         subject.ask(question, choices)
       end
 
       it "simply returns the value if given only one choice" do
-        subject.should_receive(:say).never
-        subject.should_receive(:prompt).never
+        expect(subject).to receive(:say).never
+        expect(subject).to receive(:prompt).never
 
-        subject.ask(question, one_choice).should == one_choice.first
+        expect(subject.ask(question, one_choice)).to eq(one_choice.first)
       end
 
       context "when answering with the string value" do
         it "returns the user's selection, if in the available choices" do
-          subject.should_receive(:prompt).and_return(valid_string_answer)
-          subject.ask(question, choices).should == valid_string_answer
+          expect(subject).to receive(:prompt).and_return(valid_string_answer)
+          expect(subject.ask(question, choices)).to eq(valid_string_answer)
         end
 
         it "asks again if given a string other than one of the choices" do
-          subject.should_receive(:prompt).and_return(invalid_string_answer)
+          expect(subject).to receive(:prompt).and_return(invalid_string_answer)
           allow(subject).to receive(:say)
-          subject.should_receive(:say).with("Not a valid choice.")
-          subject.should_receive(:prompt).and_return(valid_string_answer)
+          expect(subject).to receive(:say).with("Not a valid choice.")
+          expect(subject).to receive(:prompt).and_return(valid_string_answer)
 
-          subject.ask(question, choices).should == valid_string_answer
+          expect(subject.ask(question, choices)).to eq(valid_string_answer)
         end
       end
 
       context "when answering with the numeric value" do
         it "returns the user's selection, if in the available choices" do
-          subject.should_receive(:prompt).and_return(valid_numeric_answer)
+          expect(subject).to receive(:prompt).and_return(valid_numeric_answer)
           allow(subject).to receive(:say)
-          subject.ask(question, choices).should == valid_string_answer
+          expect(subject.ask(question, choices)).to eq(valid_string_answer)
         end
 
         it "asks again if given a answer 0 or less" do
-          subject.should_receive(:prompt).and_return(invalid_low_numeric_answer)
-          subject.should_receive(:say).with("Not a valid choice.")
+          expect(subject).to receive(:prompt).and_return(invalid_low_numeric_answer)
+          expect(subject).to receive(:say).with("Not a valid choice.")
           allow(subject).to receive(:say)
-          subject.should_receive(:prompt).and_return(valid_numeric_answer)
+          expect(subject).to receive(:prompt).and_return(valid_numeric_answer)
 
-          subject.ask(question, choices).should == valid_string_answer
+          expect(subject.ask(question, choices)).to eq(valid_string_answer)
         end
 
         it "asks again if given a answer greater than the list of choices" do
-          subject.should_receive(:prompt).and_return(invalid_high_numeric_answer)
-          subject.should_receive(:say).with("Not a valid choice.")
+          expect(subject).to receive(:prompt).and_return(invalid_high_numeric_answer)
+          expect(subject).to receive(:say).with("Not a valid choice.")
           allow(subject).to receive(:say)
-          subject.should_receive(:prompt).and_return(valid_numeric_answer)
+          expect(subject).to receive(:prompt).and_return(valid_numeric_answer)
 
-          subject.ask(question, choices).should == valid_string_answer
+          expect(subject.ask(question, choices)).to eq(valid_string_answer)
         end
       end
     end
@@ -189,58 +189,58 @@ module Octopolo
       let(:question) { "Are you truly happy?" }
 
       it "asks the question and prompts for an answer" do
-        subject.should_receive(:prompt).with("#{question} (y/n)") { "y" }
+        expect(subject).to receive(:prompt).with("#{question} (y/n)") { "y" }
         subject.ask_boolean(question)
       end
 
       it "returns true for 'y'" do
-        subject.should_receive(:prompt) { "y" }
-        subject.ask_boolean(question).should be_true
+        expect(subject).to receive(:prompt) { "y" }
+        expect(subject.ask_boolean(question)).to be_truthy
       end
 
       it "returns true for 'yes'" do
-        subject.should_receive(:prompt) { "yes" }
-        subject.ask_boolean(question).should be_true
+        expect(subject).to receive(:prompt) { "yes" }
+        expect(subject.ask_boolean(question)).to be_truthy
       end
 
       it "returns true for 'Y'" do
-        subject.should_receive(:prompt) { "Y" }
-        subject.ask_boolean(question).should be_true
+        expect(subject).to receive(:prompt) { "Y" }
+        expect(subject.ask_boolean(question)).to be_truthy
       end
 
       it "returns false for 'n'" do
-        subject.should_receive(:prompt) { "n" }
-        subject.ask_boolean(question).should be_false
+        expect(subject).to receive(:prompt) { "n" }
+        expect(subject.ask_boolean(question)).to be_falsey
       end
 
       it "returns false for 'no'" do
-        subject.should_receive(:prompt) { "no" }
-        subject.ask_boolean(question).should be_false
+        expect(subject).to receive(:prompt) { "no" }
+        expect(subject.ask_boolean(question)).to be_falsey
       end
 
       it "returns false for 'N'" do
-        subject.should_receive(:prompt) { "N" }
-        subject.ask_boolean(question).should be_false
+        expect(subject).to receive(:prompt) { "N" }
+        expect(subject.ask_boolean(question)).to be_falsey
       end
     end
 
     context ".prompt prompt_text" do
       let(:input) { "asdf" }
-      let(:highline) { stub }
+      let(:highline) { double }
       let(:prompt_text) { "Foo: " }
 
       before do
-        subject.stub(highline: highline)
+        allow(subject).to receive_messages(highline: highline)
       end
 
       it "retrieves response from the user" do
-        highline.should_receive(:ask).with("> ").and_return(input)
+        expect(highline).to receive(:ask).with("> ").and_return(input)
 
-        subject.prompt.should == input
+        expect(subject.prompt).to eq(input)
       end
 
       it "uses the given text as the prompt" do
-        highline.should_receive(:ask).with(prompt_text)
+        expect(highline).to receive(:ask).with(prompt_text)
 
         subject.prompt prompt_text
       end
@@ -249,45 +249,45 @@ module Octopolo
     context ".prompt_secret prompt_text" do
       let(:input) { "asdf" }
       let(:prompt_text) { "Foo: " }
-      let(:highline) { stub }
-      let(:highline_config) { stub }
+      let(:highline) { double }
+      let(:highline_config) { double }
 
       before do
-        subject.stub(highline: highline)
+        allow(subject).to receive_messages(highline: highline)
       end
 
       it "retrieves response from the user without displaying what they type" do
-        highline.should_receive(:ask).with(prompt_text).and_yield(highline_config).and_return(input)
-        highline_config.should_receive(:echo=).with(false)
-        highline_config.should_receive(:readline=).with(true)
-        subject.prompt_secret(prompt_text).should == input
+        expect(highline).to receive(:ask).with(prompt_text).and_yield(highline_config).and_return(input)
+        expect(highline_config).to receive(:echo=).with(false)
+        expect(highline_config).to receive(:readline=).with(true)
+        expect(subject.prompt_secret(prompt_text)).to eq(input)
       end
     end
 
     context ".prompt_multiline prompt_text" do
       let(:input) { %w(a s d f) }
       let(:prompt_text) { "Steps:" }
-      let(:highline) { stub }
-      let(:highline_config) { stub }
+      let(:highline) { double }
+      let(:highline_config) { double }
 
       before do
-        subject.stub(highline: highline)
+        allow(subject).to receive_messages(highline: highline)
       end
 
       it "retreives response from the user across multiple lines, returning an array of their input" do
-        highline.should_receive(:ask).with(prompt_text).and_yield(highline_config).and_return(input)
-        highline_config.should_receive(:gather=).with("")
-        highline_config.should_receive(:readline=).with(true)
-        subject.prompt_multiline(prompt_text).should == input
+        expect(highline).to receive(:ask).with(prompt_text).and_yield(highline_config).and_return(input)
+        expect(highline_config).to receive(:gather=).with("")
+        expect(highline_config).to receive(:readline=).with(true)
+        expect(subject.prompt_multiline(prompt_text)).to eq(input)
       end
     end
 
     context ".highline" do
-      let(:result) { stub }
+      let(:result) { double }
 
       it "instantiates a HighLine object" do
-        HighLine.should_receive(:new) { result }
-        subject.highline.should == result
+        expect(HighLine).to receive(:new) { result }
+        expect(subject.highline).to eq(result)
       end
     end
 
@@ -295,7 +295,7 @@ module Octopolo
       let(:path) { "http://example.com/" }
 
       it "exits and opens the path with Mac OS X's `open` command" do
-        subject.should_receive(:perform_and_exit).with("open '#{path}'")
+        expect(subject).to receive(:perform_and_exit).with("open '#{path}'")
         subject.open path
       end
     end
@@ -308,10 +308,10 @@ module Octopolo
       # only run on the test on a mac and when not in tmux
       if RUBY_PLATFORM.include?("darwin") and !ENV['TMUX']
         it "puts the text on the system clipboard (for pasting)" do
-          subject.should_receive(:say).with("Putting '#{input}' on the clipboard.")
+          expect(subject).to receive(:say).with("Putting '#{input}' on the clipboard.")
           subject.copy_to_clipboard input
           # and to test that it's on the clipboard
-          `pbpaste`.should == input
+          expect(`pbpaste`).to eq(input)
         end
       end
     end

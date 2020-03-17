@@ -8,11 +8,11 @@ module Octopolo
 
       context "#execute" do
         it "delegates the work to DatedBranchCreator with default delete flag" do
-          DatedBranchCreator.should_receive(:perform).with(Git::DEPLOYABLE_PREFIX, false)
+          expect(DatedBranchCreator).to receive(:perform).with(Git::DEPLOYABLE_PREFIX, false)
           subject.execute
         end
         it "delegates the work to DatedBranchCreator with delete flag" do
-          DatedBranchCreator.should_receive(:perform).with(Git::DEPLOYABLE_PREFIX, true)
+          expect(DatedBranchCreator).to receive(:perform).with(Git::DEPLOYABLE_PREFIX, true)
           subject.execute(:delete_old_branches => true)
         end
       end

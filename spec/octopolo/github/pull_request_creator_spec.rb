@@ -15,28 +15,28 @@ module Octopolo
       let(:jira_url) { "https://example-jira.com" }
 
       context ".perform repo_name, options" do
-        let(:creator) { stub }
+        let(:creator) { double }
 
         it "instantiates a creator and perfoms it" do
-          PullRequestCreator.should_receive(:new).with(repo_name, options) { creator }
-          creator.should_receive(:perform)
-          PullRequestCreator.perform(repo_name, options).should == creator
+          expect(PullRequestCreator).to receive(:new).with(repo_name, options) { creator }
+          expect(creator).to receive(:perform)
+          expect(PullRequestCreator.perform(repo_name, options)).to eq(creator)
         end
       end
 
       context ".new repo_name, options" do
         it "remembers the repo name and options" do
           creator = PullRequestCreator.new repo_name, options
-          creator.repo_name.should == repo_name
-          creator.options.should == options
+          expect(creator.repo_name).to eq(repo_name)
+          expect(creator.options).to eq(options)
         end
       end
 
       context "#perform" do
-        let(:data) { stub(:mash, number: 123) }
+        let(:data) { double(:mash, number: 123) }
 
         before do
-          creator.stub({
+          allow(creator).to receive_messages({
             destination_branch: destination_branch,
             source_branch: source_branch,
             title: title,
@@ -45,14 +45,14 @@ module Octopolo
         end
 
         it "generates the pull request with the given details and retains the information" do
-          GitHub.should_receive(:create_pull_request).with(repo_name, destination_branch, source_branch, title, body) { data }
-          creator.perform.should == data
-          creator.number.should == data.number
-          creator.data.should == data
+          expect(GitHub).to receive(:create_pull_request).with(repo_name, destination_branch, source_branch, title, body) { data }
+          expect(creator.perform).to eq(data)
+          expect(creator.number).to eq(data.number)
+          expect(creator.data).to eq(data)
         end
 
         it "raises CannotCreate if any exception occurs" do
-          GitHub.should_receive(:create_pull_request).and_raise(Octokit::UnprocessableEntity)
+          expect(GitHub).to receive(:create_pull_request).and_raise(Octokit::UnprocessableEntity)
           expect { creator.perform }.to raise_error(PullRequestCreator::CannotCreate)
         end
       end
@@ -62,7 +62,7 @@ module Octopolo
 
         it "returns the stored pull request number" do
           creator.number = number
-          creator.number.should == number
+          expect(creator.number).to eq(number)
         end
 
         it "raises an exception if no pull request has been created yet" do
@@ -72,11 +72,11 @@ module Octopolo
       end
 
       context "#data" do
-        let(:details) { stub(:data) }
+        let(:details) { double(:data) }
 
         it "returns the stored pull request details" do
           creator.data = details
-          creator.data.should == details
+          expect(creator.data).to eq(details)
         end
 
         it "raises an exception if no information has been captured yet" do
@@ -88,7 +88,7 @@ module Octopolo
       context "#destination_branch" do
         it "fetches from the options" do
           creator.options[:destination_branch] = destination_branch
-          creator.destination_branch.should == destination_branch
+          expect(creator.destination_branch).to eq(destination_branch)
         end
 
         it "raises an exception if it's missing" do
@@ -100,7 +100,7 @@ module Octopolo
       context "#source_branch" do
         it "fetches from the options" do
           creator.options[:source_branch] = source_branch
-          creator.source_branch.should == source_branch
+          expect(creator.source_branch).to eq(source_branch)
         end
 
         it "raises an exception if it's missing" do
@@ -114,7 +114,7 @@ module Octopolo
           before { creator.options[:title] = title }
 
           it "fetches from the options" do
-            creator.title.should == title
+            expect(creator.title).to eq(title)
           end
         end
 
@@ -128,27 +128,27 @@ module Octopolo
         let(:urls) { %w(link1 link2) }
 
         before do
-          creator.stub({
+          allow(creator).to receive_messages({
             jira_ids: jira_ids,
             jira_url: jira_url,
           })
         end
         it "includes the necessary keys to render the template" do
-          creator.body_locals[:jira_ids].should == creator.jira_ids
-          creator.body_locals[:jira_url].should == creator.jira_url
+          expect(creator.body_locals[:jira_ids]).to eq(creator.jira_ids)
+          expect(creator.body_locals[:jira_url]).to eq(creator.jira_url)
         end
       end
 
       context "#edit_body" do
-        let(:path) { stub(:path) }
-        let(:body) { stub(:string) }
-        let(:tempfile) { stub(:tempfile) }
-        let(:edited_body) { stub(:edited_body) }
+        let(:path) { double(:path) }
+        let(:body) { double(:string) }
+        let(:tempfile) { double(:tempfile) }
+        let(:edited_body) { double(:edited_body) }
 
         before do
-          Tempfile.stub(:new) { tempfile }
-          tempfile.stub(path: path, write: nil, read: edited_body, unlink: nil, close: nil, open: nil)
-          creator.stub(:system)
+          allow(Tempfile).to receive(:new) { tempfile }
+          allow(tempfile).to receive_messages(path: path, write: nil, read: edited_body, unlink: nil, close: nil, open: nil)
+          allow(creator).to receive(:system)
         end
 
         context "without the $EDITOR env var set" do
@@ -157,7 +157,7 @@ module Octopolo
           end
 
           it "returns the un-edited output" do
-            creator.edit_body(body).should == body
+            expect(creator.edit_body(body)).to eq(body)
           end
         end
 
@@ -168,60 +168,60 @@ module Octopolo
           end
 
           it "creates a tempfile, write default contents, and close it" do
-            Tempfile.should_receive(:new).with(['octopolo_pull_request', '.md']) { tempfile }
-            tempfile.should_receive(:write).with(body)
-            tempfile.should_receive(:close)
+            expect(Tempfile).to receive(:new).with(['octopolo_pull_request', '.md']) { tempfile }
+            expect(tempfile).to receive(:write).with(body)
+            expect(tempfile).to receive(:close)
             creator.edit_body body
           end
 
           it "edits the tempfile with the $EDITOR" do
-            tempfile.should_receive(:path) { path }
-            creator.should_receive(:system).with("vim #{path}")
+            expect(tempfile).to receive(:path) { path }
+            expect(creator).to receive(:system).with("vim #{path}")
             creator.edit_body body
           end
 
           it "reopens the file, gets the contents, and deletes the temp file" do
-            tempfile.should_receive(:open)
-            tempfile.should_receive(:read) { edited_body }
-            tempfile.should_receive(:unlink)
+            expect(tempfile).to receive(:open)
+            expect(tempfile).to receive(:read) { edited_body }
+            expect(tempfile).to receive(:unlink)
             creator.edit_body body
           end
 
           it "returns the user edited output" do
-            creator.edit_body(body).should == edited_body
+            expect(creator.edit_body(body)).to eq(edited_body)
           end
         end
       end
 
       context "#body" do
-        let(:locals) { stub(:hash) }
-        let(:output) { stub(:string) }
+        let(:locals) { double(:hash) }
+        let(:output) { double(:string) }
 
         before do
-          creator.stub({
+          allow(creator).to receive_messages({
             body_locals: locals,
           })
         end
 
         it "renders the body template with the body locals" do
-          Renderer.should_receive(:render).with(Renderer::PULL_REQUEST_BODY, locals) { output }
-          creator.body.should == output
+          expect(Renderer).to receive(:render).with(Renderer::PULL_REQUEST_BODY, locals) { output }
+          expect(creator.body).to eq(output)
         end
 
         context "when the editor option is set" do
-          let(:edited_output) { stub(:output) }
+          let(:edited_output) { double(:output) }
 
           before do
-            creator.stub({
+            allow(creator).to receive_messages({
               body_locals: locals,
               options: { editor: true }
             })
           end
 
           it "calls the edit_body method" do
-            Renderer.should_receive(:render).with(Renderer::PULL_REQUEST_BODY, locals) { output }
-            creator.should_receive(:edit_body).with(output) { edited_output }
-            creator.body.should == edited_output
+            expect(Renderer).to receive(:render).with(Renderer::PULL_REQUEST_BODY, locals) { output }
+            expect(creator).to receive(:edit_body).with(output) { edited_output }
+            expect(creator.body).to eq(edited_output)
           end
         end
       end

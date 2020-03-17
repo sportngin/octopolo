@@ -4,16 +4,16 @@ require "octopolo/scripts/new_branch"
 module Octopolo
   module Scripts
     describe NewBranch do
-      let(:config) { stub(:config, :deploy_branch => "production") }
-      let(:git) { stub(:Git) }
-      let(:cli) { stub(:Cli) }
-      let(:new_branch_name) { stub(:string) }
-      let(:custom_source_branch) { stub(:string) }
+      let(:config) { double(:config, :deploy_branch => "production") }
+      let(:git) { double(:Git) }
+      let(:cli) { double(:Cli) }
+      let(:new_branch_name) { double(:string) }
+      let(:custom_source_branch) { double(:string) }
 
       subject { NewBranch }
 
       before do
-        NewBranch.any_instance.stub(:config => config, :git => git, :cli => cli)
+        allow_any_instance_of(NewBranch).to receive_messages(:config => config, :git => git, :cli => cli)
       end
 
       context "::execute" do
@@ -29,7 +29,7 @@ module Octopolo
             allow(git).to receive(:reserved_branch?) { true }
             allow(cli).to receive(:ask_boolean) { false }
             allow(cli).to receive(:say).with(anything)
-            git.should_receive(:alert_reserved_branch)
+            expect(git).to receive(:alert_reserved_branch)
             expect { subject.execute(new_branch_name) }.to raise_error(SystemExit)
           end
 
@@ -37,7 +37,7 @@ module Octopolo
             allow(git).to receive(:reserved_branch?) { true }
             allow(cli).to receive(:ask_boolean) { true }
             allow(cli).to receive(:say).with(anything)
-            git.should_receive(:new_branch).with(new_branch_name, "production")
+            expect(git).to receive(:new_branch).with(new_branch_name, "production")
             subject.execute(new_branch_name)
           end
         end
@@ -45,7 +45,7 @@ module Octopolo
         context "with only new branch name given" do
           it "delegates to Git.new_branch" do
             allow(git).to receive(:reserved_branch?) { false }
-            git.should_receive(:new_branch).with(new_branch_name, "production")
+            expect(git).to receive(:new_branch).with(new_branch_name, "production")
             subject.execute(new_branch_name)
           end
         end
@@ -53,7 +53,7 @@ module Octopolo
         context "with new and source branch names given" do
           it "delegates to Git.new_branch" do
             allow(git).to receive(:reserved_branch?) { false }
-            git.should_receive(:new_branch).with(new_branch_name, custom_source_branch)
+            expect(git).to receive(:new_branch).with(new_branch_name, custom_source_branch)
             subject.execute(new_branch_name, custom_source_branch)
           end
         end

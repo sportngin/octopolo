@@ -7,20 +7,20 @@ module Octopolo
     describe Issue do
       let(:repo_name) { "account/repo" }
       let(:issue_number) { 7 }
-      let(:issue_hash) { stub }
-      let(:comments) { stub }
-      let(:octo) { stub }
+      let(:issue_hash) { double }
+      let(:comments) { double }
+      let(:octo) { double }
 
       context ".new" do
         it "remembers the issue identifiers" do
           i = Issue.new repo_name, issue_number
-          i.repo_name.should == repo_name
-          i.number.should == issue_number
+          expect(i.repo_name).to eq(repo_name)
+          expect(i.number).to eq(issue_number)
         end
 
         it "optionally accepts the github data" do
           i = Issue.new repo_name, issue_number, octo
-          i.data.should == octo
+          expect(i.data).to eq(octo)
         end
 
         it "fails if not given a repo name" do
@@ -36,18 +36,18 @@ module Octopolo
         let(:issue) { Issue.new repo_name, issue_number }
 
         it "fetches the details from GitHub" do
-          GitHub.should_receive(:issue).with(issue.repo_name, issue.number) { octo }
-          issue.data.should == octo
+          expect(GitHub).to receive(:issue).with(issue.repo_name, issue.number) { octo }
+          expect(issue.data).to eq(octo)
         end
 
         it "catches the information" do
-          GitHub.should_receive(:issue).once { octo }
+          expect(GitHub).to receive(:issue).once { octo }
           issue.data
           issue.data
         end
 
         it "fails if given invalid information" do
-          GitHub.should_receive(:issue).and_raise(Octokit::NotFound)
+          expect(GitHub).to receive(:issue).and_raise(Octokit::NotFound)
           expect { issue.data }.to raise_error(Issue::NotFound)
         end
       end
@@ -56,43 +56,43 @@ module Octopolo
         let(:issue) { Issue.new repo_name, issue_number }
 
         before do
-          issue.stub(data: octo)
+          allow(issue).to receive_messages(data: octo)
         end
 
         context "#title" do
-          let(:octo) { stub(title: "the title") }
+          let(:octo) { double(title: "the title") }
 
           it "retrieves from the github data" do
-            issue.title.should == octo.title
+            expect(issue.title).to eq(octo.title)
           end
         end
 
         context "#comments" do
           it "fetches through octokit" do
-            GitHub.should_receive(:issue_comments).with(issue.repo_name, issue.number) { comments }
-            issue.comments.should == comments
+            expect(GitHub).to receive(:issue_comments).with(issue.repo_name, issue.number) { comments }
+            expect(issue.comments).to eq(comments)
           end
 
           it "caches the result" do
-            GitHub.should_receive(:issue_comments).once { comments }
+            expect(GitHub).to receive(:issue_comments).once { comments }
             issue.comments
             issue.comments
           end
         end
 
         context "#commenter_names" do
-          let(:comment1) { stub(user: stub(login: "pbyrne")) }
-          let(:comment2) { stub(user: stub(login: "anfleene")) }
+          let(:comment1) { double(user: double(login: "pbyrne")) }
+          let(:comment2) { double(user: double(login: "anfleene")) }
 
           before do
-            issue.stub(comments: [comment1, comment2])
+            allow(issue).to receive_messages(comments: [comment1, comment2])
           end
 
           it "returns only unique values" do
             # make it same commenter
-            comment2.user.stub(login: comment1.user.login)
+            allow(comment2.user).to receive_messages(login: comment1.user.login)
             names = issue.commenter_names
-            names.size.should == 1
+            expect(names.size).to eq(1)
           end
         end
 
@@ -100,16 +100,16 @@ module Octopolo
           let(:users) { ["anfleene", "tst-octopolo"] }
 
           it "excludes the github octopolo users" do
-            issue.exclude_octopolo_user(users).should_not include("tst-octopolo")
-            issue.exclude_octopolo_user(users).should include("anfleene")
+            expect(issue.exclude_octopolo_user(users)).not_to include("tst-octopolo")
+            expect(issue.exclude_octopolo_user(users)).to include("anfleene")
           end
         end
 
         context "#url" do
-          let(:octo) { stub(html_url: "http://example.com") }
+          let(:octo) { double(html_url: "http://example.com") }
 
           it "retrieves from the github data" do
-            issue.url.should == octo.html_url
+            expect(issue.url).to eq(octo.html_url)
           end
         end
 
@@ -128,28 +128,28 @@ module Octopolo
           end
 
           before do
-            issue.stub(body: body)
+            allow(issue).to receive_messages(body: body)
           end
 
           it "parses from the body" do
             urls = issue.external_urls
-            urls.size.should == 3
-            urls.should include "http://thedesk.tstmedia.com/admin.php?pg=request&reqid=44690"
-            urls.should include "http://thedesk.tstmedia.com/admin.php?pg=request&reqid=44693"
-            urls.should include "http://www.ngin.com.stage.ngin-staging.com/api/volleyball/stats/summaries?id=68382&gender=girls&tst_test=1&date=8/24/2012"
+            expect(urls.size).to eq(3)
+            expect(urls).to include "http://thedesk.tstmedia.com/admin.php?pg=request&reqid=44690"
+            expect(urls).to include "http://thedesk.tstmedia.com/admin.php?pg=request&reqid=44693"
+            expect(urls).to include "http://www.ngin.com.stage.ngin-staging.com/api/volleyball/stats/summaries?id=68382&gender=girls&tst_test=1&date=8/24/2012"
           end
         end
 
         context "#body" do
-          let(:octo) { stub(body: "asdf") }
+          let(:octo) { double(body: "asdf") }
 
           it "retrieves from the github data" do
-            issue.body.should == octo.body
+            expect(issue.body).to eq(octo.body)
           end
 
           it "returns an empty string if the GitHub data has no body" do
-            octo.stub(body: nil)
-            issue.body.should == ""
+            allow(octo).to receive_messages(body: nil)
+            expect(issue.body).to eq("")
           end
         end
       end
@@ -160,9 +160,9 @@ module Octopolo
 
         it "infers from the repo_name" do
           issue.repo_name = "account/foo"
-          issue.human_app_name.should == "Foo"
+          expect(issue.human_app_name).to eq("Foo")
           issue.repo_name = "account/foo_bar"
-          issue.human_app_name.should == "Foo Bar"
+          expect(issue.human_app_name).to eq("Foo Bar")
         end
       end
 
@@ -172,29 +172,29 @@ module Octopolo
         let(:error) { Octokit::UnprocessableEntity.new }
 
         it "creates the message through octokit" do
-          GitHub.should_receive(:add_comment).with(issue.repo_name, issue.number, ":octocat: #{message}")
+          expect(GitHub).to receive(:add_comment).with(issue.repo_name, issue.number, ":octocat: #{message}")
 
           issue.write_comment message
         end
 
         it "raises CommentFailed if an exception occurs" do
-          GitHub.should_receive(:add_comment).and_raise(error)
+          expect(GitHub).to receive(:add_comment).and_raise(error)
 
           expect { issue.write_comment message }.to raise_error(Issue::CommentFailed, "Unable to write the comment: '#{error.message}'")
         end
       end
 
       context ".create repo_name, options" do
-        let(:options) { stub(:hash) }
-        let(:number) { stub(:integer) }
-        let(:data) { stub(:data)}
-        let(:creator) { stub(:issue_creator, number: number, data: data)}
-        let(:issue) { stub(:issue) }
+        let(:options) { double(:hash) }
+        let(:number) { double(:integer) }
+        let(:data) { double(:data)}
+        let(:creator) { double(:issue_creator, number: number, data: data)}
+        let(:issue) { double(:issue) }
 
         it "passes on to IssueCreator and returns a new Issue" do
-          IssueCreator.should_receive(:perform).with(repo_name, options) { creator }
-          Issue.should_receive(:new).with(repo_name, number, data) { issue }
-          Issue.create(repo_name, options).should == issue
+          expect(IssueCreator).to receive(:perform).with(repo_name, options) { creator }
+          expect(Issue).to receive(:new).with(repo_name, number, data) { issue }
+          expect(Issue.create(repo_name, options)).to eq(issue)
         end
       end
 

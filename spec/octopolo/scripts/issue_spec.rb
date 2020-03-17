@@ -6,27 +6,27 @@ module Octopolo
   module Scripts
     describe Issue do
       let(:config) do
-        stub(:config, {
+        double(:config, {
           deploy_branch: "production",
           github_repo: "tstmedia/foo",
           use_jira: true
         })
       end
-      let(:cli) { stub(:cli) }
-      let(:git) { stub(:Git) }
+      let(:cli) { double(:cli) }
+      let(:git) { double(:Git) }
       let(:issue_url) { "http://github.com/tstmedia/octopolo/issues/0" }
-      let(:issue) { stub(:issue) }
+      let(:issue) { double(:issue) }
 
       subject { Issue.new }
 
       before do
-        Issue.any_instance.stub({
+        allow_any_instance_of(Issue).to receive_messages({
           :cli => cli,
           :config => config,
           :git => git
         })
 
-        Octopolo::Question.any_instance.stub({
+        allow_any_instance_of(Octopolo::Question).to receive_messages({
           :cli => cli
         })
       end
@@ -39,7 +39,7 @@ module Octopolo
 
       context "#execute" do
         it "if connected to GitHub, asks some questions, creates the issue, and opens it" do
-          GitHub.should_receive(:connect).and_yield
+          expect(GitHub).to receive(:connect).and_yield
           expect(subject).to receive(:ask_questionaire)
           expect(subject).to receive(:create_issue)
           expect(subject).to receive(:update_jira)
@@ -50,7 +50,7 @@ module Octopolo
         end
 
         it "if not connected to GitHub, does nothing" do
-          GitHub.should_receive(:connect) # and not yield, no github credentials
+          expect(GitHub).to receive(:connect) # and not yield, no github credentials
           expect { subject.execute }.to_not raise_error
         end
       end
@@ -68,7 +68,7 @@ module Octopolo
 
       context "#announce" do
         it "displays information about the issue to be created" do
-          cli.should_receive(:say).with("Preparing an issue for #{config.github_repo}.")
+          expect(cli).to receive(:say).with("Preparing an issue for #{config.github_repo}.")
           subject.send(:announce)
         end
       end
@@ -77,7 +77,7 @@ module Octopolo
         let(:title) { "title" }
 
         it "asks for and captures a title for the issue" do
-          cli.should_receive(:prompt).with("Title:") { title }
+          expect(cli).to receive(:prompt).with("Title:") { title }
           subject.send(:ask_title)
           expect(subject.title).to eq(title)
         end
@@ -103,14 +103,14 @@ module Octopolo
       end
 
       context "#create_issue" do
-        let(:attributes) { stub(:hash) }
+        let(:attributes) { double(:hash) }
 
         before do
-          subject.stub(:issue_attributes) { attributes }
+          allow(subject).to receive(:issue_attributes) { attributes }
         end
 
         it "creates and stores the issue" do
-          GitHub::Issue.should_receive(:create).with(config.github_repo, attributes) { issue }
+          expect(GitHub::Issue).to receive(:create).with(config.github_repo, attributes) { issue }
           subject.send(:create_issue)
           expect(subject.issue).to eq(issue)
         end
@@ -122,11 +122,11 @@ module Octopolo
         end
 
         it "combines the anssers with a handful of deault values" do
-          subject.send(:issue_attributes).should == {
+          expect(subject.send(:issue_attributes)).to eq({
             title: subject.title,
             jira_ids: subject.jira_ids,
             editor: nil
-          }
+          })
         end
       end
 
@@ -144,7 +144,7 @@ module Octopolo
       context "#update_labels" do
         before do
           subject.labels = "high-risk"
-          subject.issue = stub()
+          subject.issue = double()
         end
         it "calls update_labels with proper arguments" do
           expect(subject.issue).to receive(:add_labels).with('high-risk')
@@ -166,12 +166,12 @@ module Octopolo
       context "#open_in_browser" do
         before do
           subject.issue = issue
-          issue.stub(:url) { issue_url }
+          allow(issue).to receive(:url) { issue_url }
         end
 
         it "copies the issue's URL to the clipboard and opens it in the browser" do
-          cli.should_receive(:copy_to_clipboard) { issue.url}
-          cli.should_receive(:open) { issue.url }
+          expect(cli).to receive(:copy_to_clipboard) { issue.url}
+          expect(cli).to receive(:open) { issue.url }
           subject.send(:open_in_browser)
         end
       end

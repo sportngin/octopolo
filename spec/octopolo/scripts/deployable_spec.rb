@@ -6,11 +6,11 @@ module Octopolo
     describe Deployable do
       subject { described_class.new 42 }
 
-      let(:cli) { stub(prompt: 42) }
-      let(:config) { stub(user_notifications: ['NickLaMuro'],
+      let(:cli) { double(prompt: 42) }
+      let(:config) { double(user_notifications: ['NickLaMuro'],
                           github_repo: 'grumpy_cat',
                           deployable_label: true) }
-      let(:pull_request) { stub(add_labels: true,
+      let(:pull_request) { double(add_labels: true,
                                 remove_labels: true,
                                 number: 7,
                                 mergeable?: true,
@@ -30,7 +30,7 @@ module Octopolo
 
         context "with a PR ID passed in with the command" do
           it "doesn't prompt for a PR ID" do
-            cli.should_not_receive(:prompt)
+            expect(cli).not_to receive(:prompt)
           end
         end
 
@@ -39,7 +39,7 @@ module Octopolo
 
           context "with an existing PR for the current branch" do
             before do
-              GitHub::PullRequest.should_receive(:current) { pull_request }
+              expect(GitHub::PullRequest).to receive(:current) { pull_request }
             end
 
             it "takes the pull requests ID from the current branch" do
@@ -49,11 +49,11 @@ module Octopolo
 
           context "without an existing PR for the current branch" do
             before do
-              GitHub::PullRequest.should_receive(:current) { nil }
+              expect(GitHub::PullRequest).to receive(:current) { nil }
             end
 
             it "prompts for a PR ID" do
-              cli.should_receive(:prompt)
+              expect(cli).to receive(:prompt)
                 .with("Pull Request ID: ")
                 .and_return("42")
             end
@@ -62,7 +62,7 @@ module Octopolo
 
         context "with labelling enabled" do
           it "adds the deployable label" do
-            pull_request.should_receive(:add_labels)
+            expect(pull_request).to receive(:add_labels)
           end
 
           context "when merge to deployable fails" do
@@ -71,19 +71,19 @@ module Octopolo
             end
 
             it "does not add any labels" do
-              pull_request.should_not_receive(:add_labels)
+              expect(pull_request).not_to receive(:add_labels)
             end
           end
 
           context "when the merge to deployable succeeds" do
             it "adds a label" do
-              pull_request.should_receive(:add_labels)
+              expect(pull_request).to receive(:add_labels)
             end
           end
 
           context "with an invalid auth token" do
             before do
-              Octopolo::GitHub.stub(:check_connection) { raise GitHub::BadCredentials, "Your stored credentials were rejected by GitHub. Run `op github-auth` to generate a new token." }
+              allow(Octopolo::GitHub).to receive(:check_connection) { raise GitHub::BadCredentials, "Your stored credentials were rejected by GitHub. Run `op github-auth` to generate a new token." }
             end
 
             it "should give a helpful error message saying your token is invalid" do
@@ -93,18 +93,18 @@ module Octopolo
         end
 
         context "with labelling disabled" do
-          let(:config) { stub(user_notifications: ['NickLaMuro'],
+          let(:config) { double(user_notifications: ['NickLaMuro'],
                               github_repo: 'grumpy_cat',
                               deployable_label: false) }
 
           it "doesn't add the deployable label" do
-            pull_request.should_not_receive(:add_labels)
+            expect(pull_request).not_to receive(:add_labels)
           end
         end
 
         context "when pr is not mergeable" do
           before do
-            pull_request.stub(mergeable?: false)
+            allow(pull_request).to receive_messages(mergeable?: false)
             allow(subject).to receive(:exit!)
           end
 
@@ -116,7 +116,7 @@ module Octopolo
 
         context "when pr has not passed status checks" do
           before do
-            pull_request.stub(status_checks_passed?: false)
+            allow(pull_request).to receive_messages(status_checks_passed?: false)
             allow(subject).to receive(:exit!)
           end
 
@@ -128,10 +128,10 @@ module Octopolo
 
         context "when failed status checks should be ignored" do
           subject { described_class.new(42, force: true) }
-          before { pull_request.stub(status_checks_passed?: false) }
+          before { allow(pull_request).to receive_messages(status_checks_passed?: false) }
 
           it "adds the deployable label" do
-            pull_request.should_receive(:add_labels)
+            expect(pull_request).to receive(:add_labels)
           end
         end
       end

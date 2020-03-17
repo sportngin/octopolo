@@ -4,21 +4,21 @@ require "octopolo/scripts/tag_release"
 module Octopolo
   module Scripts
     describe TagRelease do
-      let(:config) { stub(:config, deploy_branch: "something", semantic_versioning: false) }
-      let(:cli) { stub(:cli) }
-      let(:git) { stub(:git) }
+      let(:config) { double(:config, deploy_branch: "something", semantic_versioning: false) }
+      let(:cli) { double(:cli) }
+      let(:git) { double(:git) }
       let(:prefix) { "foo" }
       let(:suffix) { "bar" }
       let(:options) { Hash.new }
       subject { TagRelease.new }
 
       before do
-        TagRelease.any_instance.stub({
+        allow_any_instance_of(TagRelease).to receive_messages({
           :cli => cli,
           :config => config,
           :git => git
         })
-        TagRelease.any_instance.stub(:update_changelog)
+        allow_any_instance_of(TagRelease).to receive(:update_changelog)
         options[:force] = false
         options[:major] = false
         options[:minor] = false
@@ -38,22 +38,22 @@ module Octopolo
 
         it "accepts a switch to force creating the new tag even if not on deploy branch" do
           options[:force] = true
-          expect(TagRelease.new(options).force?).to be_true
+          expect(TagRelease.new(options).force?).to be_truthy
         end
 
         it "accepts a switch to increment major version" do
           options[:major] = true
-          expect(TagRelease.new(options).major?).to be_true
+          expect(TagRelease.new(options).major?).to be_truthy
         end
 
         it "accepts a switch to increment minor version" do
           options[:minor] = true
-          expect(TagRelease.new(options).minor?).to be_true
+          expect(TagRelease.new(options).minor?).to be_truthy
         end
 
         it "accepts a switch to increment patch version" do
           options[:patch] = true
-          expect(TagRelease.new(options).patch?).to be_true
+          expect(TagRelease.new(options).patch?).to be_truthy
         end
 
         it "defaults to no suffix and not to force" do
@@ -64,14 +64,14 @@ module Octopolo
 
       describe "#execute" do
         it "tags the release if on the release branch" do
-          subject.stub(:should_create_branch?) { true }
-          subject.should_receive(:tag_release)
+          allow(subject).to receive(:should_create_branch?) { true }
+          expect(subject).to receive(:tag_release)
           subject.execute
         end
 
         it "does nothing if not on the release branch" do
-          subject.stub(:should_create_branch?) { false }
-          subject.should_not_receive(:tag_release)
+          allow(subject).to receive(:should_create_branch?) { false }
+          expect(subject).not_to receive(:tag_release)
           expect { subject.execute }.to raise_error(Octopolo::WrongBranch)
         end
       end
@@ -82,31 +82,31 @@ module Octopolo
         end
 
         it "is true if on the deploy branch" do
-          git.stub(:current_branch) { config.deploy_branch }
-          expect(subject.should_create_branch?).to be_true
+          allow(git).to receive(:current_branch) { config.deploy_branch }
+          expect(subject.should_create_branch?).to be_truthy
         end
 
         context "if not on the deploy branch" do
           before do
-            git.stub(:current_branch) { "something-else" }
+            allow(git).to receive(:current_branch) { "something-else" }
           end
 
           it "is true if set to force creation" do
             subject.force = true
-            expect(subject.should_create_branch?).to be_true
+            expect(subject.should_create_branch?).to be_truthy
           end
 
           it "is false otherwise" do
             subject.force = false
-            expect(subject.should_create_branch?).to be_false
+            expect(subject.should_create_branch?).to be_falsey
           end
         end
       end
 
       describe "#tag_release" do
         it "tells Git to make the tag" do
-          subject.stub(:tag_name) { "some-tag" }
-          git.should_receive(:new_tag).with(subject.tag_name)
+          allow(subject).to receive(:tag_name) { "some-tag" }
+          expect(git).to receive(:new_tag).with(subject.tag_name)
           subject.tag_release
         end
       end
@@ -117,7 +117,7 @@ module Octopolo
           let(:formatted_timestamp) { sample_time.strftime(TagRelease::TIMESTAMP_FORMAT) }
 
           before do
-            Time.stub(:now) { sample_time }
+            allow(Time).to receive(:now) { sample_time }
           end
 
           it "is based on the timestamp" do
@@ -133,8 +133,8 @@ module Octopolo
 
         context "with semantic versioning tag of 0.0.2" do
           before do
-            subject.config.stub(:semantic_versioning) { true }
-            subject.git.stub(:semver_tags) { ['0.0.1', '0.0.2'] }
+            allow(subject.config).to receive(:semantic_versioning) { true }
+            allow(subject.git).to receive(:semver_tags) { ['0.0.1', '0.0.2'] }
           end
 
           context "incrementing patch" do
@@ -161,7 +161,7 @@ module Octopolo
           context "with a prefix of v" do
             before do
               subject.major = true
-              subject.git.stub(:semver_tags) { %w[v0.0.1 v0.0.2] }
+              allow(subject.git).to receive(:semver_tags) { %w[v0.0.1 v0.0.2] }
             end
 
             it "sets the prefix to v" do
@@ -184,21 +184,21 @@ module Octopolo
           expect(subject.cli).to receive(:ask).with(semver_choice_question, TagRelease::SEMVER_CHOICES)
                                               .and_return('Major')
           subject.ask_user_version
-          expect(subject.major).to be_true
+          expect(subject.major).to be_truthy
         end
 
         it "sets @minor when user response with 'minor'" do
           expect(subject.cli).to receive(:ask).with(semver_choice_question, TagRelease::SEMVER_CHOICES)
                                               .and_return('Minor')
           subject.ask_user_version
-          expect(subject.minor).to be_true
+          expect(subject.minor).to be_truthy
         end
 
         it "sets @patch when user response with 'patch'" do
           expect(subject.cli).to receive(:ask).with(semver_choice_question, TagRelease::SEMVER_CHOICES)
                                               .and_return('Patch')
           subject.ask_user_version
-          expect(subject.patch).to be_true
+          expect(subject.patch).to be_truthy
         end
       end
 
