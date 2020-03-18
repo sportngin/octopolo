@@ -104,7 +104,6 @@ module Octopolo
       @github_token || raise(MissingGitHubAuth)
     end
 
-    # Public: The 
     MissingGitHubAuth = Class.new(StandardError)
   end
 end
