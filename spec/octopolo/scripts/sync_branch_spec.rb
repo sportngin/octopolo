@@ -4,15 +4,15 @@ require "octopolo/scripts/sync_branch"
 module Octopolo
   module Scripts
     describe SyncBranch do
-      let(:config) { stub(:config, :deploy_branch => "production") }
-      let(:git) { stub(:Git) }
-      let(:cli) { stub(:CLI) }
+      let(:config) { double(:config, :deploy_branch => "production") }
+      let(:git) { double(:Git) }
+      let(:cli) { double(:CLI) }
       let(:otherbranch) { "otherbranch" }
 
       subject { SyncBranch.new }
 
       before do
-        SyncBranch.any_instance.stub({
+        allow_any_instance_of(SyncBranch).to receive_messages({
           :config => config,
           :git => git,
           :cli => cli
@@ -31,7 +31,7 @@ module Octopolo
 
       context "#execute" do
         it "merges the remote branch into yours" do
-          subject.should_receive(:merge_branch)
+          expect(subject).to receive(:merge_branch)
           subject.execute
         end
       end
@@ -42,13 +42,13 @@ module Octopolo
         end
 
         it "merges the remote branch into yours" do
-          git.should_receive(:merge).with(subject.branch)
+          expect(git).to receive(:merge).with(subject.branch)
           subject.merge_branch
         end
 
         it "properly handles a merge failure" do
-          git.should_receive(:merge).and_raise(Git::MergeFailed)
-          cli.should_receive(:say).with("Merge failed. Please resolve these conflicts.")
+          expect(git).to receive(:merge).and_raise(Git::MergeFailed)
+          expect(cli).to receive(:say).with("Merge failed. Please resolve these conflicts.")
           subject.merge_branch
         end
       end

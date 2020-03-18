@@ -3,7 +3,7 @@ require_relative "../../lib/octopolo/git"
 
 module Octopolo
   describe Git do
-    let(:cli) { stub(:CLI) }
+    let(:cli) { double(:CLI) }
 
     context ".perform(subcommand)" do
       let(:command) { "status" }
@@ -11,7 +11,7 @@ module Octopolo
       before { Git.cli = cli }
 
       it "performs the given subcommand" do
-        cli.should_receive(:perform).with("git #{command}", true, false)
+        expect(cli).to receive(:perform).with("git #{command}", true, false)
         Git.perform command
       end
     end
@@ -22,7 +22,7 @@ module Octopolo
       before { Git.cli = cli }
 
       it "performs the given subcommand quietly" do
-        cli.should_receive(:perform_quietly).with("git #{command}")
+        expect(cli).to receive(:perform_quietly).with("git #{command}")
         Git.perform_quietly command
       end
     end
@@ -34,35 +34,35 @@ module Octopolo
       before { Git.cli = cli }
 
       it "performs a command to filter current branch from list of branches" do
-        cli.should_receive(:perform_quietly).with("git branch | grep '^* ' | cut -c 3-") { output }
-        Git.current_branch.should == name
+        expect(cli).to receive(:perform_quietly).with("git branch | grep '^* ' | cut -c 3-") { output }
+        expect(Git.current_branch).to eq(name)
       end
 
       it "raises NotOnBranch if not on a branch" do
-        cli.should_receive(:perform_quietly) { nobranch_output }
+        expect(cli).to receive(:perform_quietly) { nobranch_output }
         expect { Git.current_branch }.to raise_error(Git::NotOnBranch, "Not currently checked out to a particular branch")
       end
 
       it "staging and deploy should be reserved branches" do
-        Git.stub(:current_branch).and_return "staging.05.12"
-        Git.reserved_branch?.should be_true
+        allow(Git).to receive(:current_branch).and_return "staging.05.12"
+        expect(Git.reserved_branch?).to be_truthy
 
-        Git.stub(:current_branch).and_return "deployable.05.12"
-        Git.reserved_branch?.should be_true
+        allow(Git).to receive(:current_branch).and_return "deployable.05.12"
+        expect(Git.reserved_branch?).to be_truthy
 
-        Git.stub(:current_branch).and_return "qaready.05.12"
-        Git.reserved_branch?.should be_true
+        allow(Git).to receive(:current_branch).and_return "qaready.05.12"
+        expect(Git.reserved_branch?).to be_truthy
       end
 
       it "other branches should not be reserved branches" do
-        Git.stub(:current_branch).and_return "not_staging.05.12"
-        Git.reserved_branch?.should_not be_true
+        allow(Git).to receive(:current_branch).and_return "not_staging.05.12"
+        expect(Git.reserved_branch?).not_to be_truthy
 
-        Git.stub(:current_branch).and_return "not_deployable.05.12"
-        Git.reserved_branch?.should_not be_true
+        allow(Git).to receive(:current_branch).and_return "not_deployable.05.12"
+        expect(Git.reserved_branch?).not_to be_truthy
 
-        Git.stub(:current_branch).and_return "not_qaready.05.12"
-        Git.reserved_branch?.should_not be_true
+        allow(Git).to receive(:current_branch).and_return "not_qaready.05.12"
+        expect(Git.reserved_branch?).not_to be_truthy
       end
     end
 
@@ -72,26 +72,26 @@ module Octopolo
       let(:name) { "foo" }
 
       it "checks out the given branch name" do
-        Git.should_receive(:fetch)
-        Git.should_receive(:perform).with("checkout #{name}")
-        Git.should_receive(:pull)
-        Git.should_receive(:current_branch) { name }
+        expect(Git).to receive(:fetch)
+        expect(Git).to receive(:perform).with("checkout #{name}")
+        expect(Git).to receive(:pull)
+        expect(Git).to receive(:current_branch) { name }
         Git.check_out name
       end
 
       it "checks out the given branch name without after pull" do
-        Git.should_receive(:fetch)
-        Git.should_receive(:perform).with("checkout #{name}")
-        Git.should_not_receive(:pull)
-        Git.should_receive(:current_branch) { name }
+        expect(Git).to receive(:fetch)
+        expect(Git).to receive(:perform).with("checkout #{name}")
+        expect(Git).not_to receive(:pull)
+        expect(Git).to receive(:current_branch) { name }
         Git.check_out(name, false)
       end
 
       it "raises an exception if the current branch is not the requested branch afterward" do
-        Git.should_receive(:fetch)
-        Git.should_receive(:perform)
-        Git.should_receive(:pull)
-        Git.should_receive(:current_branch) { "other" }
+        expect(Git).to receive(:fetch)
+        expect(Git).to receive(:perform)
+        expect(Git).to receive(:pull)
+        expect(Git).to receive(:current_branch) { "other" }
         expect { Git.check_out name }.to raise_error(Git::CheckoutFailed, "Failed to check out '#{name}'")
       end
     end
@@ -102,23 +102,23 @@ module Octopolo
       before { Git.cli = cli }
 
       it "returns true if everything is checked in" do
-        cli.should_receive(:perform_quietly).with(cmd) { "" }
-        Git.should be_clean
+        expect(cli).to receive(:perform_quietly).with(cmd) { "" }
+        expect(Git).to be_clean
       end
 
       it "returns false if the index has untracked files" do
-        cli.should_receive(:perform_quietly).with(cmd) { "?? foo.txt" }
-        Git.should_not be_clean
+        expect(cli).to receive(:perform_quietly).with(cmd) { "?? foo.txt" }
+        expect(Git).not_to be_clean
       end
 
       it "returns false if the index has missing files" do
-        cli.should_receive(:perform_quietly).with(cmd) { "D foo.txt" }
-        Git.should_not be_clean
+        expect(cli).to receive(:perform_quietly).with(cmd) { "D foo.txt" }
+        expect(Git).not_to be_clean
       end
 
       it "returns false if the index has changed files" do
-        cli.should_receive(:perform_quietly).with(cmd) { "M foo.txt" }
-        Git.should_not be_clean
+        expect(cli).to receive(:perform_quietly).with(cmd) { "M foo.txt" }
+        expect(Git).not_to be_clean
       end
     end
 
@@ -128,8 +128,8 @@ module Octopolo
       before { Git.cli = cli }
 
       it "performs the block if the git index is clean" do
-        Git.should_receive(:clean?) { true }
-        Math.should_receive(:log).with(1)
+        expect(Git).to receive(:clean?) { true }
+        expect(Math).to receive(:log).with(1)
 
         Git.if_clean do
           Math.log 1
@@ -137,9 +137,9 @@ module Octopolo
       end
 
       it "performs the block if the git index is not clean and user responds yes" do
-        Git.should_receive(:clean?) { false }
-        cli.should_receive(:ask_boolean).with(Git::DIRTY_CONFIRM_MESSAGE) { true }
-        Math.should_receive(:log).with(1)
+        expect(Git).to receive(:clean?) { false }
+        expect(cli).to receive(:ask_boolean).with(Git::DIRTY_CONFIRM_MESSAGE) { true }
+        expect(Math).to receive(:log).with(1)
 
         Git.if_clean do
           Math.log 1
@@ -147,10 +147,10 @@ module Octopolo
       end
 
       it "does not perform the block if the git index is not clean and user responds no" do
-        Git.should_receive(:clean?) { false }
-        cli.should_receive(:ask_boolean).with(Git::DIRTY_CONFIRM_MESSAGE) { false}
-        Math.should_not_receive(:log)
-        Git.should_receive(:alert_dirty_index).with(Git::DEFAULT_DIRTY_MESSAGE)
+        expect(Git).to receive(:clean?) { false }
+        expect(cli).to receive(:ask_boolean).with(Git::DIRTY_CONFIRM_MESSAGE) { false}
+        expect(Math).not_to receive(:log)
+        expect(Git).to receive(:alert_dirty_index).with(Git::DEFAULT_DIRTY_MESSAGE)
 
 
         expect do
@@ -161,10 +161,10 @@ module Octopolo
       end
 
       it "prints a custom message if git index is not clean and user responds no" do
-        Git.should_receive(:clean?) { false }
-        cli.should_receive(:ask_boolean).with(Git::DIRTY_CONFIRM_MESSAGE) { false }
-        Math.should_not_receive(:log)
-        Git.should_receive(:alert_dirty_index).with(custom_message)
+        expect(Git).to receive(:clean?) { false }
+        expect(cli).to receive(:ask_boolean).with(Git::DIRTY_CONFIRM_MESSAGE) { false }
+        expect(Math).not_to receive(:log)
+        expect(Git).to receive(:alert_dirty_index).with(custom_message)
 
         expect do
           Git.if_clean custom_message do
@@ -180,10 +180,10 @@ module Octopolo
       before { Git.cli = cli }
 
       it "prints the given message and shows the git status" do
-        cli.should_receive(:say).with(" ")
-        cli.should_receive(:say).with(message)
-        cli.should_receive(:say).with(" ")
-        Git.should_receive(:perform).with("status")
+        expect(cli).to receive(:say).with(" ")
+        expect(cli).to receive(:say).with(message)
+        expect(cli).to receive(:say).with(" ")
+        expect(Git).to receive(:perform).with("status")
 
         expect{Git.alert_dirty_index message}.to raise_error
       end
@@ -193,21 +193,21 @@ module Octopolo
       let(:branch_name) { "foo" }
 
       it "fetches the latest code and merges the given branch name" do
-        Git.should_receive(:if_clean).and_yield
-        Git.should_receive(:fetch)
-        Git.should_receive(:perform).with("merge --no-ff origin/#{branch_name}", :ignore_non_zero => true)
-        Git.should_receive(:clean?).twice { true }
-        Git.should_receive(:push)
+        expect(Git).to receive(:if_clean).and_yield
+        expect(Git).to receive(:fetch)
+        expect(Git).to receive(:perform).with("merge --no-ff origin/#{branch_name}", :ignore_non_zero => true)
+        expect(Git).to receive(:clean?).twice { true }
+        expect(Git).to receive(:push)
 
         Git.merge branch_name
       end
 
       it "does not push and raises MergeFailed if the merge failed" do
-        Git.should_receive(:if_clean).and_yield
-        Git.should_receive(:fetch)
-        Git.should_receive(:perform).with("merge --no-ff origin/#{branch_name}", :ignore_non_zero => true)
-        Git.should_receive(:clean?).twice { false }
-        Git.should_not_receive(:push)
+        expect(Git).to receive(:if_clean).and_yield
+        expect(Git).to receive(:fetch)
+        expect(Git).to receive(:perform).with("merge --no-ff origin/#{branch_name}", :ignore_non_zero => true)
+        expect(Git).to receive(:clean?).twice { false }
+        expect(Git).not_to receive(:push)
 
         expect { Git.merge branch_name }.to raise_error(Git::MergeFailed)
       end
@@ -215,7 +215,7 @@ module Octopolo
 
     context ".fetch" do
       it "fetches and prunes remote branches" do
-        Git.should_receive(:perform_quietly).with("fetch --prune")
+        expect(Git).to receive(:perform_quietly).with("fetch --prune")
 
         Git.fetch
       end
@@ -225,9 +225,9 @@ module Octopolo
       let(:branch) { "current_branch" }
 
       it "pushes the current branch" do
-        Git.stub(current_branch: branch)
-        Git.should_receive(:if_clean).and_yield
-        Git.should_receive(:perform).with("push origin #{branch}")
+        allow(Git).to receive_messages(current_branch: branch)
+        expect(Git).to receive(:if_clean).and_yield
+        expect(Git).to receive(:perform).with("push origin #{branch}")
 
         Git.push
       end
@@ -235,8 +235,8 @@ module Octopolo
 
     context ".pull" do
       it "performs a pull if the index is clean" do
-        Git.should_receive(:if_clean).and_yield
-        Git.should_receive(:perform).with("pull")
+        expect(Git).to receive(:if_clean).and_yield
+        expect(Git).to receive(:perform).with("pull")
         Git.pull
       end
     end
@@ -247,9 +247,9 @@ module Octopolo
       let(:cleaned_names) { %w(foo bar) }
 
       it "prunes the remote branch list and grabs all the branch names" do
-        Git.should_receive(:fetch)
-        Git.should_receive(:perform_quietly).with("branch --remote") { raw_output }
-        Git.remote_branches.should == cleaned_names.sort
+        expect(Git).to receive(:fetch)
+        expect(Git).to receive(:perform_quietly).with("branch --remote") { raw_output }
+        expect(Git.remote_branches).to eq(cleaned_names.sort)
       end
     end
 
@@ -261,21 +261,21 @@ module Octopolo
       let(:rando) { "something-else" }
 
       before do
-        Git.should_receive(:remote_branches) { remote_branches }
+        expect(Git).to receive(:remote_branches) { remote_branches }
       end
 
       it "can find deployable branches" do
         deployables = Git.branches_for(Git::DEPLOYABLE_PREFIX)
-        deployables.should include depl1
-        deployables.should include depl2
-        deployables.should == [depl1, depl2].sort
-        deployables.count.should == 2
+        expect(deployables).to include depl1
+        expect(deployables).to include depl2
+        expect(deployables).to eq([depl1, depl2].sort)
+        expect(deployables.count).to eq(2)
       end
 
       it "can find staging branches" do
         stagings = Git.branches_for(Git::STAGING_PREFIX)
-        stagings.should include stage1
-        stagings.count.should == 1
+        expect(stagings).to include stage1
+        expect(stagings.count).to eq(1)
       end
     end
 
@@ -284,13 +284,13 @@ module Octopolo
       let(:depl2) { "deployable.12.25" }
 
       it "returns the last deployable branch" do
-        Git.should_receive(:branches_for).with(Git::DEPLOYABLE_PREFIX) { [depl1, depl2] }
-        Git.deployable_branch.should == depl2
+        expect(Git).to receive(:branches_for).with(Git::DEPLOYABLE_PREFIX) { [depl1, depl2] }
+        expect(Git.deployable_branch).to eq(depl2)
       end
 
       it "raises an exception if none exist" do
-        Git.should_receive(:branches_for).with(Git::DEPLOYABLE_PREFIX) { [] }
-        expect { Git.deployable_branch.should }.to raise_error(Git::NoBranchOfType, "No #{Git::DEPLOYABLE_PREFIX} branch")
+        expect(Git).to receive(:branches_for).with(Git::DEPLOYABLE_PREFIX) { [] }
+        expect { expect(Git.deployable_branch).to }.to raise_error(Git::NoBranchOfType, "No #{Git::DEPLOYABLE_PREFIX} branch")
       end
     end
 
@@ -299,12 +299,12 @@ module Octopolo
       let(:stage2) { "stage2" }
 
       it "returns the last staging branch" do
-        Git.should_receive(:branches_for).with(Git::STAGING_PREFIX) { [stage1, stage2] }
-        Git.staging_branch.should == stage2
+        expect(Git).to receive(:branches_for).with(Git::STAGING_PREFIX) { [stage1, stage2] }
+        expect(Git.staging_branch).to eq(stage2)
       end
 
       it "raises an exception if none exist" do
-        Git.should_receive(:branches_for).with(Git::STAGING_PREFIX) { [] }
+        expect(Git).to receive(:branches_for).with(Git::STAGING_PREFIX) { [] }
         expect { Git.staging_branch}.to raise_error(Git::NoBranchOfType, "No #{Git::STAGING_PREFIX} branch")
       end
     end
@@ -314,12 +314,12 @@ module Octopolo
       let(:qaready2) { "qaready2" }
 
       it "returns the last qaready branch" do
-        Git.should_receive(:branches_for).with(Git::QAREADY_PREFIX) { [qaready1, qaready2] }
-        Git.qaready_branch.should == qaready2
+        expect(Git).to receive(:branches_for).with(Git::QAREADY_PREFIX) { [qaready1, qaready2] }
+        expect(Git.qaready_branch).to eq(qaready2)
       end
 
       it "raises an exception if none exist" do
-        Git.should_receive(:branches_for).with(Git::QAREADY_PREFIX) { [] }
+        expect(Git).to receive(:branches_for).with(Git::QAREADY_PREFIX) { [] }
         expect { Git.qaready_branch }.to raise_error(Git::NoBranchOfType, "No #{Git::QAREADY_PREFIX} branch")
       end
     end
@@ -331,11 +331,11 @@ module Octopolo
       let(:tags) { [valid1, invalid, valid2].join("\n") }
 
       it "returns all the tags for releases" do
-        Git.should_receive(:perform_quietly).with("tag") { tags }
+        expect(Git).to receive(:perform_quietly).with("tag") { tags }
         release_tags = Git.release_tags
-        release_tags.should_not include invalid
-        release_tags.should include valid1
-        release_tags.should include valid2
+        expect(release_tags).not_to include invalid
+        expect(release_tags).to include valid1
+        expect(release_tags).to include valid2
       end
     end
 
@@ -343,10 +343,10 @@ module Octopolo
       let(:long_list) { Array.new(100, "sometag#{rand(1000)}") } # big-ass list
 
       it "returns the last #{Git::RECENT_TAG_LIMIT} tags" do
-        Git.should_receive(:release_tags) { long_list }
+        expect(Git).to receive(:release_tags) { long_list }
         tags = Git.recent_release_tags
-        tags.count.should == Git::RECENT_TAG_LIMIT
-        tags.should == long_list.last(Git::RECENT_TAG_LIMIT)
+        expect(tags.count).to eq(Git::RECENT_TAG_LIMIT)
+        expect(tags).to eq(long_list.last(Git::RECENT_TAG_LIMIT))
       end
     end
 
@@ -357,11 +357,11 @@ module Octopolo
       let(:tags) { [valid1, invalid, valid2].join("\n") }
 
       it "returns all the tags set as a sematic version" do
-        Git.should_receive(:perform_quietly).with("tag") { tags }
+        expect(Git).to receive(:perform_quietly).with("tag") { tags }
         release_tags = Git.semver_tags
-        release_tags.should_not include invalid
-        release_tags.should include valid1
-        release_tags.should include valid2
+        expect(release_tags).not_to include invalid
+        expect(release_tags).to include valid1
+        expect(release_tags).to include valid2
       end
     end
 
@@ -370,10 +370,10 @@ module Octopolo
       let(:source_branch_name) { "bar" }
 
       it "creates and pushes a new branch from the source branch" do
-        Git.should_receive(:fetch)
-        Git.should_receive(:perform).with("branch --no-track #{new_branch_name} origin/#{source_branch_name}")
-        Git.should_receive(:check_out).with(new_branch_name, false)
-        Git.should_receive(:perform).with("push --set-upstream origin #{new_branch_name}")
+        expect(Git).to receive(:fetch)
+        expect(Git).to receive(:perform).with("branch --no-track #{new_branch_name} origin/#{source_branch_name}")
+        expect(Git).to receive(:check_out).with(new_branch_name, false)
+        expect(Git).to receive(:perform).with("push --set-upstream origin #{new_branch_name}")
 
         Git.new_branch(new_branch_name, source_branch_name)
       end
@@ -383,9 +383,9 @@ module Octopolo
       let(:tag) { "asdf" }
 
       it "creates a new tag with the given name and pushes it" do
-        Git.should_receive(:perform).with("tag #{tag}")
-        Git.should_receive(:push)
-        Git.should_receive(:perform).with("push --tag")
+        expect(Git).to receive(:perform).with("tag #{tag}")
+        expect(Git).to receive(:push)
+        expect(Git).to receive(:perform).with("push --tag")
 
         Git.new_tag(tag)
       end
@@ -403,19 +403,19 @@ module Octopolo
       end
 
       it "checks for stale branches for the given branch, less branches to ignore" do
-        Git.should_receive(:fetch)
-        Git.should_receive(:stale_branches_to_ignore).with(ignored) { ignored }
-        Git.should_receive(:recent_sha).with(branch_name) { sha }
-        Git.should_receive(:perform_quietly).with("branch --remote --merged #{sha} | grep -E -v '(foo|bar)'") { raw_result }
+        expect(Git).to receive(:fetch)
+        expect(Git).to receive(:stale_branches_to_ignore).with(ignored) { ignored }
+        expect(Git).to receive(:recent_sha).with(branch_name) { sha }
+        expect(Git).to receive(:perform_quietly).with("branch --remote --merged #{sha} | grep -E -v '(foo|bar)'") { raw_result }
 
         expect(Git.stale_branches(branch_name, ignored)).to eq(%w(bing bang))
       end
 
       it "defaults to master branch and no extra branches to ignore" do
-        Git.should_receive(:fetch)
-        Git.should_receive(:stale_branches_to_ignore).with([]) { ignored }
-        Git.should_receive(:recent_sha).with("master") { sha }
-        Git.should_receive(:perform_quietly).with("branch --remote --merged #{sha} | grep -E -v '(foo|bar)'") { raw_result }
+        expect(Git).to receive(:fetch)
+        expect(Git).to receive(:stale_branches_to_ignore).with([]) { ignored }
+        expect(Git).to receive(:recent_sha).with("master") { sha }
+        expect(Git).to receive(:perform_quietly).with("branch --remote --merged #{sha} | grep -E -v '(foo|bar)'") { raw_result }
 
         Git.stale_branches
       end
@@ -443,7 +443,7 @@ module Octopolo
       let(:raw_sha) { "asdf123\n" }
 
       it "grabs the SHA of the given branch from 1 day ago" do
-        Git.should_receive(:perform_quietly).with("rev-list `git rev-parse remotes/origin/#{branch_name} --before=1.day.ago` --max-count=1") { raw_sha }
+        expect(Git).to receive(:perform_quietly).with("rev-list `git rev-parse remotes/origin/#{branch_name} --before=1.day.ago` --max-count=1") { raw_sha }
         expect(Git.send(:recent_sha, branch_name)).to eq("asdf123")
       end
     end
@@ -452,8 +452,8 @@ module Octopolo
       let(:branch_name) { "foo" }
 
       it "leverages git-extra's delete-branch command" do
-        Git.should_receive(:perform).with("push origin :#{branch_name}")
-        Git.should_receive(:perform).with("branch -D #{branch_name}", :ignore_non_zero => true)
+        expect(Git).to receive(:perform).with("push origin :#{branch_name}")
+        expect(Git).to receive(:perform).with("branch -D #{branch_name}", :ignore_non_zero => true)
         Git.delete_branch branch_name
       end
     end

@@ -3,11 +3,11 @@ require_relative "../../lib/octopolo/dated_branch_creator"
 
 module Octopolo
   describe DatedBranchCreator do
-    let(:type) { stub(:string) }
-    let(:branch_name) { stub(:string) }
-    let(:cli) { stub(:CLI) }
-    let(:config) { stub(:Config, app_name: "fooapp", deploy_branch: "somebranch") }
-    let(:git) { stub(:Git) }
+    let(:type) { double(:string) }
+    let(:branch_name) { double(:string) }
+    let(:cli) { double(:CLI) }
+    let(:config) { double(:Config, app_name: "fooapp", deploy_branch: "somebranch") }
+    let(:git) { double(:Git) }
 
     subject { DatedBranchCreator.new type }
 
@@ -18,64 +18,64 @@ module Octopolo
     end
 
     context ".perform(branch_type)" do
-      let(:creator) { stub(:DatedBranchCreator) }
+      let(:creator) { double(:DatedBranchCreator) }
 
       it "instantiates a new creator and performs it" do
-        DatedBranchCreator.should_receive(:new).with(type, true) { creator }
-        creator.should_receive(:perform)
-        DatedBranchCreator.perform(type, true).should == creator
+        expect(DatedBranchCreator).to receive(:new).with(type, true) { creator }
+        expect(creator).to receive(:perform)
+        expect(DatedBranchCreator.perform(type, true)).to eq(creator)
       end
     end
 
     context ".new(branch_type)" do
       it "remembers the branch_type" do
         test = DatedBranchCreator.new(type)
-        test.branch_type.should == type
+        expect(test.branch_type).to eq(type)
       end
     end
 
     context "#perform" do
       it "creates the branch and handles cleaning up and posting about it" do
-        subject.should_receive(:create_branch)
-        subject.should_receive(:delete_old_branches)
+        expect(subject).to receive(:create_branch)
+        expect(subject).to receive(:delete_old_branches)
 
         subject.perform
       end
     end
 
     context "#create_branch" do
-      let(:runner) { stub("script::new_branch") }
+      let(:runner) { double("script::new_branch") }
 
       before do
-        subject.stub(branch_name: branch_name)
+        allow(subject).to receive_messages(branch_name: branch_name)
       end
 
       it "creates a branch from its #branch_name" do
-        git.should_receive(:new_branch).with(branch_name, config.deploy_branch)
+        expect(git).to receive(:new_branch).with(branch_name, config.deploy_branch)
         subject.create_branch
       end
     end
 
     context "#date_suffix" do
       it "uses today's date" do
-        subject.date_suffix.should == Date.today.strftime("%Y.%m.%d")
+        expect(subject.date_suffix).to eq(Date.today.strftime("%Y.%m.%d"))
       end
     end
 
     context "#branch_name" do
       it "properly generates a name for staging branches" do
         subject.branch_type = Git::STAGING_PREFIX
-        subject.branch_name.should == "#{Git::STAGING_PREFIX}.#{subject.date_suffix}"
+        expect(subject.branch_name).to eq("#{Git::STAGING_PREFIX}.#{subject.date_suffix}")
       end
 
       it "properly generates a name for deployable branches" do
         subject.branch_type = Git::DEPLOYABLE_PREFIX
-        subject.branch_name.should == "#{Git::DEPLOYABLE_PREFIX}.#{subject.date_suffix}"
+        expect(subject.branch_name).to eq("#{Git::DEPLOYABLE_PREFIX}.#{subject.date_suffix}")
       end
 
       it "properly generates a name for qaready branches" do
         subject.branch_type = Git::QAREADY_PREFIX
-        subject.branch_name.should == "#{Git::QAREADY_PREFIX}.#{subject.date_suffix}"
+        expect(subject.branch_name).to eq("#{Git::QAREADY_PREFIX}.#{subject.date_suffix}")
       end
 
       it "raises an exception for other branch types" do
@@ -86,8 +86,8 @@ module Octopolo
 
     context "#delete_old_branches" do
       it "does nothing if no extra branches" do
-        subject.stub(extra_branches: [])
-        cli.should_not_receive(:ask_boolean)
+        allow(subject).to receive_messages(extra_branches: [])
+        expect(cli).not_to receive(:ask_boolean)
         subject.delete_old_branches
       end
 
@@ -96,33 +96,33 @@ module Octopolo
         let(:message) { "Do you want to delete the old #{subject.branch_type} branch(es)? (#{extras.join(", ")})"}
 
         before do
-          subject.stub(extra_branches: extras)
+          allow(subject).to receive_messages(extra_branches: extras)
         end
 
         it "deletes these branches if user opts to" do
-          cli.should_receive(:ask_boolean).with(message) { true }
+          expect(cli).to receive(:ask_boolean).with(message) { true }
           extras.each do |extra|
-            Git.should_receive(:delete_branch).with(extra)
+            expect(Git).to receive(:delete_branch).with(extra)
           end
           subject.delete_old_branches
         end
 
         it "does nothing if user opts not to delete" do
-          cli.should_receive(:ask_boolean).with(message) { false }
-          cli.should_not_receive(:perform)
+          expect(cli).to receive(:ask_boolean).with(message) { false }
+          expect(cli).not_to receive(:perform)
           subject.delete_old_branches
         end
 
         context "delete flag" do
           before do
-            subject.stub(extra_branches: extras)
+            allow(subject).to receive_messages(extra_branches: extras)
             subject.should_delete_old_branches = true
           end
 
           it "deletes these branches non-interactively" do
-            cli.should_not_receive(:ask_boolean).with(message)
+            expect(cli).not_to receive(:ask_boolean).with(message)
             extras.each do |extra|
-              Git.should_receive(:delete_branch).with(extra)
+              expect(Git).to receive(:delete_branch).with(extra)
             end
             subject.delete_old_branches
           end
@@ -136,16 +136,16 @@ module Octopolo
 
       it "gets the correct list for staging branches" do
         subject.branch_type = Git::STAGING_PREFIX
-        Git.stub(:branches_for).with(Git::STAGING_PREFIX) { extra_stagings + [subject.branch_name] }
-        subject.extra_branches.should_not include subject.branch_name
-        subject.extra_branches.should == extra_stagings
+        allow(Git).to receive(:branches_for).with(Git::STAGING_PREFIX) { extra_stagings + [subject.branch_name] }
+        expect(subject.extra_branches).not_to include subject.branch_name
+        expect(subject.extra_branches).to eq(extra_stagings)
       end
 
       it "gets the correct list for deployable branches" do
         subject.branch_type = Git::DEPLOYABLE_PREFIX
-        Git.stub(:branches_for).with(Git::DEPLOYABLE_PREFIX) { extra_deployables + [subject.branch_name] }
-        subject.extra_branches.should_not include subject.branch_name
-        subject.extra_branches.should == extra_deployables
+        allow(Git).to receive(:branches_for).with(Git::DEPLOYABLE_PREFIX) { extra_deployables + [subject.branch_name] }
+        expect(subject.extra_branches).not_to include subject.branch_name
+        expect(subject.extra_branches).to eq(extra_deployables)
       end
 
       it "raises an exception for any other branch type" do

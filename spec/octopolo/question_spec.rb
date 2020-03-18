@@ -49,10 +49,10 @@ describe Octopolo::Question do
     }
   end
 
-  let(:cli) { stub(:cli) }
+  let(:cli) { double(:cli) }
 
   before do
-    Octopolo::Question.any_instance.stub({
+    allow_any_instance_of(Octopolo::Question).to receive_messages({
       :cli => cli
     })
   end

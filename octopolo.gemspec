@@ -16,21 +16,18 @@ Gem::Specification.new do |gem|
   gem.require_paths = ["lib"]
   gem.version       = Octopolo::VERSION
 
-  gem.add_dependency 'gli', '~> 2.13'
-  gem.add_dependency 'hashie', '~> 1.2'
-  gem.add_dependency 'octokit', '~> 4.0'
-  gem.add_dependency 'public_suffix', '~> 2.0' # Lock down to 2.x for Ruby 2.0 compatibility.
-  gem.add_dependency 'highline', '~> 1.6'
-  gem.add_dependency 'pivotal-tracker', '~> 0.5'
-  gem.add_dependency 'jiralicious', '~> 0.5'
-  gem.add_dependency 'semantic', '~> 1.3'
-  gem.add_dependency 'nokogiri-happymapper', '~> 0.6.0' # Lock down to 0.6.x for Ruby 2.0 compatibility.
+  gem.add_dependency 'gli', '~> 2.19.0'
+  gem.add_dependency 'hashie', '~> 4.1.0'
+  gem.add_dependency 'octokit', '~> 4.17.0'
+  gem.add_dependency 'public_suffix', '~> 4.0.3'
+  gem.add_dependency 'highline', '~> 2.0.3'
+  gem.add_dependency 'jira-ruby', '~> 2.0.0'
+  gem.add_dependency 'semantic', '~> 1.6.1'
 
-  gem.add_development_dependency 'rake', '~> 10.1'
-  gem.add_development_dependency 'bundler', '~> 1.16'
-  gem.add_development_dependency 'rspec', '~> 2.99'
-  gem.add_development_dependency 'guard', '~> 2.6'
-  gem.add_development_dependency 'guard-rspec', '~> 4.3'
-  gem.add_development_dependency 'hitimes', '~> 1.2.6'
+  gem.add_development_dependency 'rake', '~> 13.0.1'
+  gem.add_development_dependency 'rspec', '~> 3.9.0'
+  gem.add_development_dependency 'guard', '~> 2.16.0'
+  gem.add_development_dependency 'guard-rspec', '~> 4.7.3'
+  gem.add_development_dependency 'hitimes', '~> 2.0.0'
   gem.add_development_dependency 'octopolo-plugin-example', '~> 0'
 end

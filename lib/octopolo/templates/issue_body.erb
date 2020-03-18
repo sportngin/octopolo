@@ -10,9 +10,6 @@ Describe how this change can be rolled back.
 
 URLs
 ----
-<% pivotal_ids.each do |pivotal_id| -%>
-* [pivotal tracker story <%= pivotal_id %>](https://www.pivotaltracker.com/story/show/<%= pivotal_id %>)
-<% end -%>
 <% jira_ids.each do |jira_id| -%>
 * [Jira issue <%= jira_id %>](<%= jira_url %>/browse/<%= jira_id %>)
 <% end -%>

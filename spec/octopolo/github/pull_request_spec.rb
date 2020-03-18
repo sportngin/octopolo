@@ -6,21 +6,21 @@ module Octopolo
     describe PullRequest do
       let(:repo_name) { "account/repo" }
       let(:pr_number) { 7 }
-      let(:prhash) { stub }
-      let(:commits) { stub }
-      let(:comments) { stub }
-      let(:octo) { stub }
+      let(:prhash) { double }
+      let(:commits) { double }
+      let(:comments) { double }
+      let(:octo) { double }
 
       context ".new" do
         it "remembers the pull request identifiers" do
           pr = PullRequest.new repo_name, pr_number
-          pr.repo_name.should == repo_name
-          pr.number.should == pr_number
+          expect(pr.repo_name).to eq(repo_name)
+          expect(pr.number).to eq(pr_number)
         end
 
         it "optionally accepts the github data" do
           pr = PullRequest.new repo_name, pr_number, octo
-          pr.data.should == octo
+          expect(pr.data).to eq(octo)
         end
 
         it "fails if not given a repo name" do
@@ -36,18 +36,18 @@ module Octopolo
         let(:pull) { PullRequest.new repo_name, pr_number }
 
         it "fetches the details from GitHub" do
-          GitHub.should_receive(:pull_request).with(pull.repo_name, pull.number) { octo }
-          pull.data.should == octo
+          expect(GitHub).to receive(:pull_request).with(pull.repo_name, pull.number) { octo }
+          expect(pull.data).to eq(octo)
         end
 
         it "catches the information" do
-          GitHub.should_receive(:pull_request).once { octo }
+          expect(GitHub).to receive(:pull_request).once { octo }
           pull.data
           pull.data
         end
 
         it "fails if given invalid information" do
-          GitHub.should_receive(:pull_request).and_raise(Octokit::NotFound)
+          expect(GitHub).to receive(:pull_request).and_raise(Octokit::NotFound)
           expect { pull.data }.to raise_error(PullRequest::NotFound)
         end
       end
@@ -56,33 +56,33 @@ module Octopolo
         let(:pull) { PullRequest.new repo_name, pr_number }
 
         before do
-          pull.stub(data: octo)
+          allow(pull).to receive_messages(data: octo)
         end
 
         context "#title" do
-          let(:octo) { stub(title: "the title") }
+          let(:octo) { double(title: "the title") }
 
           it "retrieves from the github data" do
-            pull.title.should == octo.title
+            expect(pull.title).to eq(octo.title)
           end
         end
 
         context "#branch" do
-          let(:octo) { stub(head: stub(ref: "asdf")) }
+          let(:octo) { double(head: double(ref: "asdf")) }
 
           it "retrieves from the github data" do
-            pull.branch.should == octo.head.ref
+            expect(pull.branch).to eq(octo.head.ref)
           end
         end
 
         context "#commits" do
           it "fetches through octokit" do
-            Commit.should_receive(:for_pull_request).with(pull) { commits }
-            pull.commits.should == commits
+            expect(Commit).to receive(:for_pull_request).with(pull) { commits }
+            expect(pull.commits).to eq(commits)
           end
 
           it "caches the result" do
-            Commit.should_receive(:for_pull_request).once { commits }
+            expect(Commit).to receive(:for_pull_request).once { commits }
             pull.commits
             pull.commits
           end
@@ -90,69 +90,69 @@ module Octopolo
 
         context "#comments" do
           it "fetches through octokit" do
-            GitHub.should_receive(:issue_comments).with(pull.repo_name, pull.number) { comments }
-            pull.comments.should == comments
+            expect(GitHub).to receive(:issue_comments).with(pull.repo_name, pull.number) { comments }
+            expect(pull.comments).to eq(comments)
           end
 
           it "caches the result" do
-            GitHub.should_receive(:issue_comments).once { comments }
+            expect(GitHub).to receive(:issue_comments).once { comments }
             pull.comments
             pull.comments
           end
         end
 
         context "#author_names" do
-          let(:commit1) { stub(author_name: "foo") }
-          let(:commit2) { stub(author_name: "bar") }
+          let(:commit1) { double(author_name: "foo") }
+          let(:commit2) { double(author_name: "bar") }
 
           before do
-            pull.stub(commits: [commit1, commit2])
+            allow(pull).to receive_messages(commits: [commit1, commit2])
           end
 
           it "returns the list of authors" do
             names = pull.author_names
-            names.should_not be_empty
-            names.count.should == 2
-            names.first.should == "foo"
+            expect(names).not_to be_empty
+            expect(names.count).to eq(2)
+            expect(names.first).to eq("foo")
           end
 
           it "returns only unique values" do
             # make it same commenter
-            commit2.stub(author_name: commit1.author_name)
+            allow(commit2).to receive_messages(author_name: commit1.author_name)
             names = pull.author_names
-            names.size.should == 1
+            expect(names.size).to eq(1)
           end
         end
 
         context "#commenter_names" do
-          let(:comment1) { stub(user: stub(login: "pbyrne")) }
-          let(:comment2) { stub(user: stub(login: "anfleene")) }
+          let(:comment1) { double(user: double(login: "pbyrne")) }
+          let(:comment2) { double(user: double(login: "anfleene")) }
 
           before do
-            pull.stub(comments: [comment1, comment2], author_names: [])
-            GitHub::User.stub(:new).with("pbyrne").and_return(stub(:author_name => "pbyrne"))
-            GitHub::User.stub(:new).with("anfleene").and_return(stub(:author_name => "anfleene"))
+            allow(pull).to receive_messages(comments: [comment1, comment2], author_names: [])
+            allow(GitHub::User).to receive(:new).with("pbyrne").and_return(double(:author_name => "pbyrne"))
+            allow(GitHub::User).to receive(:new).with("anfleene").and_return(double(:author_name => "anfleene"))
           end
 
           it "returns the names of the commit authors" do
             names = pull.commenter_names
-            names.should_not be_empty
-            names.size.should == 2
-            names.first.should == "pbyrne"
+            expect(names).not_to be_empty
+            expect(names.size).to eq(2)
+            expect(names.first).to eq("pbyrne")
           end
 
           it "returns only unique values" do
             # make it same commenter
-            comment2.user.stub(login: comment1.user.login)
+            allow(comment2.user).to receive_messages(login: comment1.user.login)
             names = pull.commenter_names
-            names.size.should == 1
+            expect(names.size).to eq(1)
           end
 
           it "does not include authors in this list" do
-            pull.stub(author_names: [comment1.user.login])
+            allow(pull).to receive_messages(author_names: [comment1.user.login])
             names = pull.commenter_names
-            names.size.should == 1
-            names.should_not include comment1.user.login
+            expect(names.size).to eq(1)
+            expect(names).not_to include comment1.user.login
           end
         end
 
@@ -160,16 +160,16 @@ module Octopolo
           let(:users) { ["anfleene", "tst-octopolo"] }
 
           it "excludes the github octopolo users" do
-            pull.exclude_octopolo_user(users).should_not include("tst-octopolo")
-            pull.exclude_octopolo_user(users).should include("anfleene")
+            expect(pull.exclude_octopolo_user(users)).not_to include("tst-octopolo")
+            expect(pull.exclude_octopolo_user(users)).to include("anfleene")
           end
         end
 
         context "#url" do
-          let(:octo) { stub(html_url: "http://example.com") }
+          let(:octo) { double(html_url: "http://example.com") }
 
           it "retrieves from the github data" do
-            pull.url.should == octo.html_url
+            expect(pull.url).to eq(octo.html_url)
           end
         end
 
@@ -188,44 +188,44 @@ module Octopolo
           end
 
           before do
-            pull.stub(body: body)
+            allow(pull).to receive_messages(body: body)
           end
 
           it "parses from the body" do
             urls = pull.external_urls
-            urls.size.should == 3
-            urls.should include "http://thedesk.tstmedia.com/admin.php?pg=request&reqid=44690"
-            urls.should include "http://thedesk.tstmedia.com/admin.php?pg=request&reqid=44693"
-            urls.should include "http://www.ngin.com.stage.ngin-staging.com/api/volleyball/stats/summaries?id=68382&gender=girls&tst_test=1&date=8/24/2012"
+            expect(urls.size).to eq(3)
+            expect(urls).to include "http://thedesk.tstmedia.com/admin.php?pg=request&reqid=44690"
+            expect(urls).to include "http://thedesk.tstmedia.com/admin.php?pg=request&reqid=44693"
+            expect(urls).to include "http://www.ngin.com.stage.ngin-staging.com/api/volleyball/stats/summaries?id=68382&gender=girls&tst_test=1&date=8/24/2012"
           end
         end
 
         context "#body" do
-          let(:octo) { stub(body: "asdf") }
+          let(:octo) { double(body: "asdf") }
 
           it "retrieves from the github data" do
-            pull.body.should == octo.body
+            expect(pull.body).to eq(octo.body)
           end
 
           it "returns an empty string if the GitHub data has no body" do
-            octo.stub(body: nil)
-            pull.body.should == ""
+            allow(octo).to receive_messages(body: nil)
+            expect(pull.body).to eq("")
           end
         end
 
         context "#mergeable?" do
           it "retrieves from the github data" do
-            octo.stub(mergeable: true)
-            pull.should be_mergeable
-            octo.stub(mergeable: false)
-            pull.should_not be_mergeable
+            allow(octo).to receive_messages(mergeable: true)
+            expect(pull).to be_mergeable
+            allow(octo).to receive_messages(mergeable: false)
+            expect(pull).not_to be_mergeable
           end
         end
 
         context "#week" do
           it "retrieves from the github data" do
-            octo.stub(closed_at: "2012-09-18T14:00:01Z")
-            pull.week.should == Week.parse(octo.closed_at)
+            allow(octo).to receive_messages(closed_at: "2012-09-18T14:00:01Z")
+            expect(pull.week).to eq(Week.parse(octo.closed_at))
           end
         end
       end
@@ -236,22 +236,22 @@ module Octopolo
 
         it "infers from the repo_name" do
           pull.repo_name = "account/foo"
-          pull.human_app_name.should == "Foo"
+          expect(pull.human_app_name).to eq("Foo")
           pull.repo_name = "account/foo_bar"
-          pull.human_app_name.should == "Foo Bar"
+          expect(pull.human_app_name).to eq("Foo Bar")
         end
       end
 
       context ".closed repo_name" do
-        let(:raw_pr) { stub(:octo_data, number: 123) }
-        let(:pr_wrapper) { stub(:pull_request) }
+        let(:raw_pr) { double(:octo_data, number: 123) }
+        let(:pr_wrapper) { double(:pull_request) }
 
         it "crawls the repo for pull requests and wraps them in PullRequests" do
-          GitHub.should_receive(:pull_requests).with(repo_name, "closed") { [raw_pr] }
-          PullRequest.should_receive(:new).with(repo_name, raw_pr.number, raw_pr) { pr_wrapper }
+          expect(GitHub).to receive(:pull_requests).with(repo_name, "closed") { [raw_pr] }
+          expect(PullRequest).to receive(:new).with(repo_name, raw_pr.number, raw_pr) { pr_wrapper }
 
           result = PullRequest.closed(repo_name)
-          result.should == [pr_wrapper]
+          expect(result).to eq([pr_wrapper])
         end
       end
 
@@ -261,29 +261,29 @@ module Octopolo
         let(:error) { Octokit::UnprocessableEntity.new }
 
         it "creates the message through octokit" do
-          GitHub.should_receive(:add_comment).with(pull.repo_name, pull.number, ":octocat: #{message}")
+          expect(GitHub).to receive(:add_comment).with(pull.repo_name, pull.number, ":octocat: #{message}")
 
           pull.write_comment message
         end
 
         it "raises CommentFailed if an exception occurs" do
-          GitHub.should_receive(:add_comment).and_raise(error)
+          expect(GitHub).to receive(:add_comment).and_raise(error)
 
           expect { pull.write_comment message }.to raise_error(PullRequest::CommentFailed, "Unable to write the comment: '#{error.message}'")
         end
       end
 
       context ".create repo_name, options" do
-        let(:options) { stub(:hash) }
-        let(:number) { stub(:integer) }
-        let(:data) { stub(:data)}
-        let(:creator) { stub(:pull_request_creator, number: number, data: data)}
-        let(:pull_request) { stub(:pull_request) }
+        let(:options) { double(:hash) }
+        let(:number) { double(:integer) }
+        let(:data) { double(:data)}
+        let(:creator) { double(:pull_request_creator, number: number, data: data)}
+        let(:pull_request) { double(:pull_request) }
 
         it "passes on to PullRequestCreator and returns a new PullRequest" do
-          PullRequestCreator.should_receive(:perform).with(repo_name, options) { creator }
-          PullRequest.should_receive(:new).with(repo_name, number, data) { pull_request }
-          PullRequest.create(repo_name, options).should == pull_request
+          expect(PullRequestCreator).to receive(:perform).with(repo_name, options) { creator }
+          expect(PullRequest).to receive(:new).with(repo_name, number, data) { pull_request }
+          expect(PullRequest.create(repo_name, options)).to eq(pull_request)
         end
       end
 
@@ -293,41 +293,41 @@ module Octopolo
         let(:pull) { PullRequest.new repo_name, pr_number }
 
         before do
-          Octopolo.config.stub(:github_repo) { repo_name }
+          allow(Octopolo.config).to receive(:github_repo) { repo_name }
         end
 
         it "calls GitHub.pull_requests with the current repo/branch and return a single pull request" do
-          Git.should_receive(:current_branch) { branch_name }
-          CLI.should_receive(:say).with("Pull request for current branch is number #{pr_number}")
-          GitHub.should_receive(:search_issues) { double(total_count: 1, items: [pull]) }
-          PullRequest.current.should == pull
+          expect(Git).to receive(:current_branch) { branch_name }
+          expect(CLI).to receive(:say).with("Pull request for current branch is number #{pr_number}")
+          expect(GitHub).to receive(:search_issues) { double(total_count: 1, items: [pull]) }
+          expect(PullRequest.current).to eq(pull)
         end
 
         it "returns nil when Git.current_branch fails" do
-          Git.should_receive(:current_branch) { raise error_message }
-          CLI.should_receive(:say).with("An error occurred while getting the current branch: #{error_message}")
-          PullRequest.current.should == nil
+          expect(Git).to receive(:current_branch) { raise error_message }
+          expect(CLI).to receive(:say).with("An error occurred while getting the current branch: #{error_message}")
+          expect(PullRequest.current).to eq(nil)
         end
 
         it "returns nil when GitHub.pull_requests fails" do
-          Git.should_receive(:current_branch) { branch_name }
-          GitHub.should_receive(:search_issues) { raise error_message }
-          CLI.should_receive(:say).with("An error occurred while getting the current branch: #{error_message}")
-          PullRequest.current.should == nil
+          expect(Git).to receive(:current_branch) { branch_name }
+          expect(GitHub).to receive(:search_issues) { raise error_message }
+          expect(CLI).to receive(:say).with("An error occurred while getting the current branch: #{error_message}")
+          expect(PullRequest.current).to eq(nil)
         end
 
         it "returns nil when more than one PR exists" do
-          Git.should_receive(:current_branch) { branch_name }
-          GitHub.should_receive(:search_issues) { double(total_count: 2, items: [pull, pull]) }
-          CLI.should_receive(:say).with("Multiple pull requests found for branch #{branch_name}")
-          PullRequest.current.should == nil
+          expect(Git).to receive(:current_branch) { branch_name }
+          expect(GitHub).to receive(:search_issues) { double(total_count: 2, items: [pull, pull]) }
+          expect(CLI).to receive(:say).with("Multiple pull requests found for branch #{branch_name}")
+          expect(PullRequest.current).to eq(nil)
         end
 
         it "returns nil when no PR exists" do
-          Git.should_receive(:current_branch) { branch_name }
-          GitHub.should_receive(:search_issues) { double(total_count: 0, items: []) }
-          CLI.should_receive(:say).with("No pull request found for branch #{branch_name}")
-          PullRequest.current.should == nil
+          expect(Git).to receive(:current_branch) { branch_name }
+          expect(GitHub).to receive(:search_issues) { double(total_count: 0, items: []) }
+          expect(CLI).to receive(:say).with("No pull request found for branch #{branch_name}")
+          expect(PullRequest.current).to eq(nil)
         end
 
       end
