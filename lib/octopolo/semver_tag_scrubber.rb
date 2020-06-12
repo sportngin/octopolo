@@ -12,9 +12,17 @@ module Octopolo
     private
 
     def self.scrub_via_regexp(tag, regexp)
-      result = tag.match(regexp)[0]
-      tag.gsub!(regexp, '')
-      result
+      begin
+        result = tag.match(regexp)[0]
+        tag.gsub!(regexp, '')
+        result
+      rescue Exception => e
+        if e.message.include?("match' for nil:NilClass")
+          puts 'You are creating the first GitHub release for this repository.'
+        else
+          puts "Error finding existing GitHub release(s): #{e.message}"
+        end
+      end
     end
 
   end

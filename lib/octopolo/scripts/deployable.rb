@@ -10,16 +10,17 @@ module Octopolo
 
       attr_accessor :pull_request_id
 
-      def self.execute(pull_request_id=nil)
-        new(pull_request_id).execute
+      def self.execute(pull_request_id=nil, options={})
+        new(pull_request_id, options).execute
       end
 
       def self.deployable_label
         Octopolo::GitHub::Label.new(name: "deployable", color: "428BCA")
       end
 
-      def initialize(pull_request_id=nil)
+      def initialize(pull_request_id=nil, options={})
         @pull_request_id = pull_request_id
+        @force = options[:force]
       end
 
       # Public: Perform the script
@@ -30,29 +31,35 @@ module Octopolo
         end
         self.pull_request_id ||= cli.prompt("Pull Request ID: ")
         GitHub.connect do
-          if config.deployable_label
-            with_labelling do
-              merge
-            end
-          else
-            merge
+          unless deployable? || @force
+            CLI.say 'Pull request status checks have not passed. Cannot be marked deployable.'
+            exit!
           end
+
+          merge_result = merge
+          add_deployable_label if config.deployable_label && merge_result
         end
       end
 
       def merge
-        PullRequestMerger.perform Git::DEPLOYABLE_PREFIX, Integer(@pull_request_id), :user_notifications => config.user_notifications
+        PullRequestMerger.new(Git::DEPLOYABLE_PREFIX, Integer(@pull_request_id), :user_notifications => config.user_notifications).perform
       end
       private :merge
 
-      def with_labelling(&block)
-        pull_request = Octopolo::GitHub::PullRequest.new(config.github_repo, @pull_request_id)
+      def add_deployable_label
         pull_request.add_labels(Deployable.deployable_label)
-        unless yield
-          pull_request.remove_labels(Deployable.deployable_label)
-        end
       end
-      private :with_labelling
+      private :add_deployable_label
+
+      def deployable?
+        pull_request.mergeable? && pull_request.status_checks_passed?
+      end
+      private :deployable?
+
+      def pull_request
+        @pull_request ||= Octopolo::GitHub::PullRequest.new(config.github_repo, @pull_request_id)
+      end
+      private :pull_request
     end
   end
 end

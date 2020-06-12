@@ -45,7 +45,7 @@ module Octopolo
     end
 
     def merge_resolver
-      @merge_resolver || nil
+      @merge_resolver 
     end
 
     def user_notifications

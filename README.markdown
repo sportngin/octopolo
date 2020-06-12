@@ -47,6 +47,10 @@ another named branch) into your current branch.
 
     sync-branch
     sync-branch some-other-branch
+#### Automatic Merge Conflict Resolution
+
+Optionally you can add the line `merge_resolver: <path/to/script>` to the `.octopolo.yml` to
+have Octopolo try to resolve conflicts automatically via a script upon merge failure.
 
 #### Review Changes In Releases
 

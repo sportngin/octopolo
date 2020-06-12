@@ -10,12 +10,16 @@ module Octopolo
       let(:config) { stub(user_notifications: ['NickLaMuro'],
                           github_repo: 'grumpy_cat',
                           deployable_label: true) }
-      let(:pull_request) { stub(add_labels: true, remove_labels: true, number: 7) }
+      let(:pull_request) { stub(add_labels: true,
+                                remove_labels: true,
+                                number: 7,
+                                mergeable?: true,
+                                status_checks_passed?: true) }
       before do
         allow(subject).to receive(:cli) { cli }
         allow(subject).to receive(:config) { config }
         allow(Octopolo::GitHub::PullRequest).to receive(:new) { pull_request }
-        allow(PullRequestMerger).to receive(:perform) { true }
+        allow_any_instance_of(PullRequestMerger).to receive(:perform) { true }
         allow(Octopolo::GitHub).to receive(:check_connection) { true }
       end
 
@@ -39,7 +43,7 @@ module Octopolo
             end
 
             it "takes the pull requests ID from the current branch" do
-              PullRequestMerger.should_receive(:perform).with(Git::DEPLOYABLE_PREFIX, pull_request.number, :user_notifications => config.user_notifications)
+              expect_any_instance_of(PullRequestMerger).to receive(:perform)
             end
           end
 
@@ -63,17 +67,17 @@ module Octopolo
 
           context "when merge to deployable fails" do
             before do
-              allow(PullRequestMerger).to receive(:perform) { false }
+              allow_any_instance_of(PullRequestMerger).to receive(:perform) { false }
             end
 
-            it "removes the deployable label" do
-              pull_request.should_receive(:remove_labels)
+            it "does not add any labels" do
+              pull_request.should_not_receive(:add_labels)
             end
           end
 
           context "when the merge to deployable succeeds" do
-            it "doesn't remove the deployable label" do
-              pull_request.should_not_receive(:remove_labels)
+            it "adds a label" do
+              pull_request.should_receive(:add_labels)
             end
           end
 
@@ -95,6 +99,39 @@ module Octopolo
 
           it "doesn't add the deployable label" do
             pull_request.should_not_receive(:add_labels)
+          end
+        end
+
+        context "when pr is not mergeable" do
+          before do
+            pull_request.stub(mergeable?: false)
+            allow(subject).to receive(:exit!)
+          end
+
+          it "prints out an error and exits" do
+            expect(CLI).to receive(:say).with("Pull request status checks have not passed. Cannot be marked deployable.")
+            expect(subject).to receive(:exit!)
+          end
+        end
+
+        context "when pr has not passed status checks" do
+          before do
+            pull_request.stub(status_checks_passed?: false)
+            allow(subject).to receive(:exit!)
+          end
+
+          it "prints out an error and exits" do
+            expect(CLI).to receive(:say).with("Pull request status checks have not passed. Cannot be marked deployable.")
+            expect(subject).to receive(:exit!)
+          end
+        end
+
+        context "when failed status checks should be ignored" do
+          subject { described_class.new(42, force: true) }
+          before { pull_request.stub(status_checks_passed?: false) }
+
+          it "adds the deployable label" do
+            pull_request.should_receive(:add_labels)
           end
         end
       end

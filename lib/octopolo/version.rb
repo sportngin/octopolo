@@ -1,3 +1,3 @@
 module Octopolo
-  VERSION = "1.2.1"
+  VERSION = "1.11.1"
 end

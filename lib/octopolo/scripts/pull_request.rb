@@ -27,25 +27,57 @@ module Octopolo
 
       def execute
         GitHub.connect do
-          ask_questionaire
+
+          if options[:expedite]
+            infer_questionnaire
+          else
+            ask_questionnaire
+          end
+
           create_pull_request
           update_pivotal
           update_jira
-          update_label
+          update_labels
           open_in_browser
         end
       end
 
       # Private: Ask questions to create a pull request
-      def ask_questionaire
+      def ask_questionnaire
         alert_reserved_and_exit if git.reserved_branch?
         announce
         ask_title
-        ask_label
+        ask_labels
         ask_pivotal_ids if config.use_pivotal_tracker
         ask_jira_ids if config.use_jira
       end
-      private :ask_questionaire
+      private :ask_questionnaire
+
+      def infer_questionnaire
+        alert_reserved_and_exit if git.reserved_branch?
+        check_branch_format
+        branch_arr = git.current_branch.split('_')
+        issue = branch_arr[0].upcase
+        if issue.include?('-')
+          descr = branch_arr[1..-1].join(' ')
+        else
+          issue = "#{issue}-#{branch_arr[1]}"
+          descr = branch_arr[2..-1].join(' ')
+        end
+
+        self.title = "#{issue} #{descr.capitalize}"
+        self.pivotal_ids = [issue] if config.use_pivotal_tracker
+        self.jira_ids = [issue] if config.use_jira
+      end
+      private :infer_questionnaire
+
+      def check_branch_format
+        return if (/[a-zA-Z]+-\d+_.*/ =~ git.current_branch || /[a-zA-Z]+_\d+_.*/ =~ git.current_branch)
+
+        cli.say "Branch must match format like 'iss-123_describe_branch' or 'iss_123_describe_branch' to expedite"
+        exit 1
+      end
+      private :check_branch_format
 
       # Private: Announce to the user the branches the pull request will reference
       def announce

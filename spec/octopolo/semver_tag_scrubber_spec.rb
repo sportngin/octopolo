@@ -27,5 +27,21 @@ module Octopolo
       end
     end
 
+    describe 'scrub_via_regexp' do
+      let(:regexp) { /[a-z]*\z/i }
+      let(:tag) { '0.1.1' }
+
+      it 'should return a string' do
+        expect(SemverTagScrubber.scrub_via_regexp(tag, regexp)).to be_a(String)
+      end
+
+      it 'should not raise an error if the tag does not exist' do
+        expect{ SemverTagScrubber.scrub_via_regexp(nil, regexp) }.not_to raise_error(NoMethodError)
+      end
+
+      it 'should return nil if there was no tag' do
+        expect(SemverTagScrubber.scrub_via_regexp(nil, regexp)).to eq(nil)
+      end
+    end
   end
 end

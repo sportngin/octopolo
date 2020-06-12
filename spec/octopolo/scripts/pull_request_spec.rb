@@ -13,7 +13,8 @@ module Octopolo
         })
       end
       let(:cli) { stub(:cli) }
-      let(:git) { stub(:Git, current_branch: "bug-123-something", reserved_branch?: false) }
+      let(:current_branch) { "bug-123-something" }
+      let(:git) { stub(:Git, current_branch: current_branch, reserved_branch?: false) }
       let(:pull_request_url) { "http://github.com/tstmedia/octopolo/pull/0" }
       let(:pull_request) { stub(:pull_request) }
 
@@ -24,6 +25,10 @@ module Octopolo
           :cli => cli,
           :config => config,
           :git => git
+        })
+
+        Octopolo::Question.any_instance.stub({
+          :cli => cli
         })
       end
 
@@ -40,11 +45,11 @@ module Octopolo
       context "#execute" do
         it "if connected to GitHub, asks some questions, creates the pull request, and opens it" do
           GitHub.should_receive(:connect).and_yield
-          expect(subject).to receive(:ask_questionaire)
+          expect(subject).to receive(:ask_questionnaire)
           expect(subject).to receive(:create_pull_request)
           expect(subject).to receive(:update_pivotal)
           expect(subject).to receive(:update_jira)
-          expect(subject).to receive(:update_label)
+          expect(subject).to receive(:update_labels)
           expect(subject).to receive(:open_in_browser)
 
           subject.execute
@@ -56,15 +61,15 @@ module Octopolo
         end
       end
 
-      context "#ask_questionaire" do
+      context "#ask_questionnaire" do
         it "asks appropriate questions to create a pull request" do
           expect(subject).to receive(:announce)
           expect(subject).to receive(:ask_title)
           expect(subject).to receive(:ask_pivotal_ids)
           expect(subject).to receive(:ask_jira_ids)
-          expect(subject).to receive(:ask_label)
+          expect(subject).to receive(:ask_labels)
 
-          subject.send(:ask_questionaire)
+          subject.send(:ask_questionnaire)
         end
 
         context "when checking for staging branch" do
@@ -73,14 +78,14 @@ module Octopolo
             subject.stub(:ask_title)
             subject.stub(:ask_pivotal_ids)
             subject.stub(:ask_jira_ids)
-            subject.stub(:ask_label)
+            subject.stub(:ask_labels)
           end
           it "exits when branch name is reserved" do
             subject.git.stub(:reserved_branch?).and_return true
 
             subject.should_receive(:alert_reserved_and_exit)
 
-            subject.send(:ask_questionaire)
+            subject.send(:ask_questionnaire)
           end
 
           it "should not ask if the branch is not staging" do
@@ -88,8 +93,49 @@ module Octopolo
 
             subject.should_not_receive(:alert_reserved_and_exit)
 
-            subject.send(:ask_questionaire)
+            subject.send(:ask_questionnaire)
           end
+        end
+      end
+
+      context "#expedite" do
+        subject { PullRequest.new(nil, { expedite: true }) }
+
+        context 'good format 1' do
+          let(:current_branch) { 'abc-123_so_fast'}
+
+          it 'likes the issue-123_blah branch format' do
+            subject.send(:infer_questionnaire)
+            expect(subject.jira_ids).to eq(['ABC-123'])
+            expect(subject.title).to eq('ABC-123 So fast')
+          end
+        end
+
+        context 'good format 2' do
+          let(:current_branch) { 'abc_123_so_fast'}
+
+          it 'likes the issue-123_blah branch format' do
+            subject.send(:infer_questionnaire)
+            expect(subject.jira_ids).to eq(['ABC-123'])
+            expect(subject.title).to eq('ABC-123 So fast')
+          end
+        end
+
+        context 'bad branch format' do
+          let(:current_branch) { 'not_enough'}
+
+          it 'does not like other branch format' do
+            subject.git.stub(:reserved_branch?).and_return false
+            cli.should_receive(:say)
+            expect { subject.send(:infer_questionnaire) }.to raise_error(SystemExit)
+          end
+        end
+
+        it 'does not process reserved' do
+          subject.git.stub(:reserved_branch?).and_return true
+          subject.should_receive(:alert_reserved_and_exit).and_call_original
+          cli.should_receive(:say)
+          expect { subject.send(:infer_questionnaire) }.to raise_error(SystemExit)
         end
       end
 
@@ -114,22 +160,22 @@ module Octopolo
         end
       end
 
-      context "#ask_label" do
+      context "#ask_labels" do
         let(:label1) {Octopolo::GitHub::Label.new(name: "low-risk", color: '151515')}
         let(:label2) {Octopolo::GitHub::Label.new(name: "high-risk", color: '151515')}
-        let(:choices) {["low-risk","high-risk","None"]}
+        let(:choices) {["low-risk","high-risk"]}
 
         it "asks for and capture a label" do
           allow(Octopolo::GitHub::Label).to receive(:all) {[label1,label2]}
-          expect(cli).to receive(:ask).with("Label:", choices)
-          subject.send(:ask_label)
+          expect(cli).to receive(:ask).with("Label:", choices.concat(["None"]))
+          subject.send(:ask_labels)
         end
 
         it "asks for a label" do
           allow(Octopolo::GitHub::Label).to receive(:all) {[label1,label2]}
           allow(Octopolo::GitHub::Label).to receive(:get_names) {choices}
           allow(cli).to receive(:ask) {"low-risk"}
-          expect(subject.send(:ask_label)).to eq(label1)
+          expect(subject.send(:ask_labels)).to eq([label1])
         end
       end
 
@@ -233,23 +279,23 @@ module Octopolo
         end
       end
 
-      context "#update_label" do
+      context "#update_labels" do
         before do
-          subject.label = "high-risk"
+          subject.labels = ["high-risk"]
           subject.pull_request = stub()
         end
-        it "calls update_label with proper arguments" do
-          expect(subject.pull_request).to receive(:add_labels).with('high-risk')
-          subject.send(:update_label)
+        it "calls update_labels with proper arguments" do
+          expect(subject.pull_request).to receive(:add_labels).with(['high-risk'])
+          subject.send(:update_labels)
         end
 
         context "doesn't know yet label" do
           before do
-            subject.label = nil
+            subject.labels = nil
           end
-          it "doesn't call update_label when label is don't know yet" do
+          it "doesn't call update_labels when label is don't know yet" do
             expect(subject.pull_request).to_not receive(:add_labels)
-            subject.send(:update_label)
+            subject.send(:update_labels)
           end
         end
 

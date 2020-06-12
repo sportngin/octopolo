@@ -69,6 +69,14 @@ module Octopolo
         @commits ||= Commit.for_pull_request self
       end
 
+      def status_checks_passed?
+        status == 'success'
+      end
+
+      def status
+        GitHub.status(repo_name, data.head.sha)[:state]
+      end
+
       def self.current
         current_branch = Git.current_branch
         query = "repo:#{config.github_repo} type:pr is:open head:#{current_branch}"
