@@ -1,3 +1,8 @@
+#### v1.11.2
+* Fix bug where op tag-release on repo with no releases breaks
+
+  > Emma Sax: production-status-check[bot]: https://github.com/sportngin/octopolo/pull/139
+
 #### v1.11.1
 * Make expedite's branch form more flexible
 
