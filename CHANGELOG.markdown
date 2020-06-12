@@ -1,3 +1,8 @@
+#### v1.11.4
+* IS-12227 Upgrade octokit
+
+  > Emma Sax: Sean Griffin, production-status-check[bot]: https://github.com/sportngin/octopolo/pull/140
+
 #### v1.11.3
 #### v1.11.2
 * Fix bug where op tag-release on repo with no releases breaks
