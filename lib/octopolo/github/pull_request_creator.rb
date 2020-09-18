@@ -41,7 +41,7 @@ module Octopolo
       #
       # Returns a boolean that marks the PR a draft PR
       def draft
-        !!options[:draft]
+        !options[:skip_draft]
       end
 
       # Public: Branch to merge the pull request into

@@ -42,6 +42,7 @@ module Octopolo
             source_branch: source_branch,
             title: title,
             body: body,
+            {draft: true}
           })
         end
 
