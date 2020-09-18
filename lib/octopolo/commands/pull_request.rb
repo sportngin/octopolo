@@ -3,7 +3,7 @@ command 'pull-request' do |c|
   c.desc "Branch to create the pull request against"
   c.flag [:d, :dest, :destination], :arg_name => "destination_branch", :default_value => Octopolo.config.deploy_branch
 
-  c.desc "Pass -nd to skip creating this pull request as a draft"
+  c.desc "Pass -sd to skip creating this pull request as a draft"
   c.switch [:sd, :skip_draft], :arg_name => "skip_draft"
 
   c.desc "Pass -x to skip the prompt and infer from branch. Expects the branch to be in this format: JIRA-123_describe_pr OR JIRA_123_describe_pr"
