@@ -234,7 +234,8 @@ module Octopolo
             source_branch: git.current_branch,
             pivotal_ids: subject.pivotal_ids,
             jira_ids: subject.jira_ids,
-            editor: nil
+            editor: nil,
+            skip_draft: nil
           }
         end
       end

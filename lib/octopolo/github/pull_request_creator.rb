@@ -22,12 +22,26 @@ module Octopolo
       # Returns an array with the first element being the pull request's
       # number, the second being a Mash of the response from GitHub's API
       def perform
-        result = GitHub.create_pull_request(repo_name, destination_branch, source_branch, title, body)
+        result = GitHub.create_pull_request(
+          repo_name,
+          destination_branch,
+          source_branch,
+          title,
+          body,
+          {draft: draft}
+        )
         # capture the information
         self.number = result.number
         self.data = result
       rescue => e
         raise CannotCreate, e.message
+      end
+
+      # Public: Draft Pull request
+      #
+      # Returns a boolean that marks the PR a draft PR
+      def draft
+        !options[:skip_draft]
       end
 
       # Public: Branch to merge the pull request into
@@ -50,7 +64,6 @@ module Octopolo
       def renderer_template
         Renderer::PULL_REQUEST_BODY
       end
-
 
       # Public: Temporary file for body editing
       #

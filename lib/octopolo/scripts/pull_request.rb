@@ -110,7 +110,8 @@ module Octopolo
           source_branch: git.current_branch,
           pivotal_ids: pivotal_ids,
           jira_ids: jira_ids,
-          editor: options[:editor]
+          editor: options[:editor],
+          skip_draft: options[:"skip-draft"]
         }
       end
       private :pull_request_attributes

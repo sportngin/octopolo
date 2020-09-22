@@ -46,7 +46,9 @@ module Octopolo
         end
 
         it "generates the pull request with the given details and retains the information" do
-          GitHub.should_receive(:create_pull_request).with(repo_name, destination_branch, source_branch, title, body) { data }
+          GitHub.should_receive(:create_pull_request).with(
+            repo_name, destination_branch, source_branch, title, body, {draft: true}
+          ) { data }
           creator.perform.should == data
           creator.number.should == data.number
           creator.data.should == data

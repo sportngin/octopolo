@@ -27,9 +27,7 @@ Gem::Specification.new do |gem|
   gem.add_dependency 'nokogiri-happymapper', '~> 0.6.0' # Lock down to 0.6.x for Ruby 2.0 compatibility.
 
   gem.add_development_dependency 'rake', '~> 10.1'
-  gem.add_development_dependency 'bundler', '~> 1.16'
   gem.add_development_dependency 'rspec', '~> 2.99'
-  gem.add_development_dependency 'guard', '~> 2.6'
   gem.add_development_dependency 'guard-rspec', '~> 4.3'
   gem.add_development_dependency 'hitimes', '~> 1.2.6'
   gem.add_development_dependency 'octopolo-plugin-example', '~> 0'
