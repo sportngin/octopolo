@@ -111,7 +111,7 @@ module Octopolo
           pivotal_ids: pivotal_ids,
           jira_ids: jira_ids,
           editor: options[:editor],
-          skip_draft: options[:skip_draft]
+          skip_draft: options[:"skip-draft"]
         }
       end
       private :pull_request_attributes
