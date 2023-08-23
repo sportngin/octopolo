@@ -6,6 +6,9 @@ module Octopolo
     attr_accessor :full_name
     attr_accessor :editor
     attr_accessor :pivotal_token
+    attr_accessor :jira_user
+    attr_accessor :jira_password
+    attr_accessor :jira_url
     attr_accessor :attributes # keep the whole hash
 
     # Public: Initialize a new UserConfig instance

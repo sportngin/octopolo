@@ -4,6 +4,8 @@ require_relative "user_config"
 
 module Octopolo
   class Config
+    include UserConfigWrapper
+
     FILE_NAMES = %w[.octopolo.yml .automation.yml]
 
     RECENT_TAG_LIMIT = 9
@@ -45,7 +47,7 @@ module Octopolo
     end
 
     def merge_resolver
-      @merge_resolver 
+      @merge_resolver
     end
 
     def user_notifications
@@ -74,15 +76,15 @@ module Octopolo
     end
 
     def jira_user
-      @jira_user || raise(MissingRequiredAttribute, "Jira User is required") if use_jira
+      @jira_user || user_config.jira_user || raise(MissingRequiredAttribute, "Jira User is required") if use_jira
     end
 
     def jira_password
-      @jira_password || raise(MissingRequiredAttribute, "Jira Password is required") if use_jira
+      @jira_password || user_config.jira_password || raise(MissingRequiredAttribute, "Jira Password is required") if use_jira
     end
 
     def jira_url
-      @jira_url || raise(MissingRequiredAttribute, "Jira Url is required") if use_jira
+      @jira_url || user_config.jira_url || raise(MissingRequiredAttribute, "Jira Url is required") if use_jira
     end
 
     def semantic_versioning
