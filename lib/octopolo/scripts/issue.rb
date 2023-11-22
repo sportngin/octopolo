@@ -2,7 +2,6 @@ require_relative "../scripts"
 require_relative "../github"
 require_relative "../github/issue"
 require_relative "../github/issue_creator"
-require_relative "../jira/story_commenter"
 require_relative "../question"
 
 module Octopolo
@@ -133,9 +132,6 @@ module Octopolo
       end
 
       def update_jira
-        jira_ids.each do |story_id|
-          Jira::StoryCommenter.new(story_id, issue.url).perform
-        end if jira_ids
       end
       protected :update_jira
 

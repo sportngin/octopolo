@@ -222,20 +222,6 @@ module Octopolo
         end
       end
 
-      context "#update_jira" do
-        before do
-          subject.jira_ids = %w(123 234)
-          subject.pull_request = stub(url: "test")
-        end
-        let(:story_commenter) { stub(perform: true) }
-
-        it "creates a story commenter for each jira_id" do
-          Jira::StoryCommenter.should_receive(:new).with("123", "test") { story_commenter }
-          Jira::StoryCommenter.should_receive(:new).with("234", "test") { story_commenter }
-          subject.send(:update_jira)
-        end
-      end
-
       context "#update_labels" do
         before do
           subject.labels = ["high-risk"]

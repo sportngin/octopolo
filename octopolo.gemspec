@@ -21,7 +21,6 @@ Gem::Specification.new do |gem|
   gem.add_dependency 'octokit', '~> 4.18'
   gem.add_dependency 'public_suffix', '~> 2.0' # Lock down to 2.x for Ruby 2.0 compatibility.
   gem.add_dependency 'highline', '~> 1.6'
-  gem.add_dependency 'jiralicious', '~> 0.5'
   gem.add_dependency 'semantic', '~> 1.3'
   gem.add_dependency 'nokogiri-happymapper', '~> 0.6.0' # Lock down to 0.6.x for Ruby 2.0 compatibility.
 

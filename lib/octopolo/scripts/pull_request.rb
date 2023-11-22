@@ -1,7 +1,6 @@
 require_relative "../scripts"
 require_relative "../scripts/issue"
 require_relative "../github"
-require_relative "../jira/story_commenter"
 
 module Octopolo
   module Scripts
