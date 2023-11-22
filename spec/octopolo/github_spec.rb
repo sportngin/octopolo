@@ -4,8 +4,8 @@ require_relative "../../lib/octopolo/github"
 module Octopolo
   describe GitHub do
     context ".client" do
-      let(:octokit_client) { stub(:github_client) }
-      let(:user_config) { stub(:user_config, github_user: "foo", github_token: "bar") }
+      let(:octokit_client) { double(:github_client) }
+      let(:user_config) { double(:user_config, github_user: "foo", github_token: "bar") }
 
       before do
         GitHub.stub(user_config: user_config)
@@ -23,7 +23,7 @@ module Octopolo
 
       it "properly handles if the github authentication isn't configured" do
         user_config.should_receive(:github_user).and_raise(UserConfig::MissingGitHubAuth)
-        Scripts::GithubAuth.should_not_receive(:invoke)
+        Scripts::GithubAuth.should_not_receive(:execute)
         expect { GitHub.client }.to raise_error(GitHub::TryAgain, "No GitHub API token stored. Please run `op github-auth` to generate your token.")
       end
     end
@@ -38,8 +38,8 @@ module Octopolo
     end
 
     context "having convenience methods" do
-      let(:client) { stub(:github_client) }
-      let(:crawling_client) { stub(:github_crawling_client) }
+      let(:client) { double(:github_client) }
+      let(:crawling_client) { double(:github_crawling_client) }
       let(:data) { double }
 
       before do
@@ -120,7 +120,7 @@ module Octopolo
 
       context ".user username" do
         let(:username) { "foo" }
-        let(:valid_user) { stub(login: "foo", name: "Joe Foo")}
+        let(:valid_user) { double(login: "foo", name: "Joe Foo")}
 
         it "fetches the user data from GitHub" do
           client.should_receive(:user).with(username) { valid_user }
@@ -183,7 +183,7 @@ module Octopolo
       context ".team_member? team" do
         let(:valid_team) { 2396228 }
         let(:invalid_team) { 2396227 }
-        let(:user_config) { stub(:user_config, github_user: "foo", github_token: "bar") }
+        let(:user_config) { double(:user_config, github_user: "foo", github_token: "bar") }
 
         before { GitHub.stub(user_config: user_config) }
 

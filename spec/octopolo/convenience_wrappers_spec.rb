@@ -12,7 +12,7 @@ module Octopolo
 
   describe CLIWrapper do
     let(:foo) { Foo.new }
-    let(:cli) { stub(:CLI) }
+    let(:cli) { stub_const('CLI', class_double(CLI)) }
 
     context "#cli" do
       it "wraps around the CLI class" do
@@ -28,7 +28,7 @@ module Octopolo
 
   describe ConfigWrapper do
     let(:foo) { Foo.new }
-    let(:config) { stub(:config) }
+    let(:config) { double(:config) }
 
     context "#config" do
       it "parses the current config" do
@@ -46,7 +46,7 @@ module Octopolo
 
   describe UserConfigWrapper do
     let(:foo) { Foo.new }
-    let(:user_config) { stub(:user_config) }
+    let(:user_config) { double(:user_config) }
 
     context "#user_config" do
       it "parses the current user config" do
@@ -64,7 +64,7 @@ module Octopolo
 
   describe GitWrapper do
     subject { Foo.new }
-    let(:git) { stub(:Git) }
+    let(:git) { stub_const('Git', class_double(Git)) }
 
     context "#git" do
       it "wraps around the Git class" do

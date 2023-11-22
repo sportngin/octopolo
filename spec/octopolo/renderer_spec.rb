@@ -22,7 +22,7 @@ module Octopolo
     end
 
     context ".contents_of template" do
-      let(:contents) { stub(:erb) }
+      let(:contents) { double(:erb) }
       let(:name) { "some_template" }
       let(:path) { File.join(Renderer.template_base_path, "#{name}.erb") }
 

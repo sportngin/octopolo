@@ -6,16 +6,16 @@ module Octopolo
   module Scripts
     describe Issue do
       let(:config) do
-        stub(:config, {
+        double(:config, {
           deploy_branch: "production",
           github_repo: "tstmedia/foo",
           use_jira: true
         })
       end
-      let(:cli) { stub(:cli) }
-      let(:git) { stub(:Git) }
+      let(:cli) { double(:cli) }
+      let(:git) { double(:Git) }
       let(:issue_url) { "http://github.com/tstmedia/octopolo/issues/0" }
-      let(:issue) { stub(:issue) }
+      let(:issue) { double(:issue) }
 
       subject { Issue.new }
 
@@ -103,7 +103,7 @@ module Octopolo
       end
 
       context "#create_issue" do
-        let(:attributes) { stub(:hash) }
+        let(:attributes) { double(:hash) }
 
         before do
           subject.stub(:issue_attributes) { attributes }
@@ -144,7 +144,7 @@ module Octopolo
       context "#update_labels" do
         before do
           subject.labels = "high-risk"
-          subject.issue = stub()
+          subject.issue = double()
         end
         it "calls update_labels with proper arguments" do
           expect(subject.issue).to receive(:add_labels).with('high-risk')

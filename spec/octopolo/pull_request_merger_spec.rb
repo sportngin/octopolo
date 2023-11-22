@@ -4,12 +4,12 @@ require "octopolo/pull_request_merger"
 module Octopolo
   module Scripts
     describe PullRequestMerger do
-      let(:cli) { stub(:CLI) }
-      let(:config) { stub(:Config, github_repo: "tstmedia/foo") }
+      let(:cli) { double(:CLI) }
+      let(:config) { double(:Config, github_repo: "tstmedia/foo") }
       let(:pull_request_id) { 42 }
-      let(:pull_request) { stub(:PullRequest, branch: "cool-feature", url: "http://example.com/") }
+      let(:pull_request) { double(:PullRequest, branch: "cool-feature", url: "http://example.com/") }
       let(:branch_type) { Git::DEPLOYABLE_PREFIX }
-      let(:git) { stub(:git, deployable_branch: "deployable") }
+      let(:git) { double(:git, deployable_branch: "deployable") }
       let(:options) { { :user_notifications => ['NickLaMuro', 'anfleene'] } }
 
       subject { PullRequestMerger.new(Git::DEPLOYABLE_PREFIX, 42, options) }
@@ -93,7 +93,7 @@ module Octopolo
       end
 
       context "#check_out_branch" do
-        let(:creator) { stub(:dated_branch_creator, branch_name: "new-deployable") }
+        let(:creator) { double(:dated_branch_creator, branch_name: "new-deployable") }
 
         it "checks out the project's deployable branch" do
           git.should_receive(:check_out).with(git.deployable_branch)

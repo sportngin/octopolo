@@ -33,7 +33,7 @@ module Octopolo
       end
 
       context "#perform" do
-        let(:data) { stub(:mash, number: 123) }
+        let(:data) { double(:mash, number: 123) }
 
         before do
           creator.stub({
@@ -74,7 +74,7 @@ module Octopolo
       end
 
       context "#data" do
-        let(:details) { stub(:data) }
+        let(:details) { double(:data) }
 
         it "returns the stored pull request details" do
           creator.data = details
@@ -142,10 +142,10 @@ module Octopolo
       end
 
       context "#edit_body" do
-        let(:path) { stub(:path) }
-        let(:body) { stub(:string) }
-        let(:tempfile) { stub(:tempfile) }
-        let(:edited_body) { stub(:edited_body) }
+        let(:path) { double(:path) }
+        let(:body) { double(:string) }
+        let(:tempfile) { double(:tempfile) }
+        let(:edited_body) { double(:edited_body) }
 
         before do
           Tempfile.stub(:new) { tempfile }
@@ -196,8 +196,8 @@ module Octopolo
       end
 
       context "#body" do
-        let(:locals) { stub(:hash) }
-        let(:output) { stub(:string) }
+        let(:locals) { double(:hash) }
+        let(:output) { double(:string) }
 
         before do
           creator.stub({
@@ -211,7 +211,7 @@ module Octopolo
         end
 
         context "when the editor option is set" do
-          let(:edited_output) { stub(:output) }
+          let(:edited_output) { double(:output) }
 
           before do
             creator.stub({

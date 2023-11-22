@@ -60,7 +60,7 @@ module Octopolo
         end
 
         context "#title" do
-          let(:octo) { stub(title: "the title") }
+          let(:octo) { double(title: "the title") }
 
           it "retrieves from the github data" do
             issue.title.should == octo.title
@@ -81,8 +81,8 @@ module Octopolo
         end
 
         context "#commenter_names" do
-          let(:comment1) { stub(user: stub(login: "pbyrne")) }
-          let(:comment2) { stub(user: stub(login: "anfleene")) }
+          let(:comment1) { double(user: double(login: "pbyrne")) }
+          let(:comment2) { double(user: double(login: "anfleene")) }
 
           before do
             issue.stub(comments: [comment1, comment2])
@@ -106,7 +106,7 @@ module Octopolo
         end
 
         context "#url" do
-          let(:octo) { stub(html_url: "http://example.com") }
+          let(:octo) { double(html_url: "http://example.com") }
 
           it "retrieves from the github data" do
             issue.url.should == octo.html_url
@@ -141,7 +141,7 @@ module Octopolo
         end
 
         context "#body" do
-          let(:octo) { stub(body: "asdf") }
+          let(:octo) { double(body: "asdf") }
 
           it "retrieves from the github data" do
             issue.body.should == octo.body
@@ -185,11 +185,11 @@ module Octopolo
       end
 
       context ".create repo_name, options" do
-        let(:options) { stub(:hash) }
-        let(:number) { stub(:integer) }
-        let(:data) { stub(:data)}
-        let(:creator) { stub(:issue_creator, number: number, data: data)}
-        let(:issue) { stub(:issue) }
+        let(:options) { double(:hash) }
+        let(:number) { double(:integer) }
+        let(:data) { double(:data) }
+        let(:creator) { double(:issue_creator, number: number, data: data)}
+        let(:issue) { double(:issue) }
 
         it "passes on to IssueCreator and returns a new Issue" do
           IssueCreator.should_receive(:perform).with(repo_name, options) { creator }

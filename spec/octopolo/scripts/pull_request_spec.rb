@@ -5,17 +5,17 @@ module Octopolo
   module Scripts
     describe PullRequest do
       let(:config) do
-        stub(:config, {
+        double(:config, {
           deploy_branch: "production",
           github_repo: "tstmedia/foo",
           use_jira: true
         })
       end
-      let(:cli) { stub(:cli) }
+      let(:cli) { double(:cli) }
       let(:current_branch) { "bug-123-something" }
-      let(:git) { stub(:Git, current_branch: current_branch, reserved_branch?: false) }
+      let(:git) { double(:Git, current_branch: current_branch, reserved_branch?: false) }
       let(:pull_request_url) { "http://github.com/tstmedia/octopolo/pull/0" }
-      let(:pull_request) { stub(:pull_request) }
+      let(:pull_request) { double(:pull_request) }
 
       subject { PullRequest.new }
 
@@ -176,7 +176,7 @@ module Octopolo
       end
 
       context "#create_pull_request" do
-        let(:attributes) { stub(:hash) }
+        let(:attributes) { double(:hash) }
 
         before do
           subject.stub(:pull_request_attributes) { attributes }
@@ -225,7 +225,7 @@ module Octopolo
       context "#update_labels" do
         before do
           subject.labels = ["high-risk"]
-          subject.pull_request = stub()
+          subject.pull_request = double()
         end
         it "calls update_labels with proper arguments" do
           expect(subject.pull_request).to receive(:add_labels).with(['high-risk'])

@@ -3,11 +3,11 @@ require_relative "../../lib/octopolo/dated_branch_creator"
 
 module Octopolo
   describe DatedBranchCreator do
-    let(:type) { stub(:string) }
-    let(:branch_name) { stub(:string) }
-    let(:cli) { stub(:CLI) }
-    let(:config) { stub(:Config, app_name: "fooapp", deploy_branch: "somebranch") }
-    let(:git) { stub(:Git) }
+    let(:type) { double(:string) }
+    let(:branch_name) { double(:string) }
+    let(:cli) { double(:CLI) }
+    let(:config) { double(:Config, app_name: "fooapp", deploy_branch: "somebranch") }
+    let(:git) { double(:Git) }
 
     subject { DatedBranchCreator.new type }
 
@@ -18,7 +18,7 @@ module Octopolo
     end
 
     context ".perform(branch_type)" do
-      let(:creator) { stub(:DatedBranchCreator) }
+      let(:creator) { double('DatedBranchCreator') }
 
       it "instantiates a new creator and performs it" do
         DatedBranchCreator.should_receive(:new).with(type, true) { creator }

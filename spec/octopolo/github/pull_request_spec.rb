@@ -60,7 +60,7 @@ module Octopolo
         end
 
         context "#title" do
-          let(:octo) { stub(title: "the title") }
+          let(:octo) { double(title: "the title") }
 
           it "retrieves from the github data" do
             pull.title.should == octo.title
@@ -68,7 +68,7 @@ module Octopolo
         end
 
         context "#branch" do
-          let(:octo) { stub(head: stub(ref: "asdf")) }
+          let(:octo) { double(head: double(ref: "asdf")) }
 
           it "retrieves from the github data" do
             pull.branch.should == octo.head.ref
@@ -102,8 +102,8 @@ module Octopolo
         end
 
         context "#author_names" do
-          let(:commit1) { stub(author_name: "foo") }
-          let(:commit2) { stub(author_name: "bar") }
+          let(:commit1) { double(author_name: "foo") }
+          let(:commit2) { double(author_name: "bar") }
 
           before do
             pull.stub(commits: [commit1, commit2])
@@ -125,13 +125,13 @@ module Octopolo
         end
 
         context "#commenter_names" do
-          let(:comment1) { stub(user: stub(login: "pbyrne")) }
-          let(:comment2) { stub(user: stub(login: "anfleene")) }
+          let(:comment1) { double(user: double(login: "pbyrne")) }
+          let(:comment2) { double(user: double(login: "anfleene")) }
 
           before do
             pull.stub(comments: [comment1, comment2], author_names: [])
-            GitHub::User.stub(:new).with("pbyrne").and_return(stub(:author_name => "pbyrne"))
-            GitHub::User.stub(:new).with("anfleene").and_return(stub(:author_name => "anfleene"))
+            GitHub::User.stub(:new).with("pbyrne").and_return(double(:author_name => "pbyrne"))
+            GitHub::User.stub(:new).with("anfleene").and_return(double(:author_name => "anfleene"))
           end
 
           it "returns the names of the commit authors" do
@@ -166,7 +166,7 @@ module Octopolo
         end
 
         context "#url" do
-          let(:octo) { stub(html_url: "http://example.com") }
+          let(:octo) { double(html_url: "http://example.com") }
 
           it "retrieves from the github data" do
             pull.url.should == octo.html_url
@@ -201,7 +201,7 @@ module Octopolo
         end
 
         context "#body" do
-          let(:octo) { stub(body: "asdf") }
+          let(:octo) { double(body: "asdf") }
 
           it "retrieves from the github data" do
             pull.body.should == octo.body
@@ -243,8 +243,8 @@ module Octopolo
       end
 
       context ".closed repo_name" do
-        let(:raw_pr) { stub(:octo_data, number: 123) }
-        let(:pr_wrapper) { stub(:pull_request) }
+        let(:raw_pr) { double(:octo_data, number: 123) }
+        let(:pr_wrapper) { double(:pull_request) }
 
         it "crawls the repo for pull requests and wraps them in PullRequests" do
           GitHub.should_receive(:pull_requests).with(repo_name, "closed") { [raw_pr] }
@@ -274,11 +274,11 @@ module Octopolo
       end
 
       context ".create repo_name, options" do
-        let(:options) { stub(:hash) }
-        let(:number) { stub(:integer) }
-        let(:data) { stub(:data)}
-        let(:creator) { stub(:pull_request_creator, number: number, data: data)}
-        let(:pull_request) { stub(:pull_request) }
+        let(:options) { double(:hash) }
+        let(:number) { double(:integer) }
+        let(:data) { double(:data)}
+        let(:creator) { double(:pull_request_creator, number: number, data: data)}
+        let(:pull_request) { double(:pull_request) }
 
         it "passes on to PullRequestCreator and returns a new PullRequest" do
           PullRequestCreator.should_receive(:perform).with(repo_name, options) { creator }

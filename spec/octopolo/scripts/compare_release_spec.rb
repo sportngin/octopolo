@@ -4,9 +4,9 @@ require "octopolo/scripts/compare_release"
 module Octopolo
   module Scripts
     describe CompareRelease do
-      let(:config) { stub(:config, github_repo: "tstmedia/ngin") }
-      let(:cli) { stub(:cli) }
-      let(:git) { stub(:git, recent_release_tags: tags) }
+      let(:config) { double(:config, github_repo: "tstmedia/ngin") }
+      let(:cli) { double(:cli) }
+      let(:git) { double(:git, recent_release_tags: tags) }
       let(:tags) { %w(tag1 tag2) }
 
       subject { CompareRelease.new }

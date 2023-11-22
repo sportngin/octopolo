@@ -4,11 +4,11 @@ require "octopolo/scripts/accept_pull"
 module Octopolo
   module Scripts
     describe AcceptPull do
-      let(:config) { stub(:config, :github_repo => "tstmedia/foo", :deploy_branch => "master") }
+      let(:config) { double(:config, :github_repo => "tstmedia/foo", :deploy_branch => "master") }
       let(:cli) { double }
-      let(:git) { stub(:Git) }
+      let(:git) { double(:Git) }
       let(:pull_request_id) { 42 }
-      let(:pull_request) { stub(:PullRequest, branch: "cool-feature", url: "http://example.com/") }
+      let(:pull_request) { double(:PullRequest, branch: "cool-feature", url: "http://example.com/") }
 
       subject { AcceptPull.new '' }
 
@@ -44,7 +44,7 @@ module Octopolo
       end
 
       context "#merge" do
-        let(:pull_request) { stub(branch: "foobranch") }
+        let(:pull_request) { double(branch: "foobranch") }
         before { subject.stub(:pull_request_id => pull_request_id) }
 
         context "when mergeable and status checks passed" do

@@ -6,11 +6,11 @@ module Octopolo
     describe Deployable do
       subject { described_class.new 42 }
 
-      let(:cli) { stub(prompt: 42) }
-      let(:config) { stub(user_notifications: ['NickLaMuro'],
+      let(:cli) { double(prompt: 42) }
+      let(:config) { double(user_notifications: ['NickLaMuro'],
                           github_repo: 'grumpy_cat',
                           deployable_label: true) }
-      let(:pull_request) { stub(add_labels: true,
+      let(:pull_request) { double(add_labels: true,
                                 remove_labels: true,
                                 number: 7,
                                 mergeable?: true,
@@ -93,7 +93,7 @@ module Octopolo
         end
 
         context "with labelling disabled" do
-          let(:config) { stub(user_notifications: ['NickLaMuro'],
+          let(:config) { double(user_notifications: ['NickLaMuro'],
                               github_repo: 'grumpy_cat',
                               deployable_label: false) }
 

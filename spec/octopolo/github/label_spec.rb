@@ -10,7 +10,7 @@ module Octopolo
       let(:labels_hash) { [label_hash_1,label_hash_2] }
       let(:label1) { Label.new(name: "low-risk", color: "343434") }
       let(:label2) { Label.new(name: "high-risk", color: '565656') }
-      let(:config) { stub(:config, github_repo: "foo") }
+      let(:config) { double(:config, github_repo: "foo") }
 
       subject { Label }
 

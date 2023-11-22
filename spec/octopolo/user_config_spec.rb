@@ -5,7 +5,7 @@ module Octopolo
   describe UserConfig do
     context ".parse" do
       let(:parsed_attributes) { {foo: "bar"} }
-      let(:config) { stub(:user_config) }
+      let(:config) { double(:user_config) }
 
       it "reads from the user's config file and instantiates a new user config instance" do
         UserConfig.should_receive(:attributes_from_file) { parsed_attributes }
@@ -149,7 +149,7 @@ module Octopolo
 
     context "#github_token" do
       let(:config) { UserConfig.new }
-      let(:token) { stub(:string) }
+      let(:token) { double(:string) }
 
       it "returns the configured github_token" do
         config.github_token = token

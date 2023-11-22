@@ -15,18 +15,18 @@ module Octopolo
 
       context "#author_name" do
         let(:commit) do
-          Commit.new stub
+          Commit.new double()
         end
 
         it "fetches the author name from the author" do
-          commit.stub(:author => stub(:author_name => "pbyrne"))
+          commit.stub(:author => double(:author_name => "pbyrne"))
           commit.author_name.should == "pbyrne"
         end
       end
 
       context "#author" do
         let(:commit_data) do
-          stub(:author => stub(:login => "pbyrne"))
+          double(:author => double(:login => "pbyrne"))
         end
 
         it "fetches the User from github" do
@@ -43,7 +43,7 @@ module Octopolo
       end
 
       context ".for_pull_request pull_request" do
-        let(:pull_request) { stub(repo_name: "foo/bar", number: 123) }
+        let(:pull_request) { double(repo_name: "foo/bar", number: 123) }
         let(:raw_commit1) { double }
         let(:raw_commits) { [raw_commit1] }
         let(:wrapper_commit) { double }

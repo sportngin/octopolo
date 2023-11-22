@@ -3,7 +3,7 @@ require_relative "../../lib/octopolo/git"
 
 module Octopolo
   describe Git do
-    let(:cli) { stub(:CLI) }
+    let(:cli) { double(:CLI) }
 
     context ".perform(subcommand)" do
       let(:command) { "status" }

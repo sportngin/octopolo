@@ -4,9 +4,9 @@ require "octopolo/scripts/tag_release"
 module Octopolo
   module Scripts
     describe TagRelease do
-      let(:config) { stub(:config, deploy_branch: "something", semantic_versioning: false) }
-      let(:cli) { stub(:cli) }
-      let(:git) { stub(:git) }
+      let(:config) { double(:config, deploy_branch: "something", semantic_versioning: false) }
+      let(:cli) { double(:cli) }
+      let(:git) { double(:git) }
       let(:prefix) { "foo" }
       let(:suffix) { "bar" }
       let(:options) { Hash.new }

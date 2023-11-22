@@ -4,9 +4,9 @@ require "octopolo/scripts/sync_branch"
 module Octopolo
   module Scripts
     describe SyncBranch do
-      let(:config) { stub(:config, :deploy_branch => "production") }
-      let(:git) { stub(:Git) }
-      let(:cli) { stub(:CLI) }
+      let(:config) { double(:config, :deploy_branch => "production") }
+      let(:git) { double(:Git) }
+      let(:cli) { double(:CLI) }
       let(:otherbranch) { "otherbranch" }
 
       subject { SyncBranch.new }
