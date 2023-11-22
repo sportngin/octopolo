@@ -15,7 +15,7 @@ module Octopolo
       let(:jira_url) { "https://example-jira.com" }
 
       context ".perform repo_name, options" do
-        let(:creator) { stub }
+        let(:creator) { double }
 
         it "instantiates a creator and perfoms it" do
           PullRequestCreator.should_receive(:new).with(repo_name, options) { creator }

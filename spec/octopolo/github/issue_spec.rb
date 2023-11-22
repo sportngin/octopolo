@@ -7,9 +7,9 @@ module Octopolo
     describe Issue do
       let(:repo_name) { "account/repo" }
       let(:issue_number) { 7 }
-      let(:issue_hash) { stub }
-      let(:comments) { stub }
-      let(:octo) { stub }
+      let(:issue_hash) { double }
+      let(:comments) { double }
+      let(:octo) { double }
 
       context ".new" do
         it "remembers the issue identifiers" do

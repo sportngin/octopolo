@@ -5,7 +5,7 @@ module Octopolo
   module Scripts
     describe AcceptPull do
       let(:config) { stub(:config, :github_repo => "tstmedia/foo", :deploy_branch => "master") }
-      let(:cli) { stub }
+      let(:cli) { double }
       let(:git) { stub(:Git) }
       let(:pull_request_id) { 42 }
       let(:pull_request) { stub(:PullRequest, branch: "cool-feature", url: "http://example.com/") }

@@ -5,7 +5,7 @@ module Octopolo
   module GitHub
     describe Commit do
       context ".new" do
-        let(:commit_data) { stub }
+        let(:commit_data) { double }
 
         it "remembers the commit data from GitHub API" do
           commit = Commit.new commit_data
@@ -44,9 +44,9 @@ module Octopolo
 
       context ".for_pull_request pull_request" do
         let(:pull_request) { stub(repo_name: "foo/bar", number: 123) }
-        let(:raw_commit1) { stub }
+        let(:raw_commit1) { double }
         let(:raw_commits) { [raw_commit1] }
-        let(:wrapper_commit) { stub }
+        let(:wrapper_commit) { double }
 
         it "fetches from octokit and returns Commit wrappers" do
           GitHub.should_receive(:pull_request_commits).with(pull_request.repo_name, pull_request.number) { raw_commits }

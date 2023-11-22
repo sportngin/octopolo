@@ -6,10 +6,10 @@ module Octopolo
     describe PullRequest do
       let(:repo_name) { "account/repo" }
       let(:pr_number) { 7 }
-      let(:prhash) { stub }
-      let(:commits) { stub }
-      let(:comments) { stub }
-      let(:octo) { stub }
+      let(:prhash) { double }
+      let(:commits) { double }
+      let(:comments) { double }
+      let(:octo) { double }
 
       context ".new" do
         it "remembers the pull request identifiers" do

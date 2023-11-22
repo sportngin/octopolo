@@ -12,7 +12,7 @@ module Octopolo
       end
 
       context "#author_name" do
-        let(:octo) { stub }
+        let(:octo) { double }
         let(:login) { "joeuser" }
         let(:user) { User.new login }
 
@@ -34,7 +34,7 @@ module Octopolo
       context "#user_data" do
         let(:login) { "joeuser" }
         let(:user) { User.new login }
-        let(:octo) { stub }
+        let(:octo) { double }
 
         it "fetches the data from the User class" do
           User.should_receive(:user_data).with(login) { octo }
@@ -44,7 +44,7 @@ module Octopolo
 
       context ".user_data login" do
         let(:base_login) { "joeuser" }
-        let(:octo) { stub }
+        let(:octo) { double }
 
         it "fetches the data from GitHub" do
           login = "#{base_login}#{rand(100000)}"

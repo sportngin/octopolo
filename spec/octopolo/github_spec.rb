@@ -29,7 +29,7 @@ module Octopolo
     end
 
     context ".crawling_client" do
-      let(:client) { stub }
+      let(:client) { double }
 
       it "instantiates a client with auto_traversal" do
         GitHub.should_receive(:client).with(auto_traversal: true) { client }
@@ -40,7 +40,7 @@ module Octopolo
     context "having convenience methods" do
       let(:client) { stub(:github_client) }
       let(:crawling_client) { stub(:github_crawling_client) }
-      let(:data) { stub }
+      let(:data) { double }
 
       before do
         GitHub.stub(client: client, crawling_client: crawling_client)
@@ -146,7 +146,7 @@ module Octopolo
       end
 
       context ".connect &block" do
-        let(:thing) { stub }
+        let(:thing) { double }
         let(:try_again) { GitHub::TryAgain.new("try-again message") }
         let(:bad_credentials) { GitHub::BadCredentials.new("bad-credentials message") }
 

@@ -226,7 +226,7 @@ module Octopolo
 
     context ".prompt prompt_text" do
       let(:input) { "asdf" }
-      let(:highline) { stub }
+      let(:highline) { double }
       let(:prompt_text) { "Foo: " }
 
       before do
@@ -249,8 +249,8 @@ module Octopolo
     context ".prompt_secret prompt_text" do
       let(:input) { "asdf" }
       let(:prompt_text) { "Foo: " }
-      let(:highline) { stub }
-      let(:highline_config) { stub }
+      let(:highline) { double }
+      let(:highline_config) { double }
 
       before do
         subject.stub(highline: highline)
@@ -267,8 +267,8 @@ module Octopolo
     context ".prompt_multiline prompt_text" do
       let(:input) { %w(a s d f) }
       let(:prompt_text) { "Steps:" }
-      let(:highline) { stub }
-      let(:highline_config) { stub }
+      let(:highline) { double }
+      let(:highline_config) { double }
 
       before do
         subject.stub(highline: highline)
@@ -283,7 +283,7 @@ module Octopolo
     end
 
     context ".highline" do
-      let(:result) { stub }
+      let(:result) { double }
 
       it "instantiates a HighLine object" do
         HighLine.should_receive(:new) { result }
