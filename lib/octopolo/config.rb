@@ -98,7 +98,7 @@ module Octopolo
     end
 
     def self.octopolo_config_path
-      if filepath = FILE_NAMES.detect {|filename| File.exists?(filename)}
+      if filepath = FILE_NAMES.detect {|filename| File.exist?(filename)}
         File.join(Dir.pwd, filepath)
       else
         old_dir = Dir.pwd

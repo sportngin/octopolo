@@ -56,7 +56,7 @@ module Octopolo
     # Returns a String containing the path
     def self.config_parent
       dir = File.expand_path("~/.octopolo")
-      dir = File.expand_path("~/.automation") unless Dir.exists?(dir)
+      dir = File.expand_path("~/.automation") unless Dir.exist?(dir)
       dir
     end
 
