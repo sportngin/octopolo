@@ -132,11 +132,11 @@ module Octopolo
 
       context "#use_jira" do
         it "defaults to false" do
-          expect(Config.new.use_jira).to be_false
+          expect(Config.new.use_jira).to be false
         end
 
         it "forces a truthy value to be true" do
-          expect(Config.new(use_jira: "true").use_jira).to be_true
+          expect(Config.new(use_jira: "true").use_jira).to be true
         end
       end
 

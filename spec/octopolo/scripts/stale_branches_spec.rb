@@ -21,11 +21,11 @@ module Octopolo
 
       context "#new" do
         it "accepts a delete attribute to trigger deletes" do
-          expect(StaleBranches.new(true).delete?).to be_true
+          expect(StaleBranches.new(true).delete?).to be true
         end
 
         it "defaults to not delete" do
-          expect(subject.delete?).to be_false
+          expect(subject.delete?).to be false
         end
       end
 

@@ -195,32 +195,32 @@ module Octopolo
 
       it "returns true for 'y'" do
         subject.should_receive(:prompt) { "y" }
-        subject.ask_boolean(question).should be_true
+        subject.ask_boolean(question).should be true
       end
 
       it "returns true for 'yes'" do
         subject.should_receive(:prompt) { "yes" }
-        subject.ask_boolean(question).should be_true
+        subject.ask_boolean(question).should be true
       end
 
       it "returns true for 'Y'" do
         subject.should_receive(:prompt) { "Y" }
-        subject.ask_boolean(question).should be_true
+        subject.ask_boolean(question).should be true
       end
 
       it "returns false for 'n'" do
         subject.should_receive(:prompt) { "n" }
-        subject.ask_boolean(question).should be_false
+        subject.ask_boolean(question).should be false
       end
 
       it "returns false for 'no'" do
         subject.should_receive(:prompt) { "no" }
-        subject.ask_boolean(question).should be_false
+        subject.ask_boolean(question).should be false
       end
 
       it "returns false for 'N'" do
         subject.should_receive(:prompt) { "N" }
-        subject.ask_boolean(question).should be_false
+        subject.ask_boolean(question).should be false
       end
     end
 

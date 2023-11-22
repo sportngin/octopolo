@@ -45,24 +45,24 @@ module Octopolo
 
       it "staging and deploy should be reserved branches" do
         Git.stub(:current_branch).and_return "staging.05.12"
-        Git.reserved_branch?.should be_true
+        Git.reserved_branch?.should be true
 
         Git.stub(:current_branch).and_return "deployable.05.12"
-        Git.reserved_branch?.should be_true
+        Git.reserved_branch?.should be true
 
         Git.stub(:current_branch).and_return "qaready.05.12"
-        Git.reserved_branch?.should be_true
+        Git.reserved_branch?.should be true
       end
 
       it "other branches should not be reserved branches" do
         Git.stub(:current_branch).and_return "not_staging.05.12"
-        Git.reserved_branch?.should_not be_true
+        Git.reserved_branch?.should_not be true
 
         Git.stub(:current_branch).and_return "not_deployable.05.12"
-        Git.reserved_branch?.should_not be_true
+        Git.reserved_branch?.should_not be true
 
         Git.stub(:current_branch).and_return "not_qaready.05.12"
-        Git.reserved_branch?.should_not be_true
+        Git.reserved_branch?.should_not be true
       end
     end
 

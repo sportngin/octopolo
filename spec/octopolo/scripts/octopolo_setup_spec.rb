@@ -42,12 +42,12 @@ module Octopolo
       context ".git_extras_installed?" do
         it "returns true if git-extras command exists" do
           cli.should_receive(:perform).with("which git-extras", false) { "/usr/local/lib/git-extras" }
-          subject.git_extras_installed?.should be_true
+          subject.git_extras_installed?.should be true
         end
 
         it "returns false if git-extras command does not exist" do
           cli.should_receive(:perform).with("which git-extras", false) { "" }
-          subject.git_extras_installed?.should be_false
+          subject.git_extras_installed?.should be false
         end
       end
 
