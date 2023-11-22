@@ -12,9 +12,6 @@ To roll back this change, revert the merge with `git revert -m 1 MERGE_SHA` and 
 
 URLs
 ----
-<% pivotal_ids.each do |pivotal_id| -%>
-* [pivotal tracker story <%= pivotal_id %>](https://www.pivotaltracker.com/story/show/<%= pivotal_id %>)
-<% end -%>
 <% jira_ids.each do |jira_id| -%>
 * [Jira issue <%= jira_id %>](<%= jira_url %>/browse/<%= jira_id %>)
 <% end -%>

@@ -2,7 +2,6 @@ require_relative "../scripts"
 require_relative "../github"
 require_relative "../github/issue"
 require_relative "../github/issue_creator"
-require_relative "../pivotal/story_commenter"
 require_relative "../jira/story_commenter"
 require_relative "../question"
 
@@ -15,7 +14,6 @@ module Octopolo
 
       attr_accessor :title
       attr_accessor :issue
-      attr_accessor :pivotal_ids
       attr_accessor :jira_ids
       attr_accessor :labels
       attr_accessor :options
@@ -32,7 +30,6 @@ module Octopolo
         GitHub.connect do
           ask_questionaire
           create_issue
-          update_pivotal
           update_jira
           update_labels
           open_in_browser
@@ -44,7 +41,6 @@ module Octopolo
         announce
         ask_title
         ask_labels
-        ask_pivotal_ids if config.use_pivotal_tracker
         ask_jira_ids if config.use_jira
       end
       protected :ask_questionaire
@@ -76,19 +72,12 @@ module Octopolo
       end
       protected :ask_labels
 
-      # Protected: Ask for a Pivotal Tracker story IDs
-      def ask_pivotal_ids
-        response = Octopolo::Question.new(prompt: "Pivotal Tracker story ID(s):").prompt
-        self.pivotal_ids = response.split(/[\s,]+/)
-      end
-      protected :ask_pivotal_ids
-
       # Protected: Ask for a Jira Tracker story IDs
       def ask_jira_ids
         response = Octopolo::Question.new(prompt: "Jira story ID(s):").prompt
         self.jira_ids = response.split(/[\s,]+/)
       end
-      protected :ask_pivotal_ids
+      protected :ask_jira_ids
 
       # Protected: Create the issue
       #
@@ -104,7 +93,6 @@ module Octopolo
       def issue_attributes
         {
           title: title,
-          pivotal_ids: pivotal_ids,
           jira_ids: jira_ids,
           editor: options[:editor]
         }
@@ -143,13 +131,6 @@ module Octopolo
       def label_hash
         Hash[label_choices.map{ |l| [l.name, l] }]
       end
-
-      def update_pivotal
-        pivotal_ids.each do |story_id|
-          Pivotal::StoryCommenter.new(story_id, issue.url).perform
-        end if pivotal_ids
-      end
-      protected :update_pivotal
 
       def update_jira
         jira_ids.each do |story_id|

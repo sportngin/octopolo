@@ -66,13 +66,6 @@ module Octopolo
         options[:title] || raise(MissingAttribute)
       end
 
-      # Public: The Pivotal Tracker story IDs associated with the issue
-      #
-      # Returns an Array of Strings
-      def pivotal_ids
-        options[:pivotal_ids] || []
-      end
-
       # Public: Jira Issue IDs associated with the issue
       #
       # Returns an Array of Strings
@@ -133,7 +126,6 @@ module Octopolo
       # Public: The local variables to pass into the template
       def body_locals
         {
-          pivotal_ids: pivotal_ids,
           jira_ids: jira_ids,
           jira_url: jira_url,
         }
