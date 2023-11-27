@@ -18,7 +18,6 @@ Octopolo.instance_variable_set(:@config, Octopolo::Config.new({:deploy_branch =>
 
 RSpec.configure do |config|
   config.deprecation_stream = 'log/deprecations.log'
-  config.treat_symbols_as_metadata_keys_with_true_values = true
   config.run_all_when_everything_filtered = true
 
   # environment restoration lifted from facter project
@@ -59,6 +58,8 @@ RSpec.configure do |config|
     # a real object. This is generally recommended, and will default to
     # `true` in RSpec 4.
     mocks.verify_partial_doubles = true
+
+    mocks.syntax = [:expect, :should]
   end
 
   # This option will default to `:apply_to_host_groups` in RSpec 4 (and will

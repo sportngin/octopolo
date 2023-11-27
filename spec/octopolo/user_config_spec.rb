@@ -55,38 +55,42 @@ module Octopolo
 
     context ".config_parent" do
       it "defaults to ~/.octopolo" do
-        Dir.should_receive(:exist?).and_return(true)
+        allow(Dir).to receive(:exist?).and_return(true)
         UserConfig.config_parent.should == File.expand_path("~/.octopolo")
       end
 
       it "returns ~/.automation if ~/.octopolo does not exist" do
-        Dir.should_receive(:exist?).and_return(false)
+        allow(Dir).to receive(:exist?).and_return(false)
         UserConfig.config_parent.should == File.expand_path("~/.automation")
       end
     end
 
     context ".touch_config_file" do
+      before do
+        allow(UserConfig).to receive(:config_parent) { File.expand_path("~/.octopolo") }
+      end
+
       it "should properly handle if ~/.octopolo doesn't exist" do
-        Dir.should_receive(:exist?).with(UserConfig.config_parent) { false }
-        Dir.should_receive(:mkdir).with(UserConfig.config_parent)
-        File.should_receive(:exist?).with(UserConfig.config_path) { false }
-        File.should_receive(:write).with(UserConfig.config_path, YAML.dump({}))
+        allow(Dir).to receive(:exist?).with(UserConfig.config_parent) { false }
+        allow(Dir).to receive(:mkdir).with(UserConfig.config_parent)
+        allow(File).to receive(:exist?).with(UserConfig.config_path) { false }
+        allow(File).to receive(:write).with(UserConfig.config_path, YAML.dump({}))
         UserConfig.touch_config_file
       end
 
       it "writes an empty hash if ~/.octopolo exists but the config doesn't" do
-        Dir.should_receive(:exist?).with(UserConfig.config_parent) { true }
-        Dir.should_not_receive(:mkdir)
-        File.should_receive(:exist?).with(UserConfig.config_path) { false }
-        File.should_receive(:write).with(UserConfig.config_path, YAML.dump({}))
+        allow(Dir).to receive(:exist?).with(UserConfig.config_parent) { true }
+        expect(Dir).to_not receive(:mkdir)
+        allow(File).to receive(:exist?).with(UserConfig.config_path) { false }
+        allow(File).to receive(:write).with(UserConfig.config_path, YAML.dump({}))
         UserConfig.touch_config_file
       end
 
       it "does nothing if the file already exists" do
-        Dir.should_receive(:exist?).with(UserConfig.config_parent) { true }
-        Dir.should_not_receive(:mkdir)
-        File.should_receive(:exist?).with(UserConfig.config_path) { true }
-        File.should_not_receive(:write)
+        allow(Dir).to receive(:exist?).with(UserConfig.config_parent) { true }
+        expect(Dir).to_not receive(:mkdir)
+        allow(File).to receive(:exist?).with(UserConfig.config_path) { true }
+        expect(File).to_not receive(:write)
         UserConfig.touch_config_file
       end
     end
