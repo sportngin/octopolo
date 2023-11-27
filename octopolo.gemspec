@@ -16,13 +16,16 @@ Gem::Specification.new do |gem|
   gem.require_paths = ["lib"]
   gem.version       = Octopolo::VERSION
 
+  gem.required_ruby_version = '>= 3.2'
+
   gem.add_dependency 'gli', '~> 2.13'
-  gem.add_dependency 'hashie', '~> 1.2'
-  gem.add_dependency 'octokit', '~> 4.18'
-  gem.add_dependency 'public_suffix', '~> 2.0' # Lock down to 2.x for Ruby 2.0 compatibility.
-  gem.add_dependency 'highline', '~> 1.6'
+  gem.add_dependency 'hashie', '~> 5.0'
+  gem.add_dependency 'octokit', '~> 8.0'
+  gem.add_dependency 'faraday-retry', '~> 2.0'
+  gem.add_dependency 'public_suffix', '~> 5.0'
+  gem.add_dependency 'highline', '~> 2.0'
   gem.add_dependency 'semantic', '~> 1.3'
-  gem.add_dependency 'nokogiri-happymapper', '~> 0.6.0' # Lock down to 0.6.x for Ruby 2.0 compatibility.
+  gem.add_dependency 'nokogiri-happymapper', '~> 0.6'
 
   gem.add_development_dependency 'rake', '~> 10.1'
   gem.add_development_dependency 'rspec', '~> 2.99'
