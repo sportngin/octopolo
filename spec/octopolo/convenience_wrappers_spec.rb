@@ -1,4 +1,3 @@
-require "spec_helper"
 require_relative "../../lib/octopolo/convenience_wrappers"
 require_relative "../../lib/octopolo/git"
 

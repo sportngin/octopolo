@@ -1,4 +1,3 @@
-require "spec_helper"
 require "octopolo/semver_tag_scrubber"
 
 module Octopolo

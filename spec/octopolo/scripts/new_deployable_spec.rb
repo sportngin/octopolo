@@ -1,4 +1,3 @@
-require "spec_helper"
 require "octopolo/scripts/new_deployable"
 
 module Octopolo

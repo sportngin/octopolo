@@ -1,4 +1,3 @@
-require "spec_helper"
 
 describe Octopolo do
   it "has a VERSION" do

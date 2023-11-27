@@ -1,4 +1,3 @@
-require "spec_helper"
 require "octopolo/scripts/octopolo_setup"
 require "octopolo/scripts/github_auth"
 

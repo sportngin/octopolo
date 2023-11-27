@@ -1,4 +1,3 @@
-require "spec_helper"
 require "octopolo/pull_request_merger"
 
 module Octopolo

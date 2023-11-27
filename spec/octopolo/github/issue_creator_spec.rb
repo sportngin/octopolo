@@ -1,4 +1,3 @@
-require "spec_helper"
 require_relative "../../../lib/octopolo/github/issue_creator"
 
 module Octopolo

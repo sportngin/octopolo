@@ -1,4 +1,3 @@
-require "spec_helper"
 require "octopolo/scripts/sync_branch"
 
 module Octopolo

@@ -1,4 +1,3 @@
-require "spec_helper"
 require "octopolo/scripts/compare_release"
 
 module Octopolo

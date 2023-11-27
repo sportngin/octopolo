@@ -1,4 +1,3 @@
-require "spec_helper"
 require_relative "../../lib/octopolo/renderer"
 
 module Octopolo
