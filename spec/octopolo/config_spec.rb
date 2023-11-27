@@ -142,7 +142,7 @@ module Octopolo
 
       context "#jira_user" do
         it "does not raise an exception if jira isn't enabled" do
-          expect { Config.new.jira_user }.to_not raise_error(Config::MissingRequiredAttribute)
+          expect { Config.new.jira_user }.to_not raise_error
         end
 
         it "raises an exception if not given" do
@@ -156,7 +156,7 @@ module Octopolo
 
       context "#jira_password" do
         it "does not raise an exception if jira isn't enabled" do
-          expect { Config.new.jira_password }.to_not raise_error(Config::MissingRequiredAttribute)
+          expect { Config.new.jira_password }.to_not raise_error
         end
 
         it "raises an exception if not given" do
@@ -169,7 +169,7 @@ module Octopolo
       end
       context "#jira_url" do
         it "does not raise an exception if jira isn't enabled" do
-          expect { Config.new.jira_url }.to_not raise_error(Config::MissingRequiredAttribute)
+          expect { Config.new.jira_url }.to_not raise_error
         end
 
         it "raises an exception if not given" do

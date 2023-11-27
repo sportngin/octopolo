@@ -22,7 +22,7 @@ module Octopolo
     # Returns a String containing the rendered template
     def self.render template, locals
       # template_string, safe_mode = 0, "-" to trim whitespace in ERB tags ending -%> (like Rails)
-      ERB.new(contents_of(template), 0, "-").result(OpenStruct.new(locals).instance_eval { binding })
+      ERB.new(contents_of(template), trim_mode: "-").result(OpenStruct.new(locals).instance_eval { binding })
     end
 
     # Public: The contents of the named template

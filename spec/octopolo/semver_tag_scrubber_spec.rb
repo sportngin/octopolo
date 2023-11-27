@@ -36,7 +36,7 @@ module Octopolo
       end
 
       it 'should not raise an error if the tag does not exist' do
-        expect{ SemverTagScrubber.scrub_via_regexp(nil, regexp) }.not_to raise_error(NoMethodError)
+        expect{ SemverTagScrubber.scrub_via_regexp(nil, regexp) }.not_to raise_error
       end
 
       it 'should return nil if there was no tag' do

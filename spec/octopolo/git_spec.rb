@@ -185,7 +185,7 @@ module Octopolo
         cli.should_receive(:say).with(" ")
         Git.should_receive(:perform).with("status")
 
-        expect{Git.alert_dirty_index message}.to raise_error
+        expect{Git.alert_dirty_index message}.to raise_error(Octopolo::Git::DirtyIndex)
       end
     end
 
