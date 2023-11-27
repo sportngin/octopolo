@@ -3,9 +3,8 @@ require "octokit"
 module Octopolo
   module GitHub
     class Issue
-      attr_accessor :data
-      attr_accessor :repo_name
-      attr_accessor :number
+      attr_writer :data
+      attr_accessor :repo_name, :number
 
       def initialize repo_name, number, data = nil
         raise MissingParameter if repo_name.nil? or number.nil?
@@ -58,7 +57,7 @@ module Octopolo
 
       def external_urls
         # extract http and https URLs from the body
-        URI.extract body, %w(http https)
+        URI::Parser.new.extract(body, %w(http https))
       end
 
       def human_app_name

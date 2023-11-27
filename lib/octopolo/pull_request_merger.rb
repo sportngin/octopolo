@@ -9,7 +9,8 @@ module Octopolo
     include CLIWrapper
     include GitWrapper
 
-    attr_accessor :branch_type, :pull_request_id, :options, :pull_request
+    attr_accessor :branch_type, :pull_request_id, :options
+    attr_writer :pull_request
 
     # Public: Initialize a new instance of DatedBranchCreator
     #

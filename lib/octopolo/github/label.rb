@@ -6,16 +6,15 @@ module Octopolo
     class Label
       extend ConfigWrapper
 
-      attr_accessor :name
-      attr_accessor :color
+      attr_accessor :name, :color
 
       def initialize(args)
         self.name = args[:name]
         self.color = args[:color]
       end
 
-      def == (obj)
-        (self.name == obj.name) ? true : false
+      def ==(other)
+        name == other.name
       end
 
       # Public: Grabs all labels from either file or github

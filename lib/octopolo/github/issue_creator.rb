@@ -6,11 +6,9 @@ module Octopolo
     class IssueCreator
       include ConfigWrapper
       # for instantiating the issue creator
-      attr_accessor :repo_name
-      attr_accessor :options
+      attr_accessor :repo_name, :options
       # for caputuring the created issue information
-      attr_accessor :number
-      attr_accessor :data
+      attr_writer :number, :data
 
       # Public: Create a issue for the given repo with the given options
       #

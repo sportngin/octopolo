@@ -101,7 +101,7 @@ module Octopolo
       let(:new_value) { "My Name" }
 
       it "updates the YAML and its own values" do
-        config.full_name.should_not == new_value
+        config.full_name.should_not eq(new_value)
         File.should_receive(:write).with(UserConfig.config_path, YAML.dump(config.attributes.merge(full_name: new_value)))
         config.set(:full_name, "My Name")
         config.full_name.should eq(new_value)
