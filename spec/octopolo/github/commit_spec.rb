@@ -9,7 +9,7 @@ module Octopolo
 
         it "remembers the commit data from GitHub API" do
           commit = Commit.new commit_data
-          commit.commit_data.should == commit_data
+          commit.commit_data.should eq(commit_data)
         end
       end
 
@@ -20,7 +20,7 @@ module Octopolo
 
         it "fetches the author name from the author" do
           commit.stub(:author => double(:author_name => "pbyrne"))
-          commit.author_name.should == "pbyrne"
+          commit.author_name.should eq("pbyrne")
         end
       end
 
@@ -51,7 +51,7 @@ module Octopolo
         it "fetches from octokit and returns Commit wrappers" do
           GitHub.should_receive(:pull_request_commits).with(pull_request.repo_name, pull_request.number) { raw_commits }
           Commit.should_receive(:new).with(raw_commit1) { wrapper_commit }
-          Commit.for_pull_request(pull_request).should == [wrapper_commit]
+          Commit.for_pull_request(pull_request).should eq([wrapper_commit])
         end
       end
     end

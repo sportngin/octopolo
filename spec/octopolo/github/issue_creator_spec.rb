@@ -18,15 +18,15 @@ module Octopolo
         it "instantiates a creator and perfoms it" do
           IssueCreator.should_receive(:new).with(repo_name, options) { creator }
           creator.should_receive(:perform)
-          IssueCreator.perform(repo_name, options).should == creator
+          IssueCreator.perform(repo_name, options).should eq(creator)
         end
       end
 
       context ".new repo_name, options" do
         it "remembers the repo name and options" do
           creator = IssueCreator.new repo_name, options
-          creator.repo_name.should == repo_name
-          creator.options.should == options
+          creator.repo_name.should eq(repo_name)
+          creator.options.should eq(options)
         end
       end
 
@@ -42,9 +42,9 @@ module Octopolo
 
         it "generates the issue with the given details and retains the information" do
           GitHub.should_receive(:create_issue).with(repo_name, title, body, labels: []) { data }
-          creator.perform.should == data
-          creator.number.should == data.number
-          creator.data.should == data
+          creator.perform.should eq(data)
+          creator.number.should eq(data.number)
+          creator.data.should eq(data)
         end
 
         it "raises CannotCreate if any exception occurs" do
@@ -58,7 +58,7 @@ module Octopolo
 
         it "returns the stored issue number" do
           creator.number = number
-          creator.number.should == number
+          creator.number.should eq(number)
         end
 
         it "raises an exception if no issue has been created yet" do
@@ -72,7 +72,7 @@ module Octopolo
 
         it "returns the stored issue details" do
           creator.data = details
-          creator.data.should == details
+          creator.data.should eq(details)
         end
 
         it "raises an exception if no information has been captured yet" do
@@ -86,7 +86,7 @@ module Octopolo
           before { creator.options[:title] = title }
 
           it "fetches from the options" do
-            creator.title.should == title
+            creator.title.should eq(title)
           end
         end
 
@@ -106,8 +106,8 @@ module Octopolo
           })
         end
         it "includes the necessary keys to render the template" do
-          creator.body_locals[:jira_ids].should == creator.jira_ids
-          creator.body_locals[:jira_url].should == creator.jira_url
+          creator.body_locals[:jira_ids].should eq(creator.jira_ids)
+          creator.body_locals[:jira_url].should eq(creator.jira_url)
         end
       end
 
@@ -129,7 +129,7 @@ module Octopolo
           end
 
           it "returns the un-edited output" do
-            creator.edit_body(body).should == body
+            creator.edit_body(body).should eq(body)
           end
         end
 
@@ -160,7 +160,7 @@ module Octopolo
           end
 
           it "returns the user edited output" do
-            creator.edit_body(body).should == edited_body
+            creator.edit_body(body).should eq(edited_body)
           end
         end
       end
@@ -177,7 +177,7 @@ module Octopolo
 
         it "renders the body template with the body locals" do
           Renderer.should_receive(:render).with(Renderer::ISSUE_BODY, locals) { output }
-          creator.body.should == output
+          creator.body.should eq(output)
         end
 
         context "when the editor option is set" do
@@ -193,7 +193,7 @@ module Octopolo
           it "calls the edit_body method" do
             Renderer.should_receive(:render).with(Renderer::ISSUE_BODY, locals) { output }
             creator.should_receive(:edit_body).with(output) { edited_output }
-            creator.body.should == edited_output
+            creator.body.should eq(edited_output)
           end
         end
       end

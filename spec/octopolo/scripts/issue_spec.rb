@@ -122,11 +122,11 @@ module Octopolo
         end
 
         it "combines the anssers with a handful of deault values" do
-          subject.send(:issue_attributes).should == {
+          subject.send(:issue_attributes).should eq({
             title: subject.title,
             jira_ids: subject.jira_ids,
             editor: nil
-          }
+          })
         end
       end
 

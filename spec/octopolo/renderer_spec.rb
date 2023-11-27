@@ -11,13 +11,13 @@ module Octopolo
       it "renders the given template name with the given local variables" do
         Renderer.should_receive(:contents_of).with(template_name) { template_contents }
         rendered = Renderer.render(template_name, locals)
-        rendered.should == locals[:foo]
+        rendered.should eq(locals[:foo])
       end
     end
 
     context ".template_base_path" do
       it "should be in the octopolo directory" do
-        Renderer.template_base_path.should == File.expand_path(File.join(__FILE__, "../../../lib/octopolo/templates"))
+        Renderer.template_base_path.should eq(File.expand_path(File.join(__FILE__, "../../../lib/octopolo/templates")))
       end
     end
 
@@ -28,7 +28,7 @@ module Octopolo
 
       it "reads the file from templates/" do
         File.should_receive(:read).with(path) { contents }
-        Renderer.contents_of(name).should == contents
+        Renderer.contents_of(name).should eq(contents)
       end
     end
   end

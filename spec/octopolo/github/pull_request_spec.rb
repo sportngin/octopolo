@@ -14,13 +14,13 @@ module Octopolo
       context ".new" do
         it "remembers the pull request identifiers" do
           pr = PullRequest.new repo_name, pr_number
-          pr.repo_name.should == repo_name
-          pr.number.should == pr_number
+          pr.repo_name.should eq(repo_name)
+          pr.number.should eq(pr_number)
         end
 
         it "optionally accepts the github data" do
           pr = PullRequest.new repo_name, pr_number, octo
-          pr.data.should == octo
+          pr.data.should eq(octo)
         end
 
         it "fails if not given a repo name" do
@@ -37,7 +37,7 @@ module Octopolo
 
         it "fetches the details from GitHub" do
           GitHub.should_receive(:pull_request).with(pull.repo_name, pull.number) { octo }
-          pull.data.should == octo
+          pull.data.should eq(octo)
         end
 
         it "catches the information" do
@@ -63,7 +63,7 @@ module Octopolo
           let(:octo) { double(title: "the title") }
 
           it "retrieves from the github data" do
-            pull.title.should == octo.title
+            pull.title.should eq(octo.title)
           end
         end
 
@@ -71,14 +71,14 @@ module Octopolo
           let(:octo) { double(head: double(ref: "asdf")) }
 
           it "retrieves from the github data" do
-            pull.branch.should == octo.head.ref
+            pull.branch.should eq(octo.head.ref)
           end
         end
 
         context "#commits" do
           it "fetches through octokit" do
             Commit.should_receive(:for_pull_request).with(pull) { commits }
-            pull.commits.should == commits
+            pull.commits.should eq(commits)
           end
 
           it "caches the result" do
@@ -91,7 +91,7 @@ module Octopolo
         context "#comments" do
           it "fetches through octokit" do
             GitHub.should_receive(:issue_comments).with(pull.repo_name, pull.number) { comments }
-            pull.comments.should == comments
+            pull.comments.should eq(comments)
           end
 
           it "caches the result" do
@@ -112,15 +112,15 @@ module Octopolo
           it "returns the list of authors" do
             names = pull.author_names
             names.should_not be_empty
-            names.count.should == 2
-            names.first.should == "foo"
+            names.count.should eq(2)
+            names.first.should eq("foo")
           end
 
           it "returns only unique values" do
             # make it same commenter
             commit2.stub(author_name: commit1.author_name)
             names = pull.author_names
-            names.size.should == 1
+            names.size.should eq(1)
           end
         end
 
@@ -137,21 +137,21 @@ module Octopolo
           it "returns the names of the commit authors" do
             names = pull.commenter_names
             names.should_not be_empty
-            names.size.should == 2
-            names.first.should == "pbyrne"
+            names.size.should eq(2)
+            names.first.should eq("pbyrne")
           end
 
           it "returns only unique values" do
             # make it same commenter
             comment2.user.stub(login: comment1.user.login)
             names = pull.commenter_names
-            names.size.should == 1
+            names.size.should eq(1)
           end
 
           it "does not include authors in this list" do
             pull.stub(author_names: [comment1.user.login])
             names = pull.commenter_names
-            names.size.should == 1
+            names.size.should eq(1)
             names.should_not include comment1.user.login
           end
         end
@@ -169,7 +169,7 @@ module Octopolo
           let(:octo) { double(html_url: "http://example.com") }
 
           it "retrieves from the github data" do
-            pull.url.should == octo.html_url
+            pull.url.should eq(octo.html_url)
           end
         end
 
@@ -193,7 +193,7 @@ module Octopolo
 
           it "parses from the body" do
             urls = pull.external_urls
-            urls.size.should == 3
+            urls.size.should eq(3)
             urls.should include "http://thedesk.tstmedia.com/admin.php?pg=request&reqid=44690"
             urls.should include "http://thedesk.tstmedia.com/admin.php?pg=request&reqid=44693"
             urls.should include "http://www.ngin.com.stage.ngin-staging.com/api/volleyball/stats/summaries?id=68382&gender=girls&tst_test=1&date=8/24/2012"
@@ -204,12 +204,12 @@ module Octopolo
           let(:octo) { double(body: "asdf") }
 
           it "retrieves from the github data" do
-            pull.body.should == octo.body
+            pull.body.should eq(octo.body)
           end
 
           it "returns an empty string if the GitHub data has no body" do
             octo.stub(body: nil)
-            pull.body.should == ""
+            pull.body.should eq("")
           end
         end
 
@@ -225,7 +225,7 @@ module Octopolo
         context "#week" do
           it "retrieves from the github data" do
             octo.stub(closed_at: "2012-09-18T14:00:01Z")
-            pull.week.should == Week.parse(octo.closed_at)
+            pull.week.should eq(Week.parse(octo.closed_at))
           end
         end
       end
@@ -236,9 +236,9 @@ module Octopolo
 
         it "infers from the repo_name" do
           pull.repo_name = "account/foo"
-          pull.human_app_name.should == "Foo"
+          pull.human_app_name.should eq("Foo")
           pull.repo_name = "account/foo_bar"
-          pull.human_app_name.should == "Foo Bar"
+          pull.human_app_name.should eq("Foo Bar")
         end
       end
 
@@ -251,7 +251,7 @@ module Octopolo
           PullRequest.should_receive(:new).with(repo_name, raw_pr.number, raw_pr) { pr_wrapper }
 
           result = PullRequest.closed(repo_name)
-          result.should == [pr_wrapper]
+          result.should eq([pr_wrapper])
         end
       end
 
@@ -283,7 +283,7 @@ module Octopolo
         it "passes on to PullRequestCreator and returns a new PullRequest" do
           PullRequestCreator.should_receive(:perform).with(repo_name, options) { creator }
           PullRequest.should_receive(:new).with(repo_name, number, data) { pull_request }
-          PullRequest.create(repo_name, options).should == pull_request
+          PullRequest.create(repo_name, options).should eq(pull_request)
         end
       end
 
@@ -300,34 +300,34 @@ module Octopolo
           Git.should_receive(:current_branch) { branch_name }
           CLI.should_receive(:say).with("Pull request for current branch is number #{pr_number}")
           GitHub.should_receive(:search_issues) { double(total_count: 1, items: [pull]) }
-          PullRequest.current.should == pull
+          PullRequest.current.should eq(pull)
         end
 
         it "returns nil when Git.current_branch fails" do
           Git.should_receive(:current_branch) { raise error_message }
           CLI.should_receive(:say).with("An error occurred while getting the current branch: #{error_message}")
-          PullRequest.current.should == nil
+          PullRequest.current.should eq(nil)
         end
 
         it "returns nil when GitHub.pull_requests fails" do
           Git.should_receive(:current_branch) { branch_name }
           GitHub.should_receive(:search_issues) { raise error_message }
           CLI.should_receive(:say).with("An error occurred while getting the current branch: #{error_message}")
-          PullRequest.current.should == nil
+          PullRequest.current.should eq(nil)
         end
 
         it "returns nil when more than one PR exists" do
           Git.should_receive(:current_branch) { branch_name }
           GitHub.should_receive(:search_issues) { double(total_count: 2, items: [pull, pull]) }
           CLI.should_receive(:say).with("Multiple pull requests found for branch #{branch_name}")
-          PullRequest.current.should == nil
+          PullRequest.current.should eq(nil)
         end
 
         it "returns nil when no PR exists" do
           Git.should_receive(:current_branch) { branch_name }
           GitHub.should_receive(:search_issues) { double(total_count: 0, items: []) }
           CLI.should_receive(:say).with("No pull request found for branch #{branch_name}")
-          PullRequest.current.should == nil
+          PullRequest.current.should eq(nil)
         end
 
       end

@@ -200,14 +200,14 @@ module Octopolo
         end
 
         it "combines the anssers with a handful of deault values" do
-          subject.send(:pull_request_attributes).should == {
+          subject.send(:pull_request_attributes).should eq({
             title: subject.title,
             destination_branch: subject.destination_branch,
             source_branch: git.current_branch,
             jira_ids: subject.jira_ids,
             editor: nil,
             skip_draft: nil
-          }
+          })
         end
       end
 

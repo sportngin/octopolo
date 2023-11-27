@@ -35,7 +35,7 @@ module Octopolo
 
       it "performs a command to filter current branch from list of branches" do
         cli.should_receive(:perform_quietly).with("git branch | grep '^* ' | cut -c 3-") { output }
-        Git.current_branch.should == name
+        Git.current_branch.should eq(name)
       end
 
       it "raises NotOnBranch if not on a branch" do
@@ -249,7 +249,7 @@ module Octopolo
       it "prunes the remote branch list and grabs all the branch names" do
         Git.should_receive(:fetch)
         Git.should_receive(:perform_quietly).with("branch --remote") { raw_output }
-        Git.remote_branches.should == cleaned_names.sort
+        Git.remote_branches.should eq(cleaned_names.sort)
       end
     end
 
@@ -268,14 +268,14 @@ module Octopolo
         deployables = Git.branches_for(Git::DEPLOYABLE_PREFIX)
         deployables.should include depl1
         deployables.should include depl2
-        deployables.should == [depl1, depl2].sort
-        deployables.count.should == 2
+        deployables.should eq([depl1, depl2].sort)
+        deployables.count.should eq(2)
       end
 
       it "can find staging branches" do
         stagings = Git.branches_for(Git::STAGING_PREFIX)
         stagings.should include stage1
-        stagings.count.should == 1
+        stagings.count.should eq(1)
       end
     end
 
@@ -285,7 +285,7 @@ module Octopolo
 
       it "returns the last deployable branch" do
         Git.should_receive(:branches_for).with(Git::DEPLOYABLE_PREFIX) { [depl1, depl2] }
-        Git.deployable_branch.should == depl2
+        Git.deployable_branch.should eq(depl2)
       end
 
       it "raises an exception if none exist" do
@@ -300,7 +300,7 @@ module Octopolo
 
       it "returns the last staging branch" do
         Git.should_receive(:branches_for).with(Git::STAGING_PREFIX) { [stage1, stage2] }
-        Git.staging_branch.should == stage2
+        Git.staging_branch.should eq(stage2)
       end
 
       it "raises an exception if none exist" do
@@ -315,7 +315,7 @@ module Octopolo
 
       it "returns the last qaready branch" do
         Git.should_receive(:branches_for).with(Git::QAREADY_PREFIX) { [qaready1, qaready2] }
-        Git.qaready_branch.should == qaready2
+        Git.qaready_branch.should eq(qaready2)
       end
 
       it "raises an exception if none exist" do
@@ -345,8 +345,8 @@ module Octopolo
       it "returns the last #{Git::RECENT_TAG_LIMIT} tags" do
         Git.should_receive(:release_tags) { long_list }
         tags = Git.recent_release_tags
-        tags.count.should == Git::RECENT_TAG_LIMIT
-        tags.should == long_list.last(Git::RECENT_TAG_LIMIT)
+        tags.count.should eq(Git::RECENT_TAG_LIMIT)
+        tags.should eq(long_list.last(Git::RECENT_TAG_LIMIT))
       end
     end
 

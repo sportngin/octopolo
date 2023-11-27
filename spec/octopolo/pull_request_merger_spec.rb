@@ -27,7 +27,7 @@ module Octopolo
 
         it "finds the PullRequest for the given ID" do
           GitHub::PullRequest.should_receive(:new).with(config.github_repo, pull_request_id) { pull_request }
-          subject.pull_request.should == pull_request
+          subject.pull_request.should eq(pull_request)
         end
 
         it "caches the PullRequest" do
@@ -137,7 +137,7 @@ module Octopolo
       context "#comment_body" do
         it "contains the default comment body" do
           git.should_receive(:latest_branch_for).with("deployable").and_return("deployable")
-          subject.comment_body.should == "Merged into #{git.deployable_branch}. /cc @NickLaMuro @anfleene"
+          subject.comment_body.should eq("Merged into #{git.deployable_branch}. /cc @NickLaMuro @anfleene")
         end
       end
     end

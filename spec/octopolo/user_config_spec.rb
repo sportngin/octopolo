@@ -11,7 +11,7 @@ module Octopolo
         UserConfig.should_receive(:attributes_from_file) { parsed_attributes }
         UserConfig.should_receive(:new).with(parsed_attributes) { config }
 
-        UserConfig.parse.should == config
+        UserConfig.parse.should eq(config)
       end
     end
 
@@ -20,8 +20,8 @@ module Octopolo
 
       it "remembers the attributes given to it" do
         config = UserConfig.new(attributes)
-        config.attributes.should == attributes
-        config.github_user.should == attributes[:github_user]
+        config.attributes.should eq(attributes)
+        config.github_user.should eq(attributes[:github_user])
       end
 
       it "gracefully handles unknown keys" do
@@ -37,31 +37,31 @@ module Octopolo
       end
 
       it "parses the YAML in the config_path" do
-        UserConfig.attributes_from_file.should == YAML.load_file(path)
+        UserConfig.attributes_from_file.should eq(YAML.load_file(path))
       end
 
       it "creates the file if it doesn't exist" do
         YAML.should_receive(:load_file).and_raise(Errno::ENOENT)
         UserConfig.should_receive(:touch_config_file)
-        UserConfig.attributes_from_file.should == {}
+        UserConfig.attributes_from_file.should eq({})
       end
     end
 
     context ".config_path" do
       it "is ~/.octopolo/config.yml" do
-        UserConfig.config_path.should == File.join(UserConfig.config_parent, "config.yml")
+        UserConfig.config_path.should eq(File.join(UserConfig.config_parent, "config.yml"))
       end
     end
 
     context ".config_parent" do
       it "defaults to ~/.octopolo" do
         allow(Dir).to receive(:exist?).and_return(true)
-        UserConfig.config_parent.should == File.expand_path("~/.octopolo")
+        UserConfig.config_parent.should eq(File.expand_path("~/.octopolo"))
       end
 
       it "returns ~/.automation if ~/.octopolo does not exist" do
         allow(Dir).to receive(:exist?).and_return(false)
-        UserConfig.config_parent.should == File.expand_path("~/.automation")
+        UserConfig.config_parent.should eq(File.expand_path("~/.automation"))
       end
     end
 
@@ -104,7 +104,7 @@ module Octopolo
         config.full_name.should_not == new_value
         File.should_receive(:write).with(UserConfig.config_path, YAML.dump(config.attributes.merge(full_name: new_value)))
         config.set(:full_name, "My Name")
-        config.full_name.should == new_value
+        config.full_name.should eq(new_value)
       end
     end
 
@@ -114,12 +114,12 @@ module Octopolo
 
       it "returns the configured full_name" do
         config.full_name = name
-        config.full_name.should == name
+        config.full_name.should eq(name)
       end
 
       it "returns the user's system username otherwise" do
         config.full_name = nil
-        config.full_name.should == ENV["USER"]
+        config.full_name.should eq(ENV["USER"])
       end
     end
 
@@ -128,11 +128,11 @@ module Octopolo
 
       it "returns the configured value" do
         config.editor = true
-        config.editor.should == true
+        config.editor.should eq(true)
       end
 
       it "returns false otherwise" do
-        config.editor.should == false
+        config.editor.should eq(false)
       end
     end
 
@@ -142,7 +142,7 @@ module Octopolo
 
       it "returns the configured github_user" do
         config.github_user = username
-        config.github_user.should == username
+        config.github_user.should eq(username)
       end
 
       it "raises MissingGitHubAuth if missing" do
@@ -157,7 +157,7 @@ module Octopolo
 
       it "returns the configured github_token" do
         config.github_token = token
-        config.github_token.should == token
+        config.github_token.should eq(token)
       end
 
       it "raises MissingGitHubAuth if missing" do

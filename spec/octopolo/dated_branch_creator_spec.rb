@@ -23,14 +23,14 @@ module Octopolo
       it "instantiates a new creator and performs it" do
         DatedBranchCreator.should_receive(:new).with(type, true) { creator }
         creator.should_receive(:perform)
-        DatedBranchCreator.perform(type, true).should == creator
+        DatedBranchCreator.perform(type, true).should eq(creator)
       end
     end
 
     context ".new(branch_type)" do
       it "remembers the branch_type" do
         test = DatedBranchCreator.new(type)
-        test.branch_type.should == type
+        test.branch_type.should eq(type)
       end
     end
 
@@ -58,24 +58,24 @@ module Octopolo
 
     context "#date_suffix" do
       it "uses today's date" do
-        subject.date_suffix.should == Date.today.strftime("%Y.%m.%d")
+        subject.date_suffix.should eq(Date.today.strftime("%Y.%m.%d"))
       end
     end
 
     context "#branch_name" do
       it "properly generates a name for staging branches" do
         subject.branch_type = Git::STAGING_PREFIX
-        subject.branch_name.should == "#{Git::STAGING_PREFIX}.#{subject.date_suffix}"
+        subject.branch_name.should eq("#{Git::STAGING_PREFIX}.#{subject.date_suffix}")
       end
 
       it "properly generates a name for deployable branches" do
         subject.branch_type = Git::DEPLOYABLE_PREFIX
-        subject.branch_name.should == "#{Git::DEPLOYABLE_PREFIX}.#{subject.date_suffix}"
+        subject.branch_name.should eq("#{Git::DEPLOYABLE_PREFIX}.#{subject.date_suffix}")
       end
 
       it "properly generates a name for qaready branches" do
         subject.branch_type = Git::QAREADY_PREFIX
-        subject.branch_name.should == "#{Git::QAREADY_PREFIX}.#{subject.date_suffix}"
+        subject.branch_name.should eq("#{Git::QAREADY_PREFIX}.#{subject.date_suffix}")
       end
 
       it "raises an exception for other branch types" do
@@ -138,14 +138,14 @@ module Octopolo
         subject.branch_type = Git::STAGING_PREFIX
         Git.stub(:branches_for).with(Git::STAGING_PREFIX) { extra_stagings + [subject.branch_name] }
         subject.extra_branches.should_not include subject.branch_name
-        subject.extra_branches.should == extra_stagings
+        subject.extra_branches.should eq(extra_stagings)
       end
 
       it "gets the correct list for deployable branches" do
         subject.branch_type = Git::DEPLOYABLE_PREFIX
         Git.stub(:branches_for).with(Git::DEPLOYABLE_PREFIX) { extra_deployables + [subject.branch_name] }
         subject.extra_branches.should_not include subject.branch_name
-        subject.extra_branches.should == extra_deployables
+        subject.extra_branches.should eq(extra_deployables)
       end
 
       it "raises an exception for any other branch type" do
