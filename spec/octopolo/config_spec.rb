@@ -23,8 +23,8 @@ module Octopolo
 
     context "default cuzomizable methods" do
       context "#deploy_branch" do
-        it "is master by default" do
-          Config.new.deploy_branch.should == "master"
+        it "is main by default" do
+          Config.new.deploy_branch.should == "main"
         end
 
         it "is the specified branch otherwise" do
@@ -140,33 +140,6 @@ module Octopolo
         end
       end
 
-      context "#jira_user" do
-        it "does not raise an exception if jira isn't enabled" do
-          expect { Config.new.jira_user }.to_not raise_error
-        end
-
-        it "raises an exception if not given" do
-          expect { Config.new(use_jira: true).jira_user }.to raise_error(Config::MissingRequiredAttribute)
-        end
-
-        it "returns the specified value otherwise" do
-          expect(Config.new(use_jira: true, jira_user: "jira-user").jira_user).to eq("jira-user")
-        end
-      end
-
-      context "#jira_password" do
-        it "does not raise an exception if jira isn't enabled" do
-          expect { Config.new.jira_password }.to_not raise_error
-        end
-
-        it "raises an exception if not given" do
-          expect { Config.new(use_jira: true).jira_password }.to raise_error(Config::MissingRequiredAttribute)
-        end
-
-        it "returns the specified value otherwise" do
-          expect(Config.new(use_jira: true, jira_password: "jira-password").jira_password).to eq("jira-password")
-        end
-      end
       context "#jira_url" do
         it "does not raise an exception if jira isn't enabled" do
           expect { Config.new.jira_url }.to_not raise_error
@@ -214,8 +187,7 @@ module Octopolo
 
       it "reads from the .octopolo.yml file and creates a new config instance" do
         subject.should_receive(:attributes_from_file).and_return(parsed_attributes)
-        subject.should_receive(:new).with(parsed_attributes)
-
+        subject.should_receive(:new).with(include(parsed_attributes))
         subject.parse
       end
     end

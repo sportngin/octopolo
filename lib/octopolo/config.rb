@@ -10,10 +10,13 @@ module Octopolo
     # we use date-based tags, so look for anything starting with a 4-digit year
     RECENT_TAG_FILTER = /^\d{4}.*/
 
-    attr_accessor :cli
+    DEPRECATED_ATTRS = %w[use_pivotal_tracker jira_user jira_password]
 
-    def initialize(attributes={})
+    attr_accessor :cli, :config_file
+
+    def initialize(config_file: nil, **attributes)
       self.cli = Octopolo::CLI
+      self.config_file = config_file
 
       assign attributes
       load_plugins
@@ -21,7 +24,7 @@ module Octopolo
 
     # default values for these customizations
     def deploy_branch
-      @deploy_branch || "master"
+      @deploy_branch || "main"
     end
 
     def branches_to_keep
@@ -45,7 +48,7 @@ module Octopolo
     end
 
     def merge_resolver
-      @merge_resolver 
+      @merge_resolver
     end
 
     def user_notifications
@@ -69,14 +72,6 @@ module Octopolo
       !!@use_jira
     end
 
-    def jira_user
-      @jira_user || raise(MissingRequiredAttribute, "Jira User is required") if use_jira
-    end
-
-    def jira_password
-      @jira_password || raise(MissingRequiredAttribute, "Jira Password is required") if use_jira
-    end
-
     def jira_url
       @jira_url || raise(MissingRequiredAttribute, "Jira Url is required") if use_jira
     end
@@ -88,13 +83,13 @@ module Octopolo
     # end defaults
 
     def self.parse
-      new(attributes_from_file || {})
+      file = octopolo_config_path
+      attrs = attributes_from_file(file)
+      new(config_file: file, **attrs)
     end
 
-    def self.attributes_from_file
-      if path = octopolo_config_path
-        YAML.load_file(path)
-      end
+    def self.attributes_from_file(path = octopolo_config_path)
+      YAML.load_file(path) if path
     end
 
     def self.octopolo_config_path
@@ -122,8 +117,18 @@ module Octopolo
     end
 
     def assign(attributes)
+      deprecated = []
       attributes.each do |key, value|
+        if DEPRECATED_ATTRS.include?(key.to_s)
+          deprecated << key.to_s
+          next
+        end
+
         self.instance_variable_set("@#{key}", value)
+      end
+      unless deprecated.empty?
+        Octopolo::CLI.say "*** WARNING: The attributes #{deprecated.join(', ')} are deprecated.\n" +
+          "Please remove from #{config_file}."
       end
     end
 
