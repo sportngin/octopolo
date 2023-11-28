@@ -23,7 +23,7 @@ scripts to use.
 
 #### Create New Branch
 
-Create a new branch from the master branch and push it out to GitHub.
+Create a new branch from the main branch and push it out to GitHub.
 
     new-branch bug-123-something
 
@@ -59,5 +59,5 @@ Select from recent release tags and generate a link to the GitHub compare view.
     compare-releases
 
 
-[build_status]: https://travis-ci.org/sportngin/octopolo
-[build_status_image]: https://travis-ci.org/sportngin/octopolo.svg?branch=master
+[build_status]: https://github.com/sportngin/octopolo/actions
+[build_status_image]: https://github.com/sportngin/octopolo/actions/workflows/ruby.yml/badge.svg

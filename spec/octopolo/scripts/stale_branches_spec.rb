@@ -1,13 +1,12 @@
-require "spec_helper"
 require "octopolo/scripts/stale_branches"
 
 module Octopolo
   module Scripts
     describe StaleBranches do
       # stub any attributes in the config that you need
-      let(:config) { stub(:config, :deploy_branch => "production", :branches_to_keep => %w(master production staging)) }
-      let(:cli) { stub(:cli) }
-      let(:git) { stub(:Git)}
+      let(:config) { double(:config, :deploy_branch => "production", :branches_to_keep => %w(main production staging)) }
+      let(:cli) { double(:cli) }
+      let(:git) { double(:Git)}
 
       subject { StaleBranches.new }
 
@@ -21,11 +20,11 @@ module Octopolo
 
       context "#new" do
         it "accepts a delete attribute to trigger deletes" do
-          expect(StaleBranches.new(true).delete?).to be_true
+          expect(StaleBranches.new(true).delete?).to be true
         end
 
         it "defaults to not delete" do
-          expect(subject.delete?).to be_false
+          expect(subject.delete?).to be false
         end
       end
 

@@ -1,15 +1,14 @@
-require "spec_helper"
 require "octopolo/pull_request_merger"
 
 module Octopolo
   module Scripts
     describe PullRequestMerger do
-      let(:cli) { stub(:CLI) }
-      let(:config) { stub(:Config, github_repo: "tstmedia/foo") }
+      let(:cli) { double(:CLI) }
+      let(:config) { double(:Config, github_repo: "tstmedia/foo") }
       let(:pull_request_id) { 42 }
-      let(:pull_request) { stub(:PullRequest, branch: "cool-feature", url: "http://example.com/") }
+      let(:pull_request) { double(:PullRequest, branch: "cool-feature", url: "http://example.com/") }
       let(:branch_type) { Git::DEPLOYABLE_PREFIX }
-      let(:git) { stub(:git, deployable_branch: "deployable") }
+      let(:git) { double(:git, deployable_branch: "deployable") }
       let(:options) { { :user_notifications => ['NickLaMuro', 'anfleene'] } }
 
       subject { PullRequestMerger.new(Git::DEPLOYABLE_PREFIX, 42, options) }
@@ -27,7 +26,7 @@ module Octopolo
 
         it "finds the PullRequest for the given ID" do
           GitHub::PullRequest.should_receive(:new).with(config.github_repo, pull_request_id) { pull_request }
-          subject.pull_request.should == pull_request
+          subject.pull_request.should eq(pull_request)
         end
 
         it "caches the PullRequest" do
@@ -65,14 +64,14 @@ module Octopolo
           git.should_receive(:if_clean).and_raise(GitHub::PullRequest::NotFound)
           cli.should_receive(:say).with("Unable to find pull request #{pull_request_id}. Please retry with a valid ID.")
 
-          expect { subject.perform }.to raise_error
+          expect { subject.perform }.to raise_error(GitHub::PullRequest::NotFound)
         end
 
         it "properly handles a failed merge" do
           git.should_receive(:if_clean).and_raise(Git::MergeFailed)
           cli.should_receive(:say).with("Merge failed. Please identify the source of this merge conflict resolve this conflict in your pull request's branch. NOTE: Merge conflicts resolved in the deployable branch are NOT used when deploying.")
 
-          expect { subject.perform }.to raise_error
+          expect { subject.perform }.to raise_error(Git::MergeFailed)
         end
 
         it "properly handles a failed checkout of branch" do
@@ -80,7 +79,7 @@ module Octopolo
           git.should_receive(:latest_branch_for).with("deployable").and_return("deployable")
           cli.should_receive(:say).with("Checkout of #{git.deployable_branch} failed. Please contact Infrastructure to determine the cause.")
 
-          expect { subject.perform }.to raise_error
+          expect { subject.perform }.to raise_error(Git::CheckoutFailed)
         end
 
         it "properly handles a failed comment" do
@@ -88,12 +87,12 @@ module Octopolo
           git.should_receive(:latest_branch_for).with("deployable").and_return("deployable")
           cli.should_receive(:say).with("Unable to write comment. Please navigate to #{pull_request.url} and add the comment, '#{subject.comment_body}'")
 
-          expect { subject.perform }.to raise_error
+          expect { subject.perform }.to raise_error(GitHub::PullRequest::CommentFailed)
         end
       end
 
       context "#check_out_branch" do
-        let(:creator) { stub(:dated_branch_creator, branch_name: "new-deployable") }
+        let(:creator) { double(:dated_branch_creator, branch_name: "new-deployable") }
 
         it "checks out the project's deployable branch" do
           git.should_receive(:check_out).with(git.deployable_branch)
@@ -137,7 +136,7 @@ module Octopolo
       context "#comment_body" do
         it "contains the default comment body" do
           git.should_receive(:latest_branch_for).with("deployable").and_return("deployable")
-          subject.comment_body.should == "Merged into #{git.deployable_branch}. /cc @NickLaMuro @anfleene"
+          subject.comment_body.should eq("Merged into #{git.deployable_branch}. /cc @NickLaMuro @anfleene")
         end
       end
     end

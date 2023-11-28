@@ -49,7 +49,7 @@ describe Octopolo::Question do
     }
   end
 
-  let(:cli) { stub(:cli) }
+  let(:cli) { double(:cli) }
 
   before do
     Octopolo::Question.any_instance.stub({

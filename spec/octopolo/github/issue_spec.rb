@@ -1,4 +1,3 @@
-require "spec_helper"
 require_relative "../../../lib/octopolo/github/issue"
 require_relative "../../../lib/octopolo/github/issue_creator"
 
@@ -7,20 +6,20 @@ module Octopolo
     describe Issue do
       let(:repo_name) { "account/repo" }
       let(:issue_number) { 7 }
-      let(:issue_hash) { stub }
-      let(:comments) { stub }
-      let(:octo) { stub }
+      let(:issue_hash) { double }
+      let(:comments) { double }
+      let(:octo) { double }
 
       context ".new" do
         it "remembers the issue identifiers" do
           i = Issue.new repo_name, issue_number
-          i.repo_name.should == repo_name
-          i.number.should == issue_number
+          i.repo_name.should eq(repo_name)
+          i.number.should eq(issue_number)
         end
 
         it "optionally accepts the github data" do
           i = Issue.new repo_name, issue_number, octo
-          i.data.should == octo
+          i.data.should eq(octo)
         end
 
         it "fails if not given a repo name" do
@@ -37,7 +36,7 @@ module Octopolo
 
         it "fetches the details from GitHub" do
           GitHub.should_receive(:issue).with(issue.repo_name, issue.number) { octo }
-          issue.data.should == octo
+          issue.data.should eq(octo)
         end
 
         it "catches the information" do
@@ -60,17 +59,17 @@ module Octopolo
         end
 
         context "#title" do
-          let(:octo) { stub(title: "the title") }
+          let(:octo) { double(title: "the title") }
 
           it "retrieves from the github data" do
-            issue.title.should == octo.title
+            issue.title.should eq(octo.title)
           end
         end
 
         context "#comments" do
           it "fetches through octokit" do
             GitHub.should_receive(:issue_comments).with(issue.repo_name, issue.number) { comments }
-            issue.comments.should == comments
+            issue.comments.should eq(comments)
           end
 
           it "caches the result" do
@@ -81,8 +80,8 @@ module Octopolo
         end
 
         context "#commenter_names" do
-          let(:comment1) { stub(user: stub(login: "pbyrne")) }
-          let(:comment2) { stub(user: stub(login: "anfleene")) }
+          let(:comment1) { double(user: double(login: "pbyrne")) }
+          let(:comment2) { double(user: double(login: "anfleene")) }
 
           before do
             issue.stub(comments: [comment1, comment2])
@@ -92,7 +91,7 @@ module Octopolo
             # make it same commenter
             comment2.user.stub(login: comment1.user.login)
             names = issue.commenter_names
-            names.size.should == 1
+            names.size.should eq(1)
           end
         end
 
@@ -106,10 +105,10 @@ module Octopolo
         end
 
         context "#url" do
-          let(:octo) { stub(html_url: "http://example.com") }
+          let(:octo) { double(html_url: "http://example.com") }
 
           it "retrieves from the github data" do
-            issue.url.should == octo.html_url
+            issue.url.should eq(octo.html_url)
           end
         end
 
@@ -133,7 +132,7 @@ module Octopolo
 
           it "parses from the body" do
             urls = issue.external_urls
-            urls.size.should == 3
+            urls.size.should eq(3)
             urls.should include "http://thedesk.tstmedia.com/admin.php?pg=request&reqid=44690"
             urls.should include "http://thedesk.tstmedia.com/admin.php?pg=request&reqid=44693"
             urls.should include "http://www.ngin.com.stage.ngin-staging.com/api/volleyball/stats/summaries?id=68382&gender=girls&tst_test=1&date=8/24/2012"
@@ -141,15 +140,15 @@ module Octopolo
         end
 
         context "#body" do
-          let(:octo) { stub(body: "asdf") }
+          let(:octo) { double(body: "asdf") }
 
           it "retrieves from the github data" do
-            issue.body.should == octo.body
+            issue.body.should eq(octo.body)
           end
 
           it "returns an empty string if the GitHub data has no body" do
             octo.stub(body: nil)
-            issue.body.should == ""
+            issue.body.should eq("")
           end
         end
       end
@@ -160,9 +159,9 @@ module Octopolo
 
         it "infers from the repo_name" do
           issue.repo_name = "account/foo"
-          issue.human_app_name.should == "Foo"
+          issue.human_app_name.should eq("Foo")
           issue.repo_name = "account/foo_bar"
-          issue.human_app_name.should == "Foo Bar"
+          issue.human_app_name.should eq("Foo Bar")
         end
       end
 
@@ -185,16 +184,16 @@ module Octopolo
       end
 
       context ".create repo_name, options" do
-        let(:options) { stub(:hash) }
-        let(:number) { stub(:integer) }
-        let(:data) { stub(:data)}
-        let(:creator) { stub(:issue_creator, number: number, data: data)}
-        let(:issue) { stub(:issue) }
+        let(:options) { double(:hash) }
+        let(:number) { double(:integer) }
+        let(:data) { double(:data) }
+        let(:creator) { double(:issue_creator, number: number, data: data)}
+        let(:issue) { double(:issue) }
 
         it "passes on to IssueCreator and returns a new Issue" do
           IssueCreator.should_receive(:perform).with(repo_name, options) { creator }
           Issue.should_receive(:new).with(repo_name, number, data) { issue }
-          Issue.create(repo_name, options).should == issue
+          Issue.create(repo_name, options).should eq(issue)
         end
       end
 

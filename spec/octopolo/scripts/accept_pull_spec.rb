@@ -1,14 +1,13 @@
-require "spec_helper"
 require "octopolo/scripts/accept_pull"
 
 module Octopolo
   module Scripts
     describe AcceptPull do
-      let(:config) { stub(:config, :github_repo => "tstmedia/foo", :deploy_branch => "master") }
-      let(:cli) { stub }
-      let(:git) { stub(:Git) }
+      let(:config) { double(:config, :github_repo => "tstmedia/foo", :deploy_branch => "main") }
+      let(:cli) { double }
+      let(:git) { double(:Git) }
       let(:pull_request_id) { 42 }
-      let(:pull_request) { stub(:PullRequest, branch: "cool-feature", url: "http://example.com/") }
+      let(:pull_request) { double(:PullRequest, branch: "cool-feature", url: "http://example.com/") }
 
       subject { AcceptPull.new '' }
 
@@ -44,7 +43,7 @@ module Octopolo
       end
 
       context "#merge" do
-        let(:pull_request) { stub(branch: "foobranch") }
+        let(:pull_request) { double(branch: "foobranch") }
         before { subject.stub(:pull_request_id => pull_request_id) }
 
         context "when mergeable and status checks passed" do
@@ -69,7 +68,7 @@ module Octopolo
             cli.stub(:say)
             cli.should_not_receive(:perform).with "git merge --no-ff origin/#{pull_request.branch} -m \"Merge pull request ##{pull_request_id} from origin/#{pull_request.branch}\""
 
-            cli.should_receive(:say).with /merge conflict/
+            cli.should_receive(:say).with(/merge conflict/)
             expect(subject).to receive(:exit!)
             subject.merge pull_request
           end

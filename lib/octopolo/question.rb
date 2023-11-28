@@ -2,7 +2,8 @@ module Octopolo
   class Question
     include CLIWrapper
 
-    attr_accessor :prompt, :type, :choices, :add_label_based_on_boolean
+    attr_accessor :type, :choices, :add_label_based_on_boolean
+    attr_writer :prompt
 
     def initialize(options)
       self.prompt = options[:prompt]

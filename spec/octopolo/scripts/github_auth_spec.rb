@@ -1,11 +1,10 @@
-require "spec_helper"
 require "octopolo/scripts/github_auth"
 
 module Octopolo
   module Scripts
     describe GithubAuth do
-      let(:user_config) { stub(:user_config) }
-      let(:cli) { stub(:cli) }
+      let(:user_config) { double(:user_config) }
+      let(:cli) { double(:cli) }
       let(:username) { "username" }
       let(:password) { "password" }
       let(:user_defined_token) { "123456789" }

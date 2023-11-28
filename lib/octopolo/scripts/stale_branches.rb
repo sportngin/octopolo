@@ -11,7 +11,7 @@ module Octopolo
       attr_accessor :delete
       alias_method :delete?, :delete
 
-      DEFAULT_BRANCHES = %W(HEAD master staging production)
+      DEFAULT_BRANCHES = %W(HEAD main master staging production)
 
       def initialize(delete=false)
         @delete = delete

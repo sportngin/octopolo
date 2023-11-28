@@ -13,7 +13,7 @@ module Octopolo
     end
 
     def open
-      FileUtils.touch(@filename) unless File.exists?(@filename)
+      FileUtils.touch(@filename) unless File.exist?(@filename)
       File.copy_stream(@filename,'old_changelog')
       File.open('old_changelog', 'r') do |old_changelog|
         File.open(@filename, 'w') do |changelog|

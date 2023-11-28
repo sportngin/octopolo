@@ -37,7 +37,7 @@ module Octopolo
                    "You *must* enter a token manually if you are using GitHub's Two Factor Authentication.\n"\
                    "For more information, see https://help.github.com/articles/creating-an-access-token-for-command-line-use\n\n"
         choices = ["Generate an API token with my credentials", "I'll enter an access token manually"]
-        selected = cli.ask(question, choices)
+        cli.ask(question, choices)
       end
       private :ask_auth_method
 

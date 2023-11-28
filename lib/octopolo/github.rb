@@ -33,7 +33,7 @@ module Octopolo
 
     # Public: A GitHub client object
     def self.client(options = {})
-      Octokit::Client.new(options.merge(login: user_config.github_user, access_token: user_config.github_token))
+      Octokit::Client.new(login: user_config.github_user, access_token: user_config.github_token, **options)
     rescue UserConfig::MissingGitHubAuth
       raise TryAgain, "No GitHub API token stored. Please run `op github-auth` to generate your token."
     end
@@ -51,36 +51,36 @@ module Octopolo
       raise BadCredentials, "Your stored credentials were rejected by GitHub. Run `op github-auth` to generate a new token."
     end
 
-    def self.pull_request *args
-      client.pull_request *args
+    def self.pull_request(*args)
+      client.pull_request(*args)
     end
 
-    def self.pull_request_commits *args
-      client.pull_request_commits *args
+    def self.pull_request_commits(*args)
+      client.pull_request_commits(*args)
     end
 
-    def self.issue_comments *args
-      client.issue_comments *args
+    def self.issue_comments(*args)
+      client.issue_comments(*args)
     end
 
-    def self.pull_requests *args
-      crawling_client.pull_requests *args
+    def self.pull_requests(*args)
+      crawling_client.pull_requests(*args)
     end
 
-    def self.create_pull_request *args
-      client.create_pull_request *args
+    def self.create_pull_request(*args)
+      client.create_pull_request(*args)
     end
 
-    def self.issue *args
-      client.issue *args
+    def self.issue(*args)
+      client.issue(*args)
     end
 
-    def self.create_issue *args
-      client.create_issue *args
+    def self.create_issue(*args)
+      client.create_issue(*args)
     end
 
-    def self.add_comment *args
-      client.add_comment *args
+    def self.add_comment(*args)
+      client.add_comment(*args)
     end
 
     def self.user username
@@ -97,28 +97,28 @@ module Octopolo
       ["tst-octopolo"]
     end
 
-    def self.labels *args
-      client.labels *args
+    def self.labels(*args)
+      client.labels(*args)
     end
 
-    def self.add_label *args
-      client.add_label *args
+    def self.add_label(*args)
+      client.add_label(*args)
     end
 
-    def self.remove_label *args
-      client.remove_label *args
+    def self.remove_label(*args)
+      client.remove_label(*args)
     end
 
-    def self.add_labels_to_issue *args
-      client.add_labels_to_an_issue *args
+    def self.add_labels_to_issue(*args)
+      client.add_labels_to_an_issue(*args)
     end
 
-    def self.search_issues *args
-      client.search_issues *args
+    def self.search_issues(*args)
+      client.search_issues(*args)
     end
 
-    def self.status *args
-      client.status *args
+    def self.status(*args)
+      client.status(*args)
     end
 
     def self.team_member? team

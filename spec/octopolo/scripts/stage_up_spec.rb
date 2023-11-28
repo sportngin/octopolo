@@ -1,10 +1,9 @@
-require "spec_helper"
 require "octopolo/scripts/stage_up"
 
 module Octopolo
   module Scripts
     describe StageUp do
-      let(:cli) { stub(:Cli) }
+      let(:cli) { double(:Cli) }
       before { StageUp.any_instance.stub(:cli => cli) }
 
       context "#execute" do

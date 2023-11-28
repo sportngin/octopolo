@@ -1,14 +1,13 @@
-require "spec_helper"
 require "octopolo/scripts/new_branch"
 
 module Octopolo
   module Scripts
     describe NewBranch do
-      let(:config) { stub(:config, :deploy_branch => "production") }
-      let(:git) { stub(:Git) }
-      let(:cli) { stub(:Cli) }
-      let(:new_branch_name) { stub(:string) }
-      let(:custom_source_branch) { stub(:string) }
+      let(:config) { double(:config, :deploy_branch => "production") }
+      let(:git) { double(:Git) }
+      let(:cli) { double(:Cli) }
+      let(:new_branch_name) { double(:string) }
+      let(:custom_source_branch) { double(:string) }
 
       subject { NewBranch }
 

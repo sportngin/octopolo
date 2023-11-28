@@ -1,4 +1,3 @@
-require "spec_helper"
 
 module Octopolo
   describe CLI do
@@ -16,7 +15,7 @@ module Octopolo
         subject.should_receive(:say).with(command)
         Open3.should_receive(:capture3).with(command).and_return([result, nil, status_success])
         subject.should_receive(:say).with(result)
-        subject.perform(command).should == result
+        subject.perform(command).should eq(result)
       end
 
       it "uses Kernel#` if Open3 has no capture3 method (e.g., Ruby 1.8.7)" do
@@ -25,7 +24,7 @@ module Octopolo
         Open3.should_receive(:respond_to?).with(:capture3).and_return(false)
         subject.should_receive(:`).with(command).and_return(result)
         subject.should_receive(:say).with(result)
-        subject.perform(command).should == result
+        subject.perform(command).should eq(result)
       end
 
       it "should raise exception" do
@@ -139,13 +138,13 @@ module Octopolo
         subject.should_receive(:say).never
         subject.should_receive(:prompt).never
 
-        subject.ask(question, one_choice).should == one_choice.first
+        subject.ask(question, one_choice).should eq(one_choice.first)
       end
 
       context "when answering with the string value" do
         it "returns the user's selection, if in the available choices" do
           subject.should_receive(:prompt).and_return(valid_string_answer)
-          subject.ask(question, choices).should == valid_string_answer
+          subject.ask(question, choices).should eq(valid_string_answer)
         end
 
         it "asks again if given a string other than one of the choices" do
@@ -154,7 +153,7 @@ module Octopolo
           subject.should_receive(:say).with("Not a valid choice.")
           subject.should_receive(:prompt).and_return(valid_string_answer)
 
-          subject.ask(question, choices).should == valid_string_answer
+          subject.ask(question, choices).should eq(valid_string_answer)
         end
       end
 
@@ -162,7 +161,7 @@ module Octopolo
         it "returns the user's selection, if in the available choices" do
           subject.should_receive(:prompt).and_return(valid_numeric_answer)
           allow(subject).to receive(:say)
-          subject.ask(question, choices).should == valid_string_answer
+          subject.ask(question, choices).should eq(valid_string_answer)
         end
 
         it "asks again if given a answer 0 or less" do
@@ -171,7 +170,7 @@ module Octopolo
           allow(subject).to receive(:say)
           subject.should_receive(:prompt).and_return(valid_numeric_answer)
 
-          subject.ask(question, choices).should == valid_string_answer
+          subject.ask(question, choices).should eq(valid_string_answer)
         end
 
         it "asks again if given a answer greater than the list of choices" do
@@ -180,7 +179,7 @@ module Octopolo
           allow(subject).to receive(:say)
           subject.should_receive(:prompt).and_return(valid_numeric_answer)
 
-          subject.ask(question, choices).should == valid_string_answer
+          subject.ask(question, choices).should eq(valid_string_answer)
         end
       end
     end
@@ -195,38 +194,38 @@ module Octopolo
 
       it "returns true for 'y'" do
         subject.should_receive(:prompt) { "y" }
-        subject.ask_boolean(question).should be_true
+        subject.ask_boolean(question).should be true
       end
 
       it "returns true for 'yes'" do
         subject.should_receive(:prompt) { "yes" }
-        subject.ask_boolean(question).should be_true
+        subject.ask_boolean(question).should be true
       end
 
       it "returns true for 'Y'" do
         subject.should_receive(:prompt) { "Y" }
-        subject.ask_boolean(question).should be_true
+        subject.ask_boolean(question).should be true
       end
 
       it "returns false for 'n'" do
         subject.should_receive(:prompt) { "n" }
-        subject.ask_boolean(question).should be_false
+        subject.ask_boolean(question).should be false
       end
 
       it "returns false for 'no'" do
         subject.should_receive(:prompt) { "no" }
-        subject.ask_boolean(question).should be_false
+        subject.ask_boolean(question).should be false
       end
 
       it "returns false for 'N'" do
         subject.should_receive(:prompt) { "N" }
-        subject.ask_boolean(question).should be_false
+        subject.ask_boolean(question).should be false
       end
     end
 
     context ".prompt prompt_text" do
       let(:input) { "asdf" }
-      let(:highline) { stub }
+      let(:highline) { double }
       let(:prompt_text) { "Foo: " }
 
       before do
@@ -236,7 +235,7 @@ module Octopolo
       it "retrieves response from the user" do
         highline.should_receive(:ask).with("> ").and_return(input)
 
-        subject.prompt.should == input
+        subject.prompt.should eq(input)
       end
 
       it "uses the given text as the prompt" do
@@ -249,8 +248,8 @@ module Octopolo
     context ".prompt_secret prompt_text" do
       let(:input) { "asdf" }
       let(:prompt_text) { "Foo: " }
-      let(:highline) { stub }
-      let(:highline_config) { stub }
+      let(:highline) { double }
+      let(:highline_config) { double }
 
       before do
         subject.stub(highline: highline)
@@ -260,15 +259,15 @@ module Octopolo
         highline.should_receive(:ask).with(prompt_text).and_yield(highline_config).and_return(input)
         highline_config.should_receive(:echo=).with(false)
         highline_config.should_receive(:readline=).with(true)
-        subject.prompt_secret(prompt_text).should == input
+        subject.prompt_secret(prompt_text).should eq(input)
       end
     end
 
     context ".prompt_multiline prompt_text" do
       let(:input) { %w(a s d f) }
       let(:prompt_text) { "Steps:" }
-      let(:highline) { stub }
-      let(:highline_config) { stub }
+      let(:highline) { double }
+      let(:highline_config) { double }
 
       before do
         subject.stub(highline: highline)
@@ -278,16 +277,16 @@ module Octopolo
         highline.should_receive(:ask).with(prompt_text).and_yield(highline_config).and_return(input)
         highline_config.should_receive(:gather=).with("")
         highline_config.should_receive(:readline=).with(true)
-        subject.prompt_multiline(prompt_text).should == input
+        subject.prompt_multiline(prompt_text).should eq(input)
       end
     end
 
     context ".highline" do
-      let(:result) { stub }
+      let(:result) { double }
 
       it "instantiates a HighLine object" do
         HighLine.should_receive(:new) { result }
-        subject.highline.should == result
+        subject.highline.should eq(result)
       end
     end
 
@@ -311,7 +310,7 @@ module Octopolo
           subject.should_receive(:say).with("Putting '#{input}' on the clipboard.")
           subject.copy_to_clipboard input
           # and to test that it's on the clipboard
-          `pbpaste`.should == input
+          `pbpaste`.should eq(input)
         end
       end
     end

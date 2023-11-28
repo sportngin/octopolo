@@ -1,12 +1,12 @@
-require "spec_helper"
 require "octopolo/scripts/octopolo_setup"
+require "octopolo/scripts/github_auth"
 
 module Octopolo
   module Scripts
     describe OctopoloSetup do
-      let(:config) { stub(:config) }
-      let(:cli) { stub(:cli) }
-      let(:user_config) { stub(:user_config) }
+      let(:config) { double(:config) }
+      let(:cli) { double(:cli) }
+      let(:user_config) { double(:user_config) }
 
       subject { OctopoloSetup }
 
@@ -42,12 +42,12 @@ module Octopolo
       context ".git_extras_installed?" do
         it "returns true if git-extras command exists" do
           cli.should_receive(:perform).with("which git-extras", false) { "/usr/local/lib/git-extras" }
-          subject.git_extras_installed?.should be_true
+          subject.git_extras_installed?.should be true
         end
 
         it "returns false if git-extras command does not exist" do
           cli.should_receive(:perform).with("which git-extras", false) { "" }
-          subject.git_extras_installed?.should be_false
+          subject.git_extras_installed?.should be false
         end
       end
 
@@ -95,7 +95,7 @@ module Octopolo
       context ".verify_user_github_credentials" do
         it "does nothing if github credentials are set" do
           GitHub.should_receive(:check_connection)
-          GithubAuth.should_not_receive(:invoke)
+          GithubAuth.should_not_receive(:execute)
           cli.should_receive(:say).with("Successfully configured API token.")
 
           subject.verify_user_github_credentials
@@ -104,7 +104,7 @@ module Octopolo
         it "prompts to set up authentication otherwise" do
           GitHub.should_receive(:check_connection).and_raise(GitHub::BadCredentials.new "token rejected")
           cli.should_receive(:say).with("token rejected")
-          GithubAuth.should_not_receive(:invoke)
+          GithubAuth.should_not_receive(:execute)
 
           subject.verify_user_github_credentials
         end

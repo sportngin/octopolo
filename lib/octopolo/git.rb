@@ -95,7 +95,7 @@ module Octopolo
     #
     # Example:
     #
-    #   Git.new_branch("bug-123-fix-thing", "master")
+    #   Git.new_branch("bug-123-fix-thing", "main")
     def self.new_branch(new_branch_name, source_branch_name)
       fetch
       perform("branch --no-track #{new_branch_name} origin/#{source_branch_name}")
@@ -274,7 +274,7 @@ module Octopolo
     # branches_to_ignore - An Array of branches to exclude from results
     #
     # Returns an Array of Strings
-    def self.stale_branches(source_branch_name="master", branches_to_ignore=[])
+    def self.stale_branches(source_branch_name="main", branches_to_ignore=[])
       Git.fetch
       command = "branch --remote --merged #{recent_sha(source_branch_name)} | grep -E -v '(#{stale_branches_to_ignore(branches_to_ignore).join("|")})'"
       raw_result = Git.perform_quietly command
@@ -296,7 +296,7 @@ module Octopolo
     #
     # Returns an Array of Strings
     def self.stale_branches_to_ignore(additional_branches=[])
-      %w(HEAD master staging deployable) + Array(additional_branches)
+      %w(HEAD main master staging deployable) + Array(additional_branches)
     end
     private_class_method :stale_branches_to_ignore
 

@@ -6,11 +6,9 @@ module Octopolo
     class IssueCreator
       include ConfigWrapper
       # for instantiating the issue creator
-      attr_accessor :repo_name
-      attr_accessor :options
+      attr_accessor :repo_name, :options
       # for caputuring the created issue information
-      attr_accessor :number
-      attr_accessor :data
+      attr_writer :number, :data
 
       # Public: Create a issue for the given repo with the given options
       #
@@ -64,13 +62,6 @@ module Octopolo
       # Returns a String with the title
       def title
         options[:title] || raise(MissingAttribute)
-      end
-
-      # Public: The Pivotal Tracker story IDs associated with the issue
-      #
-      # Returns an Array of Strings
-      def pivotal_ids
-        options[:pivotal_ids] || []
       end
 
       # Public: Jira Issue IDs associated with the issue
@@ -133,7 +124,6 @@ module Octopolo
       # Public: The local variables to pass into the template
       def body_locals
         {
-          pivotal_ids: pivotal_ids,
           jira_ids: jira_ids,
           jira_url: jira_url,
         }

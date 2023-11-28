@@ -1,12 +1,11 @@
-require "spec_helper"
 require "octopolo/scripts/tag_release"
 
 module Octopolo
   module Scripts
     describe TagRelease do
-      let(:config) { stub(:config, deploy_branch: "something", semantic_versioning: false) }
-      let(:cli) { stub(:cli) }
-      let(:git) { stub(:git) }
+      let(:config) { double(:config, deploy_branch: "something", semantic_versioning: false) }
+      let(:cli) { double(:cli) }
+      let(:git) { double(:git) }
       let(:prefix) { "foo" }
       let(:suffix) { "bar" }
       let(:options) { Hash.new }
@@ -38,22 +37,22 @@ module Octopolo
 
         it "accepts a switch to force creating the new tag even if not on deploy branch" do
           options[:force] = true
-          expect(TagRelease.new(options).force?).to be_true
+          expect(TagRelease.new(options).force?).to be true
         end
 
         it "accepts a switch to increment major version" do
           options[:major] = true
-          expect(TagRelease.new(options).major?).to be_true
+          expect(TagRelease.new(options).major?).to be true
         end
 
         it "accepts a switch to increment minor version" do
           options[:minor] = true
-          expect(TagRelease.new(options).minor?).to be_true
+          expect(TagRelease.new(options).minor?).to be true
         end
 
         it "accepts a switch to increment patch version" do
           options[:patch] = true
-          expect(TagRelease.new(options).patch?).to be_true
+          expect(TagRelease.new(options).patch?).to be true
         end
 
         it "defaults to no suffix and not to force" do
@@ -83,7 +82,7 @@ module Octopolo
 
         it "is true if on the deploy branch" do
           git.stub(:current_branch) { config.deploy_branch }
-          expect(subject.should_create_branch?).to be_true
+          expect(subject.should_create_branch?).to be true
         end
 
         context "if not on the deploy branch" do
@@ -93,12 +92,12 @@ module Octopolo
 
           it "is true if set to force creation" do
             subject.force = true
-            expect(subject.should_create_branch?).to be_true
+            expect(subject.should_create_branch?).to be true
           end
 
           it "is false otherwise" do
             subject.force = false
-            expect(subject.should_create_branch?).to be_false
+            expect(subject.should_create_branch?).to be false
           end
         end
       end
@@ -184,21 +183,21 @@ module Octopolo
           expect(subject.cli).to receive(:ask).with(semver_choice_question, TagRelease::SEMVER_CHOICES)
                                               .and_return('Major')
           subject.ask_user_version
-          expect(subject.major).to be_true
+          expect(subject.major).to be true
         end
 
         it "sets @minor when user response with 'minor'" do
           expect(subject.cli).to receive(:ask).with(semver_choice_question, TagRelease::SEMVER_CHOICES)
                                               .and_return('Minor')
           subject.ask_user_version
-          expect(subject.minor).to be_true
+          expect(subject.minor).to be true
         end
 
         it "sets @patch when user response with 'patch'" do
           expect(subject.cli).to receive(:ask).with(semver_choice_question, TagRelease::SEMVER_CHOICES)
                                               .and_return('Patch')
           subject.ask_user_version
-          expect(subject.patch).to be_true
+          expect(subject.patch).to be true
         end
       end
 

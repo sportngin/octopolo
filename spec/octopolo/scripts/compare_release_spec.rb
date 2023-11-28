@@ -1,12 +1,11 @@
-require "spec_helper"
 require "octopolo/scripts/compare_release"
 
 module Octopolo
   module Scripts
     describe CompareRelease do
-      let(:config) { stub(:config, github_repo: "tstmedia/ngin") }
-      let(:cli) { stub(:cli) }
-      let(:git) { stub(:git, recent_release_tags: tags) }
+      let(:config) { double(:config, github_repo: "tstmedia/ngin") }
+      let(:cli) { double(:cli) }
+      let(:git) { double(:git, recent_release_tags: tags) }
       let(:tags) { %w(tag1 tag2) }
 
       subject { CompareRelease.new }
@@ -27,7 +26,7 @@ module Octopolo
           subject { CompareRelease.new "foo" }
 
           it "sets the start tag only" do
-            subject.start.should == "foo"
+            subject.start.should eq("foo")
             subject.stop.should be_nil
           end
         end
@@ -36,8 +35,8 @@ module Octopolo
           subject { CompareRelease.new "foo", "bar" }
 
           it "sets the start and end tags" do
-            subject.start.should == "foo"
-            subject.stop.should == "bar"
+            subject.start.should eq("foo")
+            subject.stop.should eq("bar")
           end
         end
       end
@@ -56,7 +55,7 @@ module Octopolo
         it "prompts to select from the list of release tags" do
           cli.should_receive(:ask).with("Start with which tag?", tags) { tags.first }
           subject.ask_starting_tag
-          subject.start.should == tags.first
+          subject.start.should eq(tags.first)
         end
 
         it "does nothing if alread has a starting tag" do
@@ -74,7 +73,7 @@ module Octopolo
         it "prompts to select form the list of release tags" do
           cli.should_receive(:ask).with("Compare from #{subject.start} to which tag?", tags) { tags.last }
           subject.ask_stopping_tag
-          subject.stop.should == tags.last
+          subject.stop.should eq(tags.last)
         end
 
         it "does nothing if already has an ending tag" do
@@ -106,7 +105,7 @@ module Octopolo
         end
 
         it "builds the URL from the starting and stopping tags" do
-          subject.compare_url.should == "https://github.com/#{config.github_repo}/compare/#{start}...#{stop}?w=1"
+          subject.compare_url.should eq("https://github.com/#{config.github_repo}/compare/#{start}...#{stop}?w=1")
         end
       end
     end

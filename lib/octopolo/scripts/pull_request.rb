@@ -1,8 +1,6 @@
 require_relative "../scripts"
 require_relative "../scripts/issue"
 require_relative "../github"
-require_relative "../pivotal/story_commenter"
-require_relative "../jira/story_commenter"
 
 module Octopolo
   module Scripts
@@ -35,7 +33,6 @@ module Octopolo
           end
 
           create_pull_request
-          update_pivotal
           update_jira
           update_labels
           open_in_browser
@@ -48,7 +45,6 @@ module Octopolo
         announce
         ask_title
         ask_labels
-        ask_pivotal_ids if config.use_pivotal_tracker
         ask_jira_ids if config.use_jira
       end
       private :ask_questionnaire
@@ -66,7 +62,6 @@ module Octopolo
         end
 
         self.title = "#{issue} #{descr.capitalize}"
-        self.pivotal_ids = [issue] if config.use_pivotal_tracker
         self.jira_ids = [issue] if config.use_jira
       end
       private :infer_questionnaire
@@ -108,7 +103,6 @@ module Octopolo
           title: title,
           destination_branch: destination_branch,
           source_branch: git.current_branch,
-          pivotal_ids: pivotal_ids,
           jira_ids: jira_ids,
           editor: options[:editor],
           skip_draft: options[:"skip-draft"]

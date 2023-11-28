@@ -1,4 +1,3 @@
-require "spec_helper"
 require "fileutils"
 
 module Octopolo
@@ -16,49 +15,49 @@ module Octopolo
       it "sets up methods for all the attributes it receives" do
         config = subject.new(deploy_branch: "foo", branches_to_keep: ["a", "b"])
 
-        config.deploy_branch.should == "foo"
-        config.branches_to_keep.should == ["a", "b"]
+        config.deploy_branch.should eq("foo")
+        config.branches_to_keep.should eq(["a", "b"])
       end
     end
 
     context "default cuzomizable methods" do
       context "#deploy_branch" do
-        it "is master by default" do
-          Config.new.deploy_branch.should == "master"
+        it "is main by default" do
+          Config.new.deploy_branch.should eq("main")
         end
 
         it "is the specified branch otherwise" do
-          Config.new(deploy_branch: "production").deploy_branch.should == "production"
+          Config.new(deploy_branch: "production").deploy_branch.should eq("production")
         end
       end
 
       context "#branches_to_keep" do
         it "is an empty array by default" do
-          Config.new.branches_to_keep.should == []
+          Config.new.branches_to_keep.should eq([])
         end
 
         it "is the specified values otherwise" do
-          Config.new(branches_to_keep: ["a", "b"]).branches_to_keep.should == ["a", "b"]
+          Config.new(branches_to_keep: ["a", "b"]).branches_to_keep.should eq(["a", "b"])
         end
       end
 
       context "#deploy_methods" do
         it "is an empty array by default" do
-          Config.new.deploy_methods.should == []
+          Config.new.deploy_methods.should eq([])
         end
 
         it "is the specified values otherwise" do
-          Config.new(deploy_methods: ["a", "b"]).deploy_methods.should == ["a", "b"]
+          Config.new(deploy_methods: ["a", "b"]).deploy_methods.should eq(["a", "b"])
         end
       end
 
       context "#deploy_environments" do
         it "is an empty array by default" do
-          Config.new.deploy_environments.should == []
+          Config.new.deploy_environments.should eq([])
         end
 
         it "is the specified values otherwise" do
-          Config.new(deploy_environments: ["a", "b"]).deploy_environments.should == ["a", "b"]
+          Config.new(deploy_environments: ["a", "b"]).deploy_environments.should eq(["a", "b"])
         end
       end
 
@@ -78,23 +77,23 @@ module Octopolo
         end
 
         it "returns the specified value otherwise" do
-          Config.new(github_repo: "tstmedia/ngin").github_repo.should == "tstmedia/ngin"
+          Config.new(github_repo: "tstmedia/ngin").github_repo.should eq("tstmedia/ngin")
         end
       end
 
       context "#merge_resolver" do
         it "is nil by default" do
-          Config.new.merge_resolver.should == nil
+          Config.new.merge_resolver.should eq(nil)
         end
 
         it "returns a string if it has a value" do
-          Config.new(merge_resolver: "/opt/resolver.sh").merge_resolver.should == "/opt/resolver.sh"
+          Config.new(merge_resolver: "/opt/resolver.sh").merge_resolver.should eq("/opt/resolver.sh")
         end
       end
 
       context "#user_notifications" do
         it "is nil by default" do
-          Config.new.user_notifications.should == nil
+          Config.new.user_notifications.should eq(nil)
         end
 
         it "raise an error if it is not an array" do
@@ -102,11 +101,11 @@ module Octopolo
         end
 
         it "returns the specified value if an array" do
-          Config.new(user_notifications: ["NickLaMuro"]).user_notifications.should == ["NickLaMuro"]
+          Config.new(user_notifications: ["NickLaMuro"]).user_notifications.should eq(["NickLaMuro"])
         end
 
         it "returns the specified value if as an array if a string" do
-          Config.new(user_notifications: "NickLaMuro").user_notifications.should == ["NickLaMuro"]
+          Config.new(user_notifications: "NickLaMuro").user_notifications.should eq(["NickLaMuro"])
         end
       end
 
@@ -114,7 +113,7 @@ module Octopolo
         before { Config.any_instance.stub(:load_plugins) }
 
         it "defaults to an empty array" do
-          Config.new.plugins.should == []
+          Config.new.plugins.should eq([])
         end
 
         it "raise an error if it is not a string or array" do
@@ -122,64 +121,27 @@ module Octopolo
         end
 
         it "returns the specified single plugin as an array" do
-          Config.new(plugins: "octopolo-templates").plugins.should == ["octopolo-templates"]
+          Config.new(plugins: "octopolo-templates").plugins.should eq(["octopolo-templates"])
         end
 
         it "returns the specified plugins as an array" do
-          Config.new(plugins: ["op-templates", "op-pivotal"]).plugins.should == ["op-templates", "op-pivotal"]
-        end
-      end
-
-      context "#use_pivotal_tracker" do
-        it "defaults to false" do
-          expect(Config.new.use_pivotal_tracker).to be_false
-        end
-
-        it "forces a truthy value to be true" do
-          expect(Config.new(use_pivotal_tracker: "true").use_pivotal_tracker).to be_true
+          Config.new(plugins: ["op-templates", "op-jira"]).plugins.should eq(["op-templates", "op-jira"])
         end
       end
 
       context "#use_jira" do
         it "defaults to false" do
-          expect(Config.new.use_jira).to be_false
+          expect(Config.new.use_jira).to be false
         end
 
         it "forces a truthy value to be true" do
-          expect(Config.new(use_jira: "true").use_jira).to be_true
+          expect(Config.new(use_jira: "true").use_jira).to be true
         end
       end
 
-      context "#jira_user" do
-        it "does not raise an exception if jira isn't enabled" do
-          expect { Config.new.jira_user }.to_not raise_error(Config::MissingRequiredAttribute)
-        end
-
-        it "raises an exception if not given" do
-          expect { Config.new(use_jira: true).jira_user }.to raise_error(Config::MissingRequiredAttribute)
-        end
-
-        it "returns the specified value otherwise" do
-          expect(Config.new(use_jira: true, jira_user: "jira-user").jira_user).to eq("jira-user")
-        end
-      end
-
-      context "#jira_password" do
-        it "does not raise an exception if jira isn't enabled" do
-          expect { Config.new.jira_password }.to_not raise_error(Config::MissingRequiredAttribute)
-        end
-
-        it "raises an exception if not given" do
-          expect { Config.new(use_jira: true).jira_password }.to raise_error(Config::MissingRequiredAttribute)
-        end
-
-        it "returns the specified value otherwise" do
-          expect(Config.new(use_jira: true, jira_password: "jira-password").jira_password).to eq("jira-password")
-        end
-      end
       context "#jira_url" do
         it "does not raise an exception if jira isn't enabled" do
-          expect { Config.new.jira_url }.to_not raise_error(Config::MissingRequiredAttribute)
+          expect { Config.new.jira_url }.to_not raise_error
         end
 
         it "raises an exception if not given" do
@@ -202,7 +164,7 @@ module Octopolo
           end
 
           it "includes any monkey patching" do
-            subject.example_var.should == ExamplePlugin::EXAMPLE_CONSTANT
+            subject.example_var.should eq(ExamplePlugin::EXAMPLE_CONSTANT)
           end
         }
       end
@@ -224,8 +186,7 @@ module Octopolo
 
       it "reads from the .octopolo.yml file and creates a new config instance" do
         subject.should_receive(:attributes_from_file).and_return(parsed_attributes)
-        subject.should_receive(:new).with(parsed_attributes)
-
+        subject.should_receive(:new).with(include(parsed_attributes))
         subject.parse
       end
     end
@@ -236,7 +197,7 @@ module Octopolo
 
       it "parses the YAML in the octopolo_config_path" do
         subject.stub(:octopolo_config_path).and_return(stub_path)
-        subject.attributes_from_file.should == YAML.load_file(stub_path)
+        subject.attributes_from_file.should eq(YAML.load_file(stub_path))
       end
     end
 
@@ -246,7 +207,7 @@ module Octopolo
       before { project_working_dir }
 
       it "gives up if it can't find a config file" do
-        File.stub(:exists?) { false }
+        File.stub(:exist?) { false }
         Octopolo::CLI.should_receive(:say).with("*** WARNING: Could not find .octopolo.yml or .automation.yml ***")
         subject.octopolo_config_path
         Dir.chdir project_working_dir
@@ -259,13 +220,13 @@ module Octopolo
 
         it "is the .octopolo.yml file in the project directory" do
           Dir.chdir "spec/support"
-          subject.octopolo_config_path.should == File.join(Dir.pwd, '.octopolo.yml')
+          subject.octopolo_config_path.should eq(File.join(Dir.pwd, '.octopolo.yml'))
         end
 
         it "is the .octopolo.yml file in the project directory, two directories up" do
           FileUtils.mkdir_p "spec/support/tmp/foo"
           Dir.chdir "spec/support/tmp/foo"
-          subject.octopolo_config_path.should == File.join(Dir.pwd, '.octopolo.yml')
+          subject.octopolo_config_path.should eq(File.join(Dir.pwd, '.octopolo.yml'))
         end
 
         after do
@@ -282,13 +243,13 @@ module Octopolo
 
         it "is the .octopolo.yml file in the project directory" do
           Dir.chdir "spec/support"
-          subject.octopolo_config_path.should == File.join(Dir.pwd, '.automation.yml')
+          subject.octopolo_config_path.should eq(File.join(Dir.pwd, '.automation.yml'))
         end
 
         it "is the .octopolo.yml file in the project directory, two directories up" do
           FileUtils.mkdir_p "spec/support/tmp/foo"
           Dir.chdir "spec/support/tmp/foo"
-          subject.octopolo_config_path.should == File.join(Dir.pwd, '.automation.yml')
+          subject.octopolo_config_path.should eq(File.join(Dir.pwd, '.automation.yml'))
         end
 
         after do
@@ -333,11 +294,11 @@ module Octopolo
       end
 
       it "should find production" do
-        subject.remote_branch_exists?("production").should == true
+        subject.remote_branch_exists?("production").should eq(true)
       end
 
       it "shouldn't production" do
-        subject.remote_branch_exists?("not-there").should == false
+        subject.remote_branch_exists?("not-there").should eq(false)
       end
     end
 
@@ -352,7 +313,7 @@ module Octopolo
         Dir.chdir "spec/support"
         config = Config.new
         expected_value = File.basename(File.dirname(Config.octopolo_config_path))
-        config.basedir.should == expected_value
+        config.basedir.should eq(expected_value)
       end
 
       after do
