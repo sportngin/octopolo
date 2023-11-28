@@ -14,7 +14,7 @@
 #
 # See http://rubydoc.info/gems/rspec-core/RSpec/Core/Configuration
 require_relative "../lib/octopolo"
-Octopolo.instance_variable_set(:@config, Octopolo::Config.new(deploy_branch: "master"))
+Octopolo.instance_variable_set(:@config, Octopolo::Config.new(deploy_branch: "main"))
 
 RSpec.configure do |config|
   config.deprecation_stream = 'log/deprecations.log'

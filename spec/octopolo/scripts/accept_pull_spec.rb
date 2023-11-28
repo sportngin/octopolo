@@ -3,7 +3,7 @@ require "octopolo/scripts/accept_pull"
 module Octopolo
   module Scripts
     describe AcceptPull do
-      let(:config) { double(:config, :github_repo => "tstmedia/foo", :deploy_branch => "master") }
+      let(:config) { double(:config, :github_repo => "tstmedia/foo", :deploy_branch => "main") }
       let(:cli) { double }
       let(:git) { double(:Git) }
       let(:pull_request_id) { 42 }

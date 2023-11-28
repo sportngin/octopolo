@@ -4,7 +4,7 @@ module Octopolo
   module Scripts
     describe StaleBranches do
       # stub any attributes in the config that you need
-      let(:config) { double(:config, :deploy_branch => "production", :branches_to_keep => %w(master production staging)) }
+      let(:config) { double(:config, :deploy_branch => "production", :branches_to_keep => %w(main production staging)) }
       let(:cli) { double(:cli) }
       let(:git) { double(:Git)}
 

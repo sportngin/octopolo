@@ -392,7 +392,7 @@ module Octopolo
 
     context ".stale_branches(destination_branch, branches_to_ignore)" do
       let(:ignored) { %w(foo bar) }
-      let(:branch_name) { "master" }
+      let(:branch_name) { "main" }
       let(:sha) { "asdf123" }
       let(:raw_result) do
         %Q(
@@ -410,10 +410,10 @@ module Octopolo
         expect(Git.stale_branches(branch_name, ignored)).to eq(%w(bing bang))
       end
 
-      it "defaults to master branch and no extra branches to ignore" do
+      it "defaults to main branch and no extra branches to ignore" do
         Git.should_receive(:fetch)
         Git.should_receive(:stale_branches_to_ignore).with([]) { ignored }
-        Git.should_receive(:recent_sha).with("master") { sha }
+        Git.should_receive(:recent_sha).with("main") { sha }
         Git.should_receive(:perform_quietly).with("branch --remote --merged #{sha} | grep -E -v '(foo|bar)'") { raw_result }
 
         Git.stale_branches
@@ -423,14 +423,14 @@ module Octopolo
     context "#branches_to_ignore(custom_branch_list)" do
       it "ignores some branches by default" do
         expect(Git.send(:stale_branches_to_ignore)).to include "HEAD"
-        expect(Git.send(:stale_branches_to_ignore)).to include "master"
+        expect(Git.send(:stale_branches_to_ignore)).to include "main"
         expect(Git.send(:stale_branches_to_ignore)).to include "staging"
         expect(Git.send(:stale_branches_to_ignore)).to include "deployable"
       end
 
       it "accepts an optional list of additional branches to ignore" do
         expect(Git.send(:stale_branches_to_ignore, ["foo"])).to include "HEAD"
-        expect(Git.send(:stale_branches_to_ignore, ["foo"])).to include "master"
+        expect(Git.send(:stale_branches_to_ignore, ["foo"])).to include "main"
         expect(Git.send(:stale_branches_to_ignore, ["foo"])).to include "staging"
         expect(Git.send(:stale_branches_to_ignore, ["foo"])).to include "deployable"
         expect(Git.send(:stale_branches_to_ignore, ["foo"])).to include "foo"

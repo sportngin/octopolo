@@ -6,7 +6,7 @@ module Octopolo
       let(:creator) { PullRequestCreator.new repo_name, options }
       let(:repo_name) { "foo/bar" }
       let(:options) { {} }
-      let(:destination_branch) { "master" }
+      let(:destination_branch) { "main" }
       let(:source_branch) { "cool-feature" }
       let(:title) { "title" }
       let(:body) { "body" }
