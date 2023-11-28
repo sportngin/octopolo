@@ -33,7 +33,7 @@ module Octopolo
 
     # Public: A GitHub client object
     def self.client(options = {})
-      Octokit::Client.new(options.merge(login: user_config.github_user, access_token: user_config.github_token))
+      Octokit::Client.new(login: user_config.github_user, access_token: user_config.github_token, **options)
     rescue UserConfig::MissingGitHubAuth
       raise TryAgain, "No GitHub API token stored. Please run `op github-auth` to generate your token."
     end
