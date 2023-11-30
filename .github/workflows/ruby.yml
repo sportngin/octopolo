@@ -8,6 +8,7 @@ on:
 
 env:
   RUBY_VERSION: "3.2"
+  GEM_NAME: octopolo
 
 jobs:
   test:
@@ -40,8 +41,23 @@ jobs:
       with:
         ruby-version: ${{ env.RUBY_VERSION }}
 
-    - name: Publish package to GPR and Gemfury
+    - name: Publish package to GPR
       run: |
-        ./deploy.sh
-      env:
-        GEM_HOST_API_KEY: "Bearer ${{secrets.GITHUB_TOKEN}}"
+        set -eo pipefail
+
+        # Publish gem only when lib/$GEM_NAME/version.rb changed
+        if git show -m --pretty=format:%H --name-only $GITHUB_SHA | \
+            grep -q "lib/$GEM_NAME/version.rb"; then
+
+            rm -rf *.gem
+            mkdir -p $HOME/.gem
+            touch $HOME/.gem/credentials
+            chmod 0600 $HOME/.gem/credentials
+            printf -- "---\n:github: ${GITHUB_TOKEN}\n" > $HOME/.gem/credentials
+
+            gem build $GEM_NAME.gemspec
+            package=$(echo *.gem)
+
+            echo "Publishing $package to github..."
+            gem push --KEY github --host https://rubygems.pkg.github.com/sportngin $package
+        fi
