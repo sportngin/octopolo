@@ -61,3 +61,5 @@ jobs:
             echo "Publishing $package to github..."
             gem push --KEY github --host https://rubygems.pkg.github.com/sportngin $package
         fi
+      env:
+        GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
