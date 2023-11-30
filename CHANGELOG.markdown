@@ -1,3 +1,7 @@
+#### v2.0.x
+
+Upgraded for Ruby 3.2.2, discard pivotal integration, discard jira user/password info
+
 #### v1.12.0
 #### v1.11.4
 * IS-12227 Upgrade octokit
