@@ -53,7 +53,7 @@ jobs:
             mkdir -p $HOME/.gem
             touch $HOME/.gem/credentials
             chmod 0600 $HOME/.gem/credentials
-            printf -- "---\n:github: ${GITHUB_TOKEN}\n" > $HOME/.gem/credentials
+            printf -- "---\n:github: Bearer ${GITHUB_TOKEN}\n" > $HOME/.gem/credentials
 
             gem build $GEM_NAME.gemspec
             package=$(echo *.gem)
