@@ -1,7 +1,7 @@
 module Octopolo
   # Provide access to the CLI class into other classes in the application
   module CLIWrapper
-    attr_accessor :cli
+    attr_writer :cli
 
     # Public: Wrapper method around CLI class
     #
@@ -13,7 +13,7 @@ module Octopolo
 
   # Provide access to the config into other classes in the application
   module ConfigWrapper
-    attr_accessor :config
+    attr_writer :config
 
     # Public: Wrapper around the user's and app's configuration
     #
@@ -25,7 +25,7 @@ module Octopolo
 
   # Provide access to user-supplied configuration values
   module UserConfigWrapper
-    attr_accessor :user_config
+    attr_writer :user_config
 
     # Returns an instance of UserConfig or equivalent
     def user_config
@@ -34,7 +34,7 @@ module Octopolo
   end
 
   module GitWrapper
-    attr_accessor :git
+    attr_writer :git
 
     # Public: Wrapper method around Git class
     #

@@ -1,14 +1,11 @@
 module Octopolo
   class UserConfig
     # config values
-    attr_accessor :github_user
-    attr_accessor :github_token
-    attr_accessor :full_name
-    attr_accessor :editor
+    attr_writer :github_user, :github_token, :full_name, :editor
     attr_accessor :attributes # keep the whole hash
 
     # Public: Initialize a new UserConfig instance
-    def initialize attributes={}
+    def initialize(attributes={})
       self.attributes = attributes
       attributes.each do |key, value|
         # e.g., foo: "bar" translates to self.foo = "bar"
